@@ -1,0 +1,22 @@
+extends layout
+
+block links
+	link(href='css/dc.css', rel='stylesheet', type='text/css')
+
+block content
+	// Content Header (Page header)
+	section.content-header
+		h1
+			| Dashboard
+			small Air Traffic Overview
+
+	// Main content
+	section.content
+		.row
+
+block scripts
+	script(src='js/d3,min.js', type='text/javascript')
+	script(src='js/crossfilter.min.js', type='text/javascript')
+	script(src='js/dc.min.js', type='text/javascript')
+	script(src='js/queue.min.js', type='text/javascript')
+	script(src='js/airport.js', type='text/javascript')
