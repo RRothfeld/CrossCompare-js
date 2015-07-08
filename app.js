@@ -1,55 +1,36 @@
+// modules
 var express = require('express');
+var app = express();
+var mongoose = require('mongoose');
+var bodyParser = require('body-parser');
+var methodOverride = require('method-override');
 var path = require('path');
 var favicon = require('serve-favicon');
-var logger = require('morgan');
-var bodyParser = require('body-parser');
 
-var routes = require('./routes/index');
+// configuration
+	
+// config files
+var port = process.env.PORT || 3000;
+var db = require('./config/db');
 
-var app = express();
+// connect to our mongoDB database
+connectionsubject = mongoose.createConnection(db.urlSubjectViews);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-app.use(favicon(__dirname + '/public/favicon.ico'));
-app.use(logger('dev'));
+// parameters
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(methodOverride('X-HTTP-Method-Override'));
+app.use(express.static(__dirname + '/public'));
+app.use(favicon(__dirname + '/public/favicon.ico'));
 
-app.use('/', routes);
+// routes
+require('./app/routes')(app);
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
-});
-
-// error handlers
-
-// development error handler
-// will print stacktrace
-if (app.get('env') === 'development') {
-  app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: err
-    });
-  });
-}
-
-// production error handler
-// no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
-  });
-});
-
-
-module.exports = app;
+// start application
+app.listen(port);	
+exports = module.exports = app;
