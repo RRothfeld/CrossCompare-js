@@ -1,9 +1,15 @@
-var express = require('express');
-var router = express.Router();
+var Subjects = require('../models/SubjectViews');
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('airport');
-});
+module.exports = function(app) {
 
-module.exports = router;
+	app.get('/api/data', function(req, res) {
+		Subjects.find({}, {'_id': 0, 'school_state': 1, 'resource_type': 1, 'poverty_level': 1, 'date_posted': 1, 'total_donations': 1, 'funding_status': 1, 'grade_level': 1}, function(err, subjectDetails) {
+			if (err) res.send(err);
+			res.json(subjectDetails);
+		});
+	});
+
+	app.get('*', function(req, res) {
+		res.render('airport');
+	});
+}

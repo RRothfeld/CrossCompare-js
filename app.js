@@ -29,7 +29,7 @@ app.use(express.static(__dirname + '/public'));
 app.use(favicon(__dirname + '/public/favicon.ico'));
 
 // routes
-require('./app/routes')(app);
+require('./routes/index')(app);
 
 // start application
 app.listen(port);	
