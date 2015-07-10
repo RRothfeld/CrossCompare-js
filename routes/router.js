@@ -2,6 +2,16 @@
 var Flights = mongoConnection.model('', {}, 'flightsExtract');
 
 module.exports = function(app) {
+	// GET Home page
+	app.get('/', function(req, res) {
+		res.render('index');
+	});
+
+	// Get Airport Dashboard Example
+	app.get('/airport', function(req, res) {
+		res.render('airport');
+	});
+
 	// API Flights
 	app.get('/api/flights', function(req, res) {
 		Flights.find({}, {
@@ -14,15 +24,5 @@ module.exports = function(app) {
 			if (err) res.send(err);
 			res.json(subjectDetails);
 		});
-	});
-
-	// Answer all non-API calls with index page
-	app.get('/', function(req, res) {
-		res.render('index');
-	});
-
-	// Redirect unknown requests to index
-	app.get('*', function(req, res) {
-		res.redirect('/');
 	});
 }

@@ -31,24 +31,10 @@ app.use(logger('dev'));
 // routes
 require('./routes/router')(app);
 
-/// catch 404 and forward to error handler
+// Handle 404 and 500 error
 app.use(function(req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404;
-    next(err);
+		res.status(404 || 500).render('error');
 });
-
-// development error handler
-// will print stacktrace
-if (app.get('env') === 'development') {
-    app.use(function(err, req, res, next) {
-        res.status(err.status || 500);
-        res.render('error', {
-            message: err.message,
-            error: err
-        });
-    });
-}
 
 // start application
 app.listen(port);	
