@@ -1,0 +1,124 @@
+extends layout
+
+block links
+	link(href='css/dc.css', rel='stylesheet', type='text/css')
+
+block content
+	// Main content
+	section.content
+		.row
+			.col-md-8.col-sm-6.col-xs-12
+				h1 Airport: 
+					strong#airport XX
+					small
+						.dc-data-count#total-filter
+							| Filter: 
+							span.filter-count _ 
+							| /
+							span.total-count _ 
+							| flights selected. 
+							a(href="javascript:dc.filterAll();dc.redrawAll();") Reset all.
+
+			.col-md-4.col-sm-6.col-xs-12
+				.box.box-solid.bg-blue-gradient
+					.box-header
+						i.fa.fa-compress
+						|	
+						h3.box-title Comparison
+					.box-body(style='height: 200px;')
+
+		.row
+			.container-fluid
+				h3 KPIs
+			// Movements
+			.col-md-3.col-sm-6.col-xs-12
+				.info-box.comparable(style='cursor: move;')
+						span.info-box-icon.bg-blue
+							i.fa.fa-plane
+						|								 
+						.info-box-content
+							span.info-box-text Movements
+							|									 
+							span.info-box-number#movements -
+
+			// Average Delay
+			.col-md-3.col-sm-6.col-xs-12
+				.info-box.comparable(style='cursor: move;')
+						span.info-box-icon.bg-blue
+							i.fa.fa-clock-o
+						|								 
+						.info-box-content
+							span.info-box-text Average Delay
+							|									 
+							span.info-box-number#delay -
+
+		.row
+			.container-fluid
+				h3 Movement Data
+			// Total Movements Chart
+			.col-md-8.col-sm-8.col-xs-12
+				.box.box-primary
+					.box-header.comparable(style='cursor: move;')
+						i.fa.fa-bar-chart-o
+						|	
+						h3.box-title Total Movements
+					.box-body
+						div#movements-chart(style='height: 300px;')
+					//- // Loading Icon
+					//- .overlay#testchart1-loading
+					//- 	i.fa.fa-refresh.fa-spin
+
+			// Top Destinations
+			.col-md-4.col-sm-4.col-xs-12
+				.box.box-primary
+					.box-header.with-border.comparable(style='cursor: move;')
+						i.fa.fa-bar-chart-o
+						|	
+						h3.box-title Top Destinations
+					.box-body
+						div#destinations-chart(style='height: 300px;')
+
+		.row
+			.container-fluid
+				h3 Delay Data
+			// Delay Length Chart
+			.col-md-6.col-sm-6.col-xs-12
+				.box.box-primary
+					.box-header.with-border.comparable(style='cursor: move;')
+						i.fa.fa-bar-chart-o
+						|	
+						h3.box-title Delay Length
+					.box-body
+						div#delay-length-chart(style='height: 250px;')
+
+			// Delay by Airline Chart
+			.col-md-6.col-sm-6.col-xs-12
+				.box.box-primary
+					.box-header.with-border.comparable(style='cursor: move;')
+						i.fa.fa-bar-chart-o
+						|	
+						h3.box-title Delay by Airline
+					.box-body
+						div#delay-airline-chart(style='height: 250px;')
+
+		.row
+			.container-fluid
+				h3 Traffic Pattern Data
+			// Wave Pattern Chart
+			.col-md-12.col-sm-12.col-xs-12
+				.box.box-primary
+					.box-header.with-border.comparable(style='cursor: move;')
+						i.fa.fa-bar-chart-o
+						|	
+						h3.box-title Traffic Wave Pattern
+					.box-body
+						div#wave-pattern-chart(style='height: 250px;')
+
+block scripts
+	// Page specific plugins
+	script(src='js/plugins/d3.min.js', type='text/javascript')
+	script(src='js/plugins/crossfilter.min.js', type='text/javascript')
+	script(src='js/plugins/dc.min.js', type='text/javascript')
+	script(src='js/plugins/queue.min.js', type='text/javascript')
+	// Page specific logic
+	script(src='js/example.js', type='text/javascript')

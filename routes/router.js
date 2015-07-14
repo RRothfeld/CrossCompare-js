@@ -1,15 +1,20 @@
 // MongoDB collections
-// var Flights = mongoConnection.model('', {}, 'flightsExtract');
+var Flights = mongoConnection.model('', {}, 'flights');
 
 module.exports = function(app) {
-	// GET Home page
+	// GET home page
 	app.get('/', function(req, res) {
 		res.render('index');
 	});
 
-	// Get Airport Dashboard Example
-	app.get('/airport', function(req, res) {
-		res.render('airport');
+	// GET example page
+	app.get('/example', function(req, res) {
+		res.render('example');
+	});
+
+	// GET documentation page
+	app.get('/docs', function(req, res) {
+		res.render('docs');
 	});
 
 	// API Flights (call to DB for data)
