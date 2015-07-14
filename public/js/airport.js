@@ -1,5 +1,11 @@
 queue()
-		.defer(d3.json, "/api/flights")
+		// API call for current data (for deployment)
+		// .defer(d3.json, "/api/flights")
+
+		// Static data request (for testing)
+		.defer(d3.json, "/data/flightsRandom.json")
+
+		// Render graphs
 		.await(makeGraphs);
 
 function makeGraphs(error, data) {
