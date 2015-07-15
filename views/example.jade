@@ -2,6 +2,7 @@ extends layout
 
 block links
 	link(href='css/dc.css', rel='stylesheet', type='text/css')
+	link(href='css/example.css', rel='stylesheet', type='text/css')
 
 block content
 	// Main content
@@ -11,13 +12,7 @@ block content
 				h1 Airport: 
 					strong#airport XX
 					small
-						.dc-data-count#total-filter
-							| Filter: 
-							span.filter-count _ 
-							| /
-							span.total-count _ 
-							| flights selected. 
-							a(href="javascript:dc.filterAll();dc.redrawAll();") Reset all.
+						.dc-data-count
 
 			.col-md-4.col-sm-6.col-xs-12
 				.box.box-solid.bg-blue-gradient
@@ -25,7 +20,7 @@ block content
 						i.fa.fa-compress
 						|	
 						h3.box-title Comparison
-					.box-body(style='height: 200px;')
+					.box-body
 
 		.row
 			.container-fluid
@@ -56,27 +51,27 @@ block content
 			.container-fluid
 				h3 Movement Data
 			// Total Movements Chart
-			.col-md-8.col-sm-8.col-xs-12
+			.col-md-8.col-sm-8.col-xs-12#movements-chart-width
 				.box.box-primary
 					.box-header.comparable(style='cursor: move;')
 						i.fa.fa-bar-chart-o
 						|	
 						h3.box-title Total Movements
 					.box-body
-						div#movements-chart(style='height: 300px;')
+						#movements-chart
 					//- // Loading Icon
 					//- .overlay#testchart1-loading
 					//- 	i.fa.fa-refresh.fa-spin
 
 			// Top Destinations
-			.col-md-4.col-sm-4.col-xs-12
+			.col-md-4.col-sm-4.col-xs-12#destinations-chart-width
 				.box.box-primary
 					.box-header.with-border.comparable(style='cursor: move;')
 						i.fa.fa-bar-chart-o
 						|	
-						h3.box-title Top Destinations
+						h3.box-title Top 10 Destinations
 					.box-body
-						div#destinations-chart(style='height: 300px;')
+						#destinations-chart
 
 		.row
 			.container-fluid
@@ -89,7 +84,7 @@ block content
 						|	
 						h3.box-title Delay Length
 					.box-body
-						div#delay-length-chart(style='height: 250px;')
+						#delay-length-chart
 
 			// Delay by Airline Chart
 			.col-md-6.col-sm-6.col-xs-12
@@ -99,7 +94,7 @@ block content
 						|	
 						h3.box-title Delay by Airline
 					.box-body
-						div#delay-airline-chart(style='height: 250px;')
+						#delay-airline-chart
 
 		.row
 			.container-fluid
@@ -112,7 +107,7 @@ block content
 						|	
 						h3.box-title Traffic Wave Pattern
 					.box-body
-						div#wave-pattern-chart(style='height: 250px;')
+						#wave-pattern-chart
 
 block scripts
 	// Page specific plugins

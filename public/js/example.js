@@ -1,49 +1,94 @@
-queue()
-	// API call for current data (for deployment)
-	.defer(d3.json, "/data/flightsDec08.json").await(drawGraphs);
+// Define charts
+var movementsChart = dc.barChart('#movements-chart'),
+		destinationChart = dc.rowChart('#destinations-chart');
 
-function drawGraphs(error, data) {
-		// Parse the date
-		var dataSet = data;
-		// var dateFormat = d3.time.format("%d-%m-%Y");
-		// dataSet.forEach(function(d) {
-		// 	d.DDMMYYYY = dateFormat.parse(d.DDMMYYYY);
-		// 	d.DDMMYYYY.setDate(1);
-		// });
 
-		//Create a Crossfilter instance
-		var flights = crossfilter(dataSet);
+// Load data from csv file
+//d3.csv("/data/flightsDec08.csv", function(data) {
+d3.csv("/data/MINI.csv", function(data) {
 
-		//Define Dimensions
-		var date = flights.dimension(function(d) { return d.DDMMYYYY; }),
-				carrier = flights.dimension(function(d) { return d.Carrier; });
+	// Parse dates from .csv
+	var dateFormat = d3.time.format('%d-%m-%Y');
+	data.forEach(function (d) {
+			d.DDMMYYYY = dateFormat.parse(d.DDMMYYYY);
+	});
 
-		//Calculate metrics
-		var flightsByDate = date.group(),
-				flightsByCarrier = carrier.group(); 
+	// Set up crossfilter
+	var flights = crossfilter(data),
+			all = flights.groupAll();
 
-		var all = flights.groupAll();
+	// Define dimensions
+	var date = flights.dimension(function(d) { return d.DDMMYYYY; }),
+			dest =  flights.dimension(function(d) { return d.Dest; }),
+			delay =  flights.dimension(function(d) { return d.ArrDelay; }),
+			carrier =  flights.dimension(function(d) { return d.Carrier; }),
+			arrtime =  flights.dimension(function(d) { return d.ArrTime; }),
+			deptime =  flights.dimension(function(d) { return d.DepTime; });
 
-		var stateDonations = dc.barChart("#movements-chart");
+	// Define groups (reduce to counts)
+	var byDate = date.group(),
+			byDest = dest.group(),
+			byDelay = delay.group(),
+			byCarrier = carrier.group(),
+			byArrTime = arrtime.group(),
+			byDepTime = deptime.group();
 
-		dc.dataCount("#total-filter")
-			.dimension(flights)
-			.group(all);
+	// Date range
+	var minDate = date.bottom(1)[0].DDMMYYYY,
+			maxDate = date.top(1)[0].DDMMYYYY,
+			rangeDate = (maxDate - minDate) * 0.000000012; // convert daytime into nr. of days
 
-		stateDonations
-			.height(220)
-			.transitionDuration(1000)
-			.dimension(date)
-			.group(flightsByDate)
-			.margins({top: 10, right: 50, bottom: 30, left: 50})
-			.centerBar(false)
-			.gap(5)
-			.elasticY(true)
-			.x(d3.scale.ordinal().domain(date))
-			.xUnits(dc.units.ordinal)
-			.renderHorizontalGridLines(true)
-			.renderVerticalGridLines(true)
-			.yAxis().tickFormat(d3.format("s"));
+	dc.dataCount('.dc-data-count')
+		.dimension(flights)
+		.group(all)
+		.html({
+			some:'<strong>%filter-count</strong> selected out of <strong>%total-count</strong> records' +
+				' | <a href=\'javascript:dc.filterAll(); dc.renderAll();\'\'>Reset All</a>',
+			all:'All records selected. Please click on the graph to apply filters.'
+		});
 
+	renderCharts = function () {
+		// Retrieve available space for charts
+		var movementsChartWidth = $('#movements-chart-width').width(),
+				destinationChartWidth = $('#destination-chart-width').width();
+
+		// Define charts properties
+		movementsChart
+		.width(movementsChartWidth)
+		.height(300)
+		.margins({top: 10, right: 50, bottom: 30, left: 50})
+		.dimension(date)
+		.group(byDate)
+		.gap(1)
+		.elasticY(true)
+		.x(d3.time.scale().domain([minDate, maxDate]))
+		.renderHorizontalGridLines(true)
+		.mouseZoomable(false)
+  	.xUnits(function(){return rangeDate;})
+		.yAxis().ticks(7);
+
+		destinationChart
+		.width(destinationChartWidth)
+		.height(300)
+		.margins({top: 20, left: 10, right: 25, bottom: 20})
+		.dimension(dest)
+		.group(byDest)
+		.gap(1)
+		.elasticX(true)
+		.data(function (group) { return group.top(10); })
+		.xAxis().ticks(7);
+
+		// Render all charts
 		dc.renderAll();
-};
+	};
+
+	// Render charts upon page load
+	renderCharts();
+
+	// Render charts upon page resize
+	$(window).resize(function() {
+		dc.filterAll(); // Reset filters as filters are not re-sizable
+		renderCharts();
+	});
+});
+
