@@ -59,6 +59,7 @@ block content
 						h3.box-title Total Movements
 					.box-body
 						#movements-chart
+						#movements-time-chart
 					//- // Loading Icon
 					//- .overlay#testchart1-loading
 					//- 	i.fa.fa-refresh.fa-spin
@@ -77,7 +78,7 @@ block content
 			.container-fluid
 				h3 Delay Data
 			// Delay Length Chart
-			.col-md-6.col-sm-6.col-xs-12
+			.col-md-6.col-sm-6.col-xs-12#delay-length-chart-width
 				.box.box-primary
 					.box-header.with-border.comparable(style='cursor: move;')
 						i.fa.fa-bar-chart-o
@@ -87,27 +88,14 @@ block content
 						#delay-length-chart
 
 			// Delay by Airline Chart
-			.col-md-6.col-sm-6.col-xs-12
+			.col-md-6.col-sm-6.col-xs-12#airline-chart-width
 				.box.box-primary
 					.box-header.with-border.comparable(style='cursor: move;')
 						i.fa.fa-bar-chart-o
 						|	
-						h3.box-title Delay by Airline
+						h3.box-title Movements by Airline
 					.box-body
-						#delay-airline-chart
-
-		.row
-			.container-fluid
-				h3 Traffic Pattern Data
-			// Wave Pattern Chart
-			.col-md-12.col-sm-12.col-xs-12
-				.box.box-primary
-					.box-header.with-border.comparable(style='cursor: move;')
-						i.fa.fa-bar-chart-o
-						|	
-						h3.box-title Traffic Wave Pattern
-					.box-body
-						#wave-pattern-chart
+						#airline-chart
 
 block scripts
 	// Page specific plugins
