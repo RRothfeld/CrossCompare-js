@@ -10,17 +10,23 @@ block content
 		.row
 			.col-md-8.col-sm-6.col-xs-12
 				h1 Airport: 
-					strong#airport XX
+					strong#airport
+						select#airport-select
+							option(value='ATL') Atlanta
+							option(value='ORD') Chicago
+							option(value='JFK') New York
 					small
 						.dc-data-count
 
-			.col-md-4.col-sm-6.col-xs-12
-				.box.box-solid.bg-blue-gradient
-					.box-header
+			// Comparison
+			.col-md-4.col-sm-6.col-xs-12#comparison-chart-width
+				.box.box-primary
+					.box-header.with-border
 						i.fa.fa-compress
 						|	
 						h3.box-title Comparison
 					.box-body
+						#comparison-chart
 
 		.row
 			.container-fluid
@@ -56,7 +62,10 @@ block content
 					.box-header.comparable(style='cursor: move;')
 						i.fa.fa-bar-chart-o
 						|	
-						h3.box-title Total Movements
+						h3.box-title
+							a(href="#")#test Total Movements
+							|  
+							a(href="#")#test2 EMPTY
 					.box-body
 						#movements-chart
 						#movements-time-chart

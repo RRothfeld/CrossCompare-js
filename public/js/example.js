@@ -1,7 +1,6 @@
 // Define charts
 var movementsChart = dc.lineChart('#movements-chart'),
 		movementsTimeChart = dc.barChart('#movements-time-chart'),
-		destinationChart = dc.rowChart('#destinations-chart'),
 		delayChart = dc.barChart('#delay-length-chart');
 
 // Load data from csv file
@@ -12,9 +11,9 @@ d3.csv("/data/MINI.csv", function(data) {
 	var dateFormat = d3.time.format('%d-%m-%Y'),
 			timeFormat = d3.time.format('%H:%M');
 	data.forEach(function (d) {
-			d.DDMMYYYY = dateFormat.parse(d.DDMMYYYY);
-			d.ArrTimeRounded = timeFormat.parse(d.ArrTimeRounded);
-			d.DepTimeRounded = timeFormat.parse(d.DepTimeRounded);
+		d.DDMMYYYY = dateFormat.parse(d.DDMMYYYY);
+		d.ArrTimeRounded = timeFormat.parse(d.ArrTimeRounded);
+		d.DepTimeRounded = timeFormat.parse(d.DepTimeRounded);
 	});
 
 	// Set up crossfilter
@@ -23,7 +22,7 @@ d3.csv("/data/MINI.csv", function(data) {
 
 	// Define dimensions
 	var date = flights.dimension(function(d) { return d.DDMMYYYY; }),
-			dest = flights.dimension(function(d) { return d.Dest; }),
+			airport = flights.dimension(function(d) { return d.Airport; }),
 			delay = flights.dimension(function(d) { return d.ArrDelay; }),
 			carrier = flights.dimension(function(d) { return d.Carrier; }),
 			arrtime = flights.dimension(function(d) { return d.ArrTimeRounded; }),
@@ -31,7 +30,7 @@ d3.csv("/data/MINI.csv", function(data) {
 
 	// Define groups (reduce to counts)
 	var byDate = date.group(),
-			byDest = dest.group(),
+			byAirport = airport.group(),
 			byDelay = delay.group(),
 			byArrTime = arrtime.group(),
 			byDepTime = deptime.group();
@@ -45,13 +44,13 @@ d3.csv("/data/MINI.csv", function(data) {
 			maxDelay = 90;
 
 	dc.dataCount('.dc-data-count')
-		.dimension(flights)
-		.group(all)
-		.html({
-			some:'<strong>%filter-count</strong> selected out of <strong>%total-count</strong> records' +
-				' | <a href=\'javascript:dc.filterAll(); dc.renderAll();\'\'>Reset All</a>',
-			all:'All records selected. Please click on the graph to apply filters.'
-		});
+	.dimension(flights)
+	.group(all)
+	.html({
+		some:'<strong>%filter-count</strong> selected out of <strong>%total-count</strong> records' +
+			' | <a href=\'javascript:dc.filterAll(); dc.renderAll();\'\'>Reset All</a>',
+		all:'All records selected. Please click on the graph to apply filters.'
+	});
 
 	renderCharts = function () {
 		// Retrieve available space for charts
@@ -81,21 +80,11 @@ d3.csv("/data/MINI.csv", function(data) {
 		.dimension(date)
 		.group(byDate)
 		.centerBar(true)
+		.elasticY(true)
 		.x(d3.time.scale().domain([minDate, maxDate]))
 		.xUnits(d3.time.days)
 		.gap(1)
 		.yAxis().ticks(0);
-
-		destinationChart
-		.width(destinationChartWidth)
-		.height(300)
-		.margins({top: 20, left: 10, right: 25, bottom: 20})
-		.dimension(dest)
-		.group(byDest)
-		.gap(1)
-		.elasticX(true)
-		.data(function (group) { return group.top(10); })
-		.xAxis().ticks(7);
 
 		delayChart
 		.width(delayChartWidth)
@@ -122,5 +111,70 @@ d3.csv("/data/MINI.csv", function(data) {
 		dc.filterAll(); // Reset filters as filters are not re-sizable
 		renderCharts();
 	});
-});
 
+	// Airport selection menu
+	$('#airport-select').on('change', function() {
+		airport.filter(this.value);
+		dc.redrawAll();
+	});
+
+	var compChart, byDate2, byDate, date;
+
+	// Graph test
+	$('#test').on('click', function() {
+		if (compChart == null) {
+
+			compChart = dc.compositeChart('#comparison-chart');
+
+			// Set up crossfilter
+			test = crossfilter(airport.top(Infinity));
+
+			// Define dimensions
+			date = test.dimension(function(d) { return d.DDMMYYYY; });
+
+			// Define groups (reduce to counts)
+			byDate = date.group();
+
+			// Date range
+			var minDate = date.bottom(1)[0].DDMMYYYY,
+					maxDate = date.top(1)[0].DDMMYYYY;
+
+			// Retrieve available space for charts
+			var compChartWidth = $('#comparison-chart-width').width();
+
+			// Define charts properties
+			compChart
+			.width(compChartWidth)
+			.height(50)
+			.margins({top: 0, right: 20, bottom: 1, left: 0})
+			.dimension(date)
+			.x(d3.time.scale().domain([minDate, maxDate]))
+			.mouseZoomable(false)
+			.brushOn(false)
+			.elasticY(true)
+			.compose([
+				dc.lineChart(compChart).group(byDate)
+			]);
+
+			// Render all charts
+			dc.renderAll();
+		} else {
+			var test23 = crossfilter(airport.top(Infinity));
+			date2 = test23.dimension(function(d) { return d.DDMMYYYY; });
+			byDate2 = date2.group();
+
+			compChart
+			.compose([
+				dc.lineChart(compChart).group(byDate),
+				dc.lineChart(compChart).group(byDate2).colors('orange')
+			]);
+			dc.redrawAll();
+		}
+	});
+
+	$('#test2').on('click', function() {
+		compChart.height(1);
+		dc.renderAll();
+		compChart = null;
+	});
+});
