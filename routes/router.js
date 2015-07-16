@@ -1,5 +1,5 @@
 // MongoDB collections
-var Flights = mongoConnection.model('', {}, 'flights');
+// var Flights = mongoConnection.model('', {}, 'flights');
 
 module.exports = function(app) {
 	// GET home page

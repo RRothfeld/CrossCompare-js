@@ -5,6 +5,7 @@ d3.csv("/data/MINI.csv", function(data) {
 	// Define charts
 	var movementsChart = dc.lineChart('#movements-chart'),
 			movementsTimeChart = dc.barChart('#movements-time-chart'),
+			carrierChart = dc.rowChart('#carrier-chart'),
 			delayChart = dc.barChart('#delay-length-chart');
 
 	// Parse dates and times from .csv
@@ -33,8 +34,7 @@ d3.csv("/data/MINI.csv", function(data) {
 	var byDate = date.group(),
 			byAirport = airport.group(),
 			byDelay = delay.group(),
-			byArrTime = arrtime.group(),
-			byDepTime = deptime.group();
+			byCarrier = carrier.group();
 
 	// Date range
 	var minDate = date.bottom(1)[0].DDMMYYYY,
@@ -48,7 +48,7 @@ d3.csv("/data/MINI.csv", function(data) {
 	.dimension(flights)
 	.group(all)
 	.html({
-		some:'<strong>%filter-count</strong> selected out of <strong>%total-count</strong> records' + ' | <a href=\'javascript:dc.filterAll(); dc.renderAll();\'\'>Reset All</a>',
+		some:'<strong>%filter-count</strong> selected out of <strong>%total-count</strong> records' + ' | <a href=\'javascript:dc.filterAll(); dc.redrawAll();\'\'>Reset All</a>',
 		all:'All records selected. Please click on the graph to apply filters.'
 	});
 
@@ -56,7 +56,7 @@ d3.csv("/data/MINI.csv", function(data) {
 	movementsChart
 	.renderArea(true)
 	.height(300)
-	.margins({top: 10, right: 50, bottom: 30, left: 50})
+	.margins({top: 10, right: 40, bottom: 30, left: 40})
 	.dimension(date)
 	.group(byDate)
 	.elasticY(true)
@@ -68,7 +68,7 @@ d3.csv("/data/MINI.csv", function(data) {
 
 	movementsTimeChart
 	.height(40)
-	.margins({top: 0, right: 50, bottom: 20, left: 50})
+	.margins({top: 0, right: 40, bottom: 20, left: 40})
 	.dimension(date)
 	.group(byDate)
 	.centerBar(true)
@@ -77,6 +77,15 @@ d3.csv("/data/MINI.csv", function(data) {
 	.xUnits(d3.time.days)
 	.gap(1)
 	.yAxis().ticks(0);
+
+	carrierChart
+	.height(300)
+	.margins({top: 10, right: 60, bottom: 30, left: 10})
+	.dimension(carrier)
+	.group(byCarrier)
+	.elasticX(true)
+	.data(function (group) { return group.top(10); })
+	.xAxis().ticks(7);
 
 	delayChart
 	.height(250)
@@ -94,7 +103,7 @@ d3.csv("/data/MINI.csv", function(data) {
 	renderCharts = function () {
 		// Retrieve available space for charts via DOM
 		var movementsChartWidth = $('#movements-chart-width').width(),
-				destinationChartWidth = $('#destinations-chart-width').width(),
+				carrierChartWidth = $('#carrier-chart-width').width(),
 				delayChartWidth = $('#delay-length-chart-width').width();
 
 		// Set chart widths
@@ -127,7 +136,7 @@ d3.csv("/data/MINI.csv", function(data) {
 	var compChart, byDate2, byDate, date;
 	var compareActive = false;
 	var subCharts = [];
-	var colors = ['orange','red','green','yellow','blue','brown'];
+	var colors = ['orange','red','green','blue','brown'];
 	var i = 0;
 	// Graph test
 	$('#test').on('click', function() {

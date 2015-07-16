@@ -3,17 +3,17 @@ var express = require('express');
 var app = express();
 var path = require('path');
 var logger = require('morgan');
-var mongoose = require('mongoose');
+// var mongoose = require('mongoose');
 var favicon = require('serve-favicon');
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 	
 // configuration
 var port = process.env.PORT || 3000;
-var dbConf = require('./config/db');
+// var dbConf = require('./config/db');
 
 // connect to our mongoDB database(s)
-mongoConnection = mongoose.createConnection(dbConf.url);
+// mongoConnection = mongoose.createConnection(dbConf.url);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
