@@ -20,11 +20,12 @@ block content
 
 			// Comparison
 			.col-md-4.col-sm-6.col-xs-12#comparison-chart-width
-				.box.box-primary
+				.box.box-warning
 					.box-header.with-border
 						i.fa.fa-compress
 						|	
 						h3.box-title Comparison
+						button.pull-right.btn.btn-xs.btn-default#reset-compare Clear
 					.box-body
 						#comparison-chart
 
@@ -58,14 +59,13 @@ block content
 				h3 Movement Data
 			// Total Movements Chart
 			.col-md-8.col-sm-8.col-xs-12#movements-chart-width
-				.box.box-primary
-					.box-header.comparable(style='cursor: move;')
+				.box.box-default
+					.box-header.with-border.comparable(style='cursor: move;')
 						i.fa.fa-bar-chart-o
 						|	
 						h3.box-title
 							a(href="#")#test Total Movements
-							|  
-							a(href="#")#test2 EMPTY
+
 					.box-body
 						#movements-chart
 						#movements-time-chart
