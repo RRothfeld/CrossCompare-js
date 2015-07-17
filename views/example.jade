@@ -19,7 +19,7 @@ block content
 							option(value='ORD') Chicago
 							option(value='JFK') New York
 					small
-						.dc-data-count
+						a(href='javascript:dc.filterAll(); dc.renderAll();') Reset All
 
 			// Comparison
 			.col-md-4.col-sm-6.col-xs-12#comparison-chart-width
@@ -44,9 +44,9 @@ block content
 							i.fa.fa-plane
 						|								 
 						.info-box-content
-							span.info-box-text Movements
+							span.info-box-text Number of Flights
 							|									 
-							span.info-box-number#movements -
+							span.info-box-number#flights 
 
 			// Average Delay
 			.col-md-3.col-sm-6.col-xs-12
@@ -69,8 +69,7 @@ block content
 						i.fa.fa-bar-chart-o
 						|	
 						h3.box-title
-							a(href="#comparison-chart-width")#test Total Movements
-
+							a(href="#comparison-chart-width")#test Flight Development
 					.box-body
 						#movements-chart
 						#movements-time-chart
@@ -85,7 +84,7 @@ block content
 						i.fa.fa-bar-chart-o
 						|	
 						h3.box-title
-							a(href="#comparison-chart-width")#test2 Top 10 Carriers
+							a(href="#comparison-chart-width")#test2 Top Airlines by Flights
 					.box-body
 						#carrier-chart
 
@@ -98,7 +97,8 @@ block content
 					.box-header.with-border.comparable(style='cursor: move;')
 						i.fa.fa-bar-chart-o
 						|	
-						h3.box-title Delay Length
+						h3.box-title 
+							a(href="#comparison-chart-width")#test3 Delay Length
 					.box-body
 						#delay-length-chart
 

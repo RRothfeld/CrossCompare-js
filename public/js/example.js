@@ -5,7 +5,7 @@ d3.csv("/data/MINI.csv", function(data) {
 	// Define charts
 	var movementsChart = dc.lineChart('#movements-chart'),
 			movementsTimeChart = dc.barChart('#movements-time-chart'),
-			carrierChart = dc.barChart('#carrier-chart'),
+			carrierChart = dc.rowChart('#carrier-chart'),
 			delayChart = dc.barChart('#delay-length-chart');
 
 	// Parse dates and times from .csv
@@ -40,12 +40,12 @@ d3.csv("/data/MINI.csv", function(data) {
 	var minDelay = -40,
 			maxDelay = 90;
 
-	dc.dataCount('.dc-data-count')
+	dc.dataCount('#flights')
 	.dimension(flights)
 	.group(all)
 	.html({
-		some:'<strong>%filter-count</strong> selected out of <strong>%total-count</strong> records' + ' | <a href=\'javascript:dc.filterAll(); dc.renderAll();\'\'>Reset All</a>',
-		all:'All records selected. Please click on the graph to apply filters.'
+		some:'%filter-count/<small>%total-count</small>',
+		all:'%total-count'
 	});
 
 	// Define charts properties
@@ -59,7 +59,7 @@ d3.csv("/data/MINI.csv", function(data) {
 	.x(d3.time.scale().domain([minDate, maxDate]))
 	.renderHorizontalGridLines(true)
 	.xUnits(d3.time.days)
-	.mouseZoomable(true)
+	.mouseZoomable(false)
 	.yAxis().ticks(7);
 
 	movementsTimeChart
@@ -76,14 +76,12 @@ d3.csv("/data/MINI.csv", function(data) {
 
 	carrierChart
 	.height(300)
-	.margins({top: 10, right: 70, bottom: 20, left: 30})
+	.margins({top: 0, right: 30, bottom: 20, left: 5})
 	.dimension(carrier)
 	.group(byCarrier)
-	.elasticY(true)
-	.gap(1)
-	.mouseZoomable(false)
-	.x(d3.scale.ordinal())
-	.xUnits(dc.units.ordinal);
+	.ordering(function(d){ return -d.value }) // biggest on top
+	.elasticX(true)
+	.xAxis().ticks(5);
 
 	delayChart
 	.height(250)
@@ -106,7 +104,8 @@ d3.csv("/data/MINI.csv", function(data) {
 
 		// Set chart widths
 		movementsChart.width(movementsChartWidth);
-		movementsTimeChart.width(movementsChartWidth)
+		movementsTimeChart.width(movementsChartWidth);
+		carrierChart.width(carrierChartWidth);
 		delayChart.width(delayChartWidth);
 
 		// Render all charts (update)
@@ -147,7 +146,7 @@ d3.csv("/data/MINI.csv", function(data) {
 
 		var cache = jQuery.extend(true, [], byDate.top(Infinity));
 
-		var name = $('#airport-select').val();
+		var name = $('#airport-select').val() + carrierChart.filters();
 
 		jQuery.each(cache, function(i, val) {
 			val[name] = val.value;
@@ -221,6 +220,54 @@ d3.csv("/data/MINI.csv", function(data) {
 				keys: { x: 'key', value: [name] },
 				types: { value: [name] },
 				type: 'bar'
+			});
+		}
+	});
+
+	$('#test3').on('click', function() {
+		console.log(carrierChart.filters());
+		// different group!
+		var cache = jQuery.extend(true, [], byDelay.top(Infinity));
+
+		var name = $('#airport-select').val() + carrierChart.filters();
+
+		jQuery.each(cache, function(i, val) {
+			val[name] = val.value;
+			delete val.value;
+		});
+
+		if ($('#comparison-dropbox').is(":visible")) {
+
+			$('#comparison-dropbox').hide();
+			$('#comparison-chart').show();
+
+			chart = c3.generate({
+				bindto: '#comparison-chart',
+				// bar: { width: { ratio: 1 } }, // or width: 100 
+				size: { height: 120 },
+				padding: { top: 0, right: 0, bottom: 0, left: 0 },
+				data: {
+					json: cache,
+					keys: { x: 'key', value: [name] },
+					types: { value: [name] },
+					type: 'scatter' //dasdasdasdasd
+				},
+				axis: {
+						x: {tick: {fit: false}, label: 'Arrival Delay in Minutes' }
+				}
+				// axis: { x: { tick: { count: 10 } } }
+				// axis: {
+				// 	// CAHNGEd TYPE
+				// 	x: { type: 'category'	}
+				// }
+
+			});
+		} else {
+			chart.load({
+				json: cache,
+				keys: { x: 'key', value: [name] },
+				types: { value: [name] },
+				type: 'scatter' //dasdasdasdasd
 			});
 		}
 	});
