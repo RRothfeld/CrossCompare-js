@@ -5,7 +5,7 @@ d3.csv("/data/MINI.csv", function(data) {
 	// Define charts
 	var movementsChart = dc.lineChart('#movements-chart'),
 			movementsTimeChart = dc.barChart('#movements-time-chart'),
-			carrierChart = dc.rowChart('#carrier-chart'),
+			carrierChart = dc.barChart('#carrier-chart'),
 			delayChart = dc.barChart('#delay-length-chart');
 
 	// Parse dates and times from .csv
@@ -80,12 +80,14 @@ d3.csv("/data/MINI.csv", function(data) {
 
 	carrierChart
 	.height(300)
-	.margins({top: 10, right: 60, bottom: 30, left: 10})
+	.margins({top: 10, right: 70, bottom: 20, left: 30})
 	.dimension(carrier)
 	.group(byCarrier)
-	.elasticX(true)
-	.data(function (group) { return group.top(10); })
-	.xAxis().ticks(7);
+	.elasticY(true)
+	.gap(1)
+	.mouseZoomable(false)
+	.x(d3.scale.ordinal())
+	.xUnits(dc.units.ordinal);
 
 	delayChart
 	.height(250)
@@ -197,6 +199,24 @@ d3.csv("/data/MINI.csv", function(data) {
 		compChart.compose(subCharts);
 		compChart.render();
 
-		compareActive = false;	
+		compareActive = false;
 	});
+
+	// Graph test
+	$('#test2').on('click', function() {
+
+		console.log(airport.top(Infinity));
+
+		var chart = c3.generate({
+    bindto: '#comparison-chart',
+    data: {
+      columns: [
+        ['data1', 30, 200, 100, 400, 150, 250],
+        ['data2', 50, 20, 10, 40, 15, 25]
+      ]
+    }
+});
+	});
+
+
 });

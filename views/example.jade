@@ -2,6 +2,8 @@ extends layout
 
 block links
 	link(href='css/dc.css', rel='stylesheet', type='text/css')
+	// DELETE IF C3 is not used
+	link(href='css/c3.min.css', rel='stylesheet', type='text/css')
 	link(href='css/example.css', rel='stylesheet', type='text/css')
 
 block content
@@ -113,5 +115,7 @@ block scripts
 	script(src='js/plugins/crossfilter.min.js', type='text/javascript')
 	script(src='js/plugins/dc.min.js', type='text/javascript')
 	script(src='js/plugins/queue.min.js', type='text/javascript')
+	// DELETE IF C3 is not used
+	script(src='js/plugins/c3.min.js', type='text/javascript')
 	// Page specific logic
 	script(src='js/example.js', type='text/javascript')
