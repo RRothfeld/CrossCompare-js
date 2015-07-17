@@ -48,7 +48,7 @@ d3.csv("/data/MINI.csv", function(data) {
 	.dimension(flights)
 	.group(all)
 	.html({
-		some:'<strong>%filter-count</strong> selected out of <strong>%total-count</strong> records' + ' | <a href=\'javascript:dc.filterAll(); dc.redrawAll();\'\'>Reset All</a>',
+		some:'<strong>%filter-count</strong> selected out of <strong>%total-count</strong> records' + ' | <a href=\'javascript:dc.filterAll(); dc.renderAll();\'\'>Reset All</a>',
 		all:'All records selected. Please click on the graph to apply filters.'
 	});
 
@@ -135,88 +135,53 @@ d3.csv("/data/MINI.csv", function(data) {
 		dc.redrawAll();
 	});
 
-	var compChart, byDate2, byDate, date;
-	var compareActive = false;
-	var subCharts = [];
-	var colors = ['orange','red','green','blue','brown'];
-	var i = 0;
+	$('#reset-compare').on('click', function() {
+
+	});
+
 	// Graph test
+	var compareActive = false;
+	var chart;
+	var chache;
+	var nameindex = 0;
 	$('#test').on('click', function() {
 		if (!compareActive) {
+			chache = jQuery.extend(true, [], byDate.top(Infinity));
+
 			compareActive = true;
+			
 
-			compChart = dc.compositeChart('#comparison-chart');
-
-			// Set up crossfilter
-			test = crossfilter(airport.top(Infinity));
-
-			// Define dimensions
-			date = test.dimension(function(d) { return d.DDMMYYYY; });
-
-			// Define groups (reduce to counts)
-			byDate = date.group();
-
-			// Date range
-			var minDate = date.bottom(1)[0].DDMMYYYY,
-					maxDate = date.top(1)[0].DDMMYYYY;
-
-			// Retrieve available space for charts
-			var compChartWidth = $('#comparison-chart-width').width();
-
-			subCharts = [];
-			subCharts.push(dc.lineChart(compChart).group(byDate));
-
-			// Define charts properties
-			compChart
-			.width(compChartWidth)
-			.height(50)
-			.margins({top: 0, right: 20, bottom: 1, left: 0})
-			.dimension(date)
-			.x(d3.time.scale().domain([minDate, maxDate]))
-			.mouseZoomable(false)
-			.brushOn(false)
-			.elasticY(true)
-			.compose(subCharts);
-
-			// Render all charts
-			compChart.render();
+			chart = c3.generate({
+				bindto: '#comparison-chart',
+				data: {
+					json: chache,
+					keys: { x: 'key', value: ['value'] },
+					//types: { value: 'area' }
+				},
+				axis: {
+					x: {
+						type: 'timeseries',
+						tick: { format: '%Y-%m-%d' }
+					}
+				}
+			});
 		} else {
-			var test23 = crossfilter(airport.top(Infinity));
-			date2 = test23.dimension(function(d) { return d.DDMMYYYY; });
-			byDate2 = date2.group();
+			var newName = "value" + nameindex;
 
-			subCharts.push(dc.lineChart(compChart).group(byDate2).colors(colors[i++]));
-			i = i % colors.length;
-		 	compChart
-		 	.compose(subCharts);
+			var newCache = jQuery.extend(true, [], byDate.top(Infinity));
+	
 
-			compChart.redraw();
+			jQuery.each(newCache, function(i, val) {
+				val[newName] = val.value;
+				delete val.value;
+			});
+
+			chart.load({
+				json: newCache,
+				keys: { x: 'key', value: [newName] }
+			});
+
+			nameindex++;
 		}
 	});
-
-	$('#reset-compare').on('click', function() {
-		subCharts = [];
-		compChart.compose(subCharts);
-		compChart.render();
-
-		compareActive = false;
-	});
-
-	// Graph test
-	$('#test2').on('click', function() {
-
-		console.log(airport.top(Infinity));
-
-		var chart = c3.generate({
-    bindto: '#comparison-chart',
-    data: {
-      columns: [
-        ['data1', 30, 200, 100, 400, 150, 250],
-        ['data2', 50, 20, 10, 40, 15, 25]
-      ]
-    }
-});
-	});
-
-
 });
