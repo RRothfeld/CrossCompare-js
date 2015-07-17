@@ -14,8 +14,6 @@ d3.csv("/data/MINI.csv", function(data) {
 
 	data.forEach(function (d) {
 		d.DDMMYYYY = dateFormat.parse(d.DDMMYYYY);
-		d.ArrTimeRounded = timeFormat.parse(d.ArrTimeRounded);
-		d.DepTimeRounded = timeFormat.parse(d.DepTimeRounded);
 	});
 
 	// Set up crossfilter
@@ -26,9 +24,7 @@ d3.csv("/data/MINI.csv", function(data) {
 	var date = flights.dimension(function(d) { return d.DDMMYYYY; }),
 			airport = flights.dimension(function(d) { return d.Airport; }),
 			delay = flights.dimension(function(d) { return d.ArrDelay; }),
-			carrier = flights.dimension(function(d) { return d.Carrier; }),
-			arrtime = flights.dimension(function(d) { return d.ArrTimeRounded; }),
-			deptime = flights.dimension(function(d) { return d.DepTimeRounded; });
+			carrier = flights.dimension(function(d) { return d.Carrier; });
 
 	// Define groups (reduce to counts)
 	var byDate = date.group(),
@@ -131,57 +127,101 @@ d3.csv("/data/MINI.csv", function(data) {
 
 	// Airport selection menu
 	$('#airport-select').on('change', function() {
-		airport.filter(this.value);
+		if (this.value == 'ALL') airport.filterAll();
+		else airport.filter(this.value);
 		dc.redrawAll();
 	});
 
-	$('#reset-compare').on('click', function() {
 
+
+
+
+	$('#reset-compare').on('click', function() {
+		$('#comparison-dropbox').show();
+		$('#comparison-chart').hide();
 	});
 
 	// Graph test
-	var compareActive = false;
-	var chart;
-	var chache;
-	var nameindex = 0;
-	$('#test').on('click', function() {
-		if (!compareActive) {
-			chache = jQuery.extend(true, [], byDate.top(Infinity));
 
-			compareActive = true;
-			
+	$('#test').on('click', function() {
+
+		var cache = jQuery.extend(true, [], byDate.top(Infinity));
+
+		var name = $('#airport-select').val();
+
+		jQuery.each(cache, function(i, val) {
+			val[name] = val.value;
+			delete val.value;
+		});
+
+
+
+		if ($('#comparison-dropbox').is(":visible")) {
+
+			$('#comparison-dropbox').hide();
+			$('#comparison-chart').show();
 
 			chart = c3.generate({
 				bindto: '#comparison-chart',
+				size: { height: 120 },
+				padding: { top: 0, right: 0, bottom: 0, left: 0 },
 				data: {
-					json: chache,
-					keys: { x: 'key', value: ['value'] },
-					//types: { value: 'area' }
+					json: cache,
+					keys: { x: 'key', value: [name] },
+					types: { value: [name] }
 				},
 				axis: {
-					x: {
-						type: 'timeseries',
-						tick: { format: '%Y-%m-%d' }
-					}
+					x: { type: 'timeseries', tick: { format: '%d.' }	}
 				}
 			});
 		} else {
-			var newName = "value" + nameindex;
-
-			var newCache = jQuery.extend(true, [], byDate.top(Infinity));
-	
-
-			jQuery.each(newCache, function(i, val) {
-				val[newName] = val.value;
-				delete val.value;
-			});
-
 			chart.load({
-				json: newCache,
-				keys: { x: 'key', value: [newName] }
+				json: cache,
+				keys: { x: 'key', value: [name] }
 			});
+		}
+	});
 
-			nameindex++;
+	$('#test2').on('click', function() {
+
+		// different group!
+		var cache = jQuery.extend(true, [], byCarrier.top(Infinity));
+
+		var name = $('#airport-select').val();
+
+		jQuery.each(cache, function(i, val) {
+			val[name] = val.value;
+			delete val.value;
+		});
+
+		if ($('#comparison-dropbox').is(":visible")) {
+
+			$('#comparison-dropbox').hide();
+			$('#comparison-chart').show();
+
+			chart = c3.generate({
+				bindto: '#comparison-chart',
+				bar: { width: { ratio: 0.5 } }, // or width: 100 
+				size: { height: 120 },
+				padding: { top: 0, right: 0, bottom: 0, left: 0 },
+				data: {
+					json: cache,
+					keys: { x: 'key', value: [name] },
+					types: { value: [name] },
+					type: 'bar'
+				},
+				axis: {
+					// CAHNGEd TYPE
+					x: { type: 'category'	}
+				}
+			});
+		} else {
+			chart.load({
+				json: cache,
+				keys: { x: 'key', value: [name] },
+				types: { value: [name] },
+				type: 'bar'
+			});
 		}
 	});
 });
