@@ -1,2 +1,8 @@
 /* Change yAxis label color */
 .dc-chart g.row text {fill: black;}
+
+/* Show hand icon */
+.comparable { cursor: move; }
+
+/* delay gap fix */
+#delay { padding-right: 5px; }
