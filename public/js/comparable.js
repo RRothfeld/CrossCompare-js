@@ -1,7 +1,7 @@
-$('#reset-compare').on('click', function() {
-	$('#comparison-dropbox').show();
-	$('#comparison-chart').hide();
-});
+// $('#reset-compare').on('click', function() {
+// 	$('#comparison-dropbox').show();
+// 	$('#comparison-chart').hide();
+// });
 
 // Graph test
 
@@ -18,13 +18,10 @@ $('#test').on('click', function() {
 
 
 
-	if ($('#comparison-dropbox').is(":visible")) {
-
-		$('#comparison-dropbox').hide();
-		$('#comparison-chart').show();
+	if (true) {
 
 		chart = c3.generate({
-			bindto: '#comparison-chart',
+			bindto: '#crosscompare',
 			size: { height: 120 },
 			padding: { top: 0, right: 0, bottom: 0, left: 0 },
 			data: {
