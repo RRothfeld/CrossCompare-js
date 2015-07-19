@@ -36,6 +36,7 @@ block content
 					.box-body
 						#comparison-dropbox Drag and Drop
 						#comparison-chart
+					+loading
 
 		// Movement, date, and KPIs
 		.row
@@ -47,23 +48,27 @@ block content
 						|	
 						h3.box-title
 							a(href="#comparison-chart-width")#test Flight Development
+						.box-tools.pull-right
+							button.btn.btn-box-tool
+								i.fa.fa-chain-broken
+								|	Reset
 					.box-body
 						#movements-chart
 						#movements-time-chart
-					//- // Loading Icon
-					//- .overlay#testchart1-loading
-					//- 	i.fa.fa-refresh.fa-spin
+					+loading
 
 			// Total Flights
 			.col-md-4.col-sm-6.col-xs-12
 				.info-box.comparable
-						span.info-box-icon.bg-blue
-							i.fa.fa-plane
-						|								 
-						.info-box-content
-							span.info-box-text Number of Flights
-							|									 
-							span.info-box-number#flights 
+					span.info-box-icon.bg-blue
+						i.fa.fa-plane
+					|								 
+					.info-box-content
+						span.info-box-text Number of Flights
+						|									 
+						span.info-box-number#flights 
+						+loading
+					
 
 			// Average Delay
 			.col-md-4.col-sm-6.col-xs-12
@@ -77,6 +82,7 @@ block content
 							span.info-box-number
 								#delay 
 								|  minutes
+							+loading
 
 			// Weekday
 			.col-md-4.col-sm-12.col-xs-12#4-12-12-width
@@ -88,6 +94,7 @@ block content
 							a(href="#comparison-chart-width")#test2 Movements by Weekday
 					.box-body
 						#weekday-chart
+					+loading
 
 		// Time of Day, Delay, and Distance
 		.row
@@ -100,6 +107,7 @@ block content
 						h3.box-title Time of Day
 					.box-body
 						#tod-chart
+					+loading
 
 			// Delay
 			.col-md-4.col-sm-4.col-xs-12
@@ -111,6 +119,7 @@ block content
 							a(href="#comparison-chart-width")#test3 Delay Length
 					.box-body
 						#delay-length-chart
+					+loading
 
 			// Distance
 			.col-md-4.col-sm-4.col-xs-12
@@ -121,6 +130,7 @@ block content
 						h3.box-title Flight Distance
 					.box-body
 						#distance-chart
+					+loading
 
 		// Average Delay by Airline
 		.row
@@ -132,17 +142,22 @@ block content
 						h3.box-title Average Delay by Airline
 					.box-body
 						#airline-delay-chart
+					+loading
 
-		// Flight Table
+		// Flight Table (hidden on XS)
 		.row
-			.col-xs-12
-				.box.box-primary
-					.box-header.with-border.comparable
+			.col-md-12.hidden-xs
+				.box.box-default
+					.box-header.with-border
 						i.fa.fa-table
 						|	
-						h3.box-title Flight Table
+						h3.box-title Latest Flights
+						.box-tools.pull-right
+							button.btn.btn-box-tool(data-widget="collapse")
+								i.fa.fa-minus
 					.box-body
-						#flight-table
+						table.table.table-bordered.table-hover#flights-table
+					+loading
 
 block scripts
 	// Page specific plugins
@@ -153,3 +168,9 @@ block scripts
 
 	// Page specific logic
 	script(src='js/example.js', type='text/javascript')
+	script(src='js/comparable.js', type='text/javascript')
+
+mixin loading
+	// Loading Icon
+	.overlay.loading
+		i.fa.fa-refresh.fa-spin

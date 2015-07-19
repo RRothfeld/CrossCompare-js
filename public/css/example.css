@@ -6,3 +6,13 @@
 
 /* delay gap fix */
 #delay { padding-right: 5px; }
+
+/* over write bootstrap*/
+.table {
+	margin-bottom: 0px;
+}
+
+.dc-table-head {
+	padding: 5px;
+	background-color: #F8F8F8;
+}

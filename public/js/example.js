@@ -1,16 +1,33 @@
+// Define charts
+var totalAverageDelay = dc.numberDisplay('#delay'),
+		movementsChart = dc.lineChart('#movements-chart'),
+		movementsTimeChart = dc.barChart('#movements-time-chart'),
+		weekdayChart = dc.rowChart('#weekday-chart'),
+		todChart = dc.barChart('#tod-chart'),
+		delayChart = dc.barChart('#delay-length-chart'),
+		distanceChart = dc.barChart('#distance-chart'),
+		airlineDelayChart= dc.bubbleChart('#airline-delay-chart');
+		flightsTable = dc.dataTable('#flights-table');
+
+// Make groups available
+var	byDate,
+		byHour,
+		byDelay,
+		byDistance,
+		byWeekday,
+		byCarrier,
+		delayByCarrier,
+		averageDelay;
+
+// http://colorbrewer2.org/
+var colorRange = ['rgb(215,48,39)','rgb(244,109,67)','rgb(253,174,97)','rgb(254,224,139)','rgb(255,255,191)','rgb(217,239,139)','rgb(166,217,106)','rgb(102,189,99)','rgb(26,152,80)'];
+
 // Load data from csv file
 //d3.csv("/data/flightsDec08.csv", function(data) {
 d3.csv("/data/MINI.csv", function(data) {
 
-	// Define charts
-	var totalAverageDelay = dc.numberDisplay('#delay'),
-			movementsChart = dc.lineChart('#movements-chart'),
-			movementsTimeChart = dc.barChart('#movements-time-chart'),
-			weekdayChart = dc.rowChart('#weekday-chart'),
-			todChart = dc.barChart('#tod-chart'),
-			delayChart = dc.barChart('#delay-length-chart'),
-			distanceChart = dc.barChart('#distance-chart'),
-			airlineDelayChart= dc.bubbleChart('#airline-delay-chart');
+	// Record time of calculations
+	var now = new Date();
 
 	// Parse dates and times from .csv
 	data.forEach(function (d) {
@@ -35,59 +52,61 @@ d3.csv("/data/MINI.csv", function(data) {
 			carrier = flights.dimension(function(d) { return d.Carrier; });
 
 	// Define groups (reduce to counts)
-	var byDate = date.group(d3.time.day),
-			byHour = hour.group(),
-			byDelay = delay.group(function(d) { return Math.floor(d / 5) * 5; }),
-			byDistance = distance.group(function(d) { return Math.floor(d / 100) * 100; }),
-			byWeekday = weekday.group(),
-			byCarrier = carrier.group(),
-			delayByCarrier = carrier.group().reduce(
-				function(p, v) {
-					++p.totalFlights;
-					p.sumDelay += Number(v.Delay);
-					p.avgDelay = p.sumDelay / p.totalFlights;
-					p.sumDistance += Number(v.Distance);
-					p.avgDistance = p.sumDistance / p.totalFlights;
-					return p;
-				},
-				function(p, v) {
-					--p.totalFlights;
-					p.sumDelay -= Number(v.Delay);
-					p.avgDelay = p.sumDelay / p.totalFlights;
-					p.sumDistance -= Number(v.Distance);
-					p.avgDistance = p.sumDistance / p.totalFlights;
-					return p;
-				},
-				function() { 
-					return {
-						totalFlights: 0,
-						sumDelay: 0,
-						avgDelay: 0,
-						sumDistance: 0,
-						avgDistance: 0
-					};
-				}
-			),
-			averageDelay = flights.groupAll().reduce(
-				function(p, v) {
-					++p.totalFlights;
-					p.sumDelay += Number(v.Delay);
-					return p;
-				},
-				function(p, v) {
-					--p.totalFlights;
-					p.sumDelay -= Number(v.Delay);
-					return p;
-				},
-				function() {
-					return {
-						totalFlights: 0,
-						sumDelay: 0
-					};
-				}
-			);
+	byDate = date.group(d3.time.day),
+	byHour = hour.group(),
+	byDelay = delay.group(function(d) { return Math.floor(d / 10) * 10; }),
+	byDistance = distance.group(function(d) { return Math.floor(d / 100) * 100; }),
+	byWeekday = weekday.group(),
+	byCarrier = carrier.group(),
+	delayByCarrier = carrier.group().reduce(
+		function(p, v) {
+			++p.totalFlights;
+			p.sumDelay += Number(v.Delay);
+			p.avgDelay = p.sumDelay / p.totalFlights;
+			p.sumDistance += Number(v.Distance);
+			p.avgDistance = p.sumDistance / p.totalFlights;
+			return p;
+		},
+		function(p, v) {
+			--p.totalFlights;
+			p.sumDelay -= Number(v.Delay);
+			p.avgDelay = p.sumDelay / p.totalFlights;
+			p.sumDistance -= Number(v.Distance);
+			p.avgDistance = p.sumDistance / p.totalFlights;
+			return p;
+		},
+		function() { 
+			return {
+				totalFlights: 0,
+				sumDelay: 0,
+				avgDelay: 0,
+				sumDistance: 0,
+				avgDistance: 0
+			};
+		}
+	),
+	averageDelay = flights.groupAll().reduce(
+		function(p, v) {
+			++p.totalFlights;
+			p.sumDelay += Number(v.Delay);
+			return p;
+		},
+		function(p, v) {
+			--p.totalFlights;
+			p.sumDelay -= Number(v.Delay);
+			return p;
+		},
+		function() {
+			return {
+				totalFlights: 0,
+				sumDelay: 0
+			};
+		}
+	);
 
 	// Date range (January = 0, February = 1, ...)
+	console.log();
+
 	var minDate = new Date(2008, 10, 31),
 			maxDate = new Date(2008, 11, 31);
 
@@ -104,7 +123,7 @@ d3.csv("/data/MINI.csv", function(data) {
 	// Define charts properties
 	movementsChart
 	.renderArea(true)
-	.height(300)
+	.height(310)
 	.margins({top: 5, right: 40, bottom: 30, left: 40})
 	.dimension(date)
 	.group(byDate, 'Inbound Flights')
@@ -119,7 +138,7 @@ d3.csv("/data/MINI.csv", function(data) {
 
 	movementsTimeChart
 	.height(40)
-	.margins({top: 0, right: 40, bottom: 20, left: 40})
+	.margins({top: 0, right: 40, bottom: 17, left: 40})
 	.dimension(date)
 	.group(byDate)
 	.elasticY(true)
@@ -127,10 +146,9 @@ d3.csv("/data/MINI.csv", function(data) {
 	.xUnits(d3.time.days)
 	.yAxis().ticks(0);
 
-	// MAKE AVERAGE DELAY per WEEKDAY?
 	weekdayChart
-	.height(134)
-	.margins({top: 0, right: 25, bottom: 20, left: 5})
+	.height(144)
+	.margins({top: 0, right: 25, bottom: 17, left: 5})
 	.dimension(weekday)
 	.group(byWeekday)
 	.elasticX(true)
@@ -145,13 +163,15 @@ d3.csv("/data/MINI.csv", function(data) {
 	.elasticY(true)
 	.x(d3.scale.linear().domain([0, 24]));
 
+	// Make into percentiles
 	delayChart
 	.height(150)
 	.margins({top: 0, right: 25, bottom: 20, left: 10})
 	.dimension(delay)
 	.group(byDelay)
 	.elasticY(true)
-	.x(d3.scale.linear().domain([-60, 180]));
+	.x(d3.scale.linear().domain([-60, 180]))
+	.xUnits(function(){ return 24; }); // ( 180 + 60 ) / 10
 
 	distanceChart
 	.height(150)
@@ -160,6 +180,7 @@ d3.csv("/data/MINI.csv", function(data) {
 	.group(byDistance)
 	.elasticY(true)
 	.x(d3.scale.linear().domain([0, 2500]))
+	.xUnits(function(){ return 25; }) // ( 2500 + 0 ) / 100
 	.xAxis().ticks(6);
 
 	airlineDelayChart
@@ -170,22 +191,78 @@ d3.csv("/data/MINI.csv", function(data) {
 	.maxBubbleRelativeSize(0.1)
 	.x(d3.scale.linear().domain([0, 1])) // overwritten by elastic
 	.y(d3.scale.linear().domain([0, 1])) // overwritten by elastic
-	.r(d3.scale.linear().domain([0, byCarrier.top(1)[0].value])) // repeat after filtering
+	.r(d3.scale.linear().domain([0, byCarrier.top(1)[0].value])) // repeat!!!!!
 	.yAxisPadding(100)
 	.xAxisPadding(10)
 	.elasticY(true)
 	.elasticX(true)
-	// http://colorbrewer2.org/
-	.colors(['rgb(215,48,39)','rgb(244,109,67)','rgb(253,174,97)','rgb(254,224,139)','rgb(255,255,191)','rgb(217,239,139)','rgb(166,217,106)','rgb(102,189,99)','rgb(26,152,80)'])
+	.colors(colorRange)
 	.colorDomain([60, 0]) // switched
 	.colorAccessor(function (d) { return d.value.avgDelay; })
 	.keyAccessor(function (p) { return p.value.avgDelay; })
 	.valueAccessor(function (p) { return p.value.avgDistance; })
 	.radiusValueAccessor(function (p) { return p.value.totalFlights; });
 
+	// Correct group ordering of table
+	function reorderTable() {
+		var table =  $('#flights-table');
+		var tbodies = table.children('tbody');
+		table.append(tbodies.get().reverse());
+	}
+
+	flightsTable
+	.size(15)
+	.dimension(carrier)
+	.group(function (d) { return d3.time.format("%d %B %Y")(d.DateTime) })
+	.columns([
+		{
+			label: 'Time',
+			format: function (d) { return d3.time.format("%H:%M")(d.DateTime) }
+		},
+		{
+			label: 'Delay',
+			format: function (d) {
+				if (d.Delay > 0) return '<span style=\'color:' + colorRange[0] + ';\'>+' + d.Delay + ' min</span>';
+				else return '<span style=\'color:' + colorRange[colorRange.length - 1] + ';\'>' + d.Delay + ' min</span>';
+			}
+		},
+		{
+			label: 'Origin',
+			format: function (d) {
+				if (d.Inbound == 1) return d.Airport2;
+				else return d.Airport;
+			}
+		},
+		{
+			label: 'Destination',
+			format: function (d) {
+				if (d.Inbound != 1) return d.Airport2;
+				else return d.Airport;
+			}
+		},
+		{
+			label: 'Airline',
+			format: function (d) { return d.Carrier; }
+		},
+		{
+			label: 'Distance',
+			format: function (d) { return d3.format("0,000")(d.Distance) + ' miles'; }
+		},
+		{
+			label: 'Type',
+			format: function (d) { 
+				if (d.Inbound == 1) return 'Arrival';
+				else return 'Departure';
+			}
+		},
+	])
+	.sortBy(function(d) { return -d.DateTime; }) // minus as newest is top
+	.on("postRedraw", function(chart) { reorderTable(); });
+
+
 
 	// Update charts' widths
-	renderCharts = function () {
+	function renderCharts() {
 		// Retrieve available space for charts via DOM
 		var full = $('#12-width').width(),
 				large = $('#8-12-12-width').width(),
@@ -204,17 +281,22 @@ d3.csv("/data/MINI.csv", function(data) {
 
 		// Update all charts
 		dc.renderAll();
-	};
+
+		// Correct group ordering of table
+		reorderTable();
+
+		// Hide loading icons
+		$('.loading').hide();
+	}
 
 	// Render charts upon page load
 	renderCharts();
 
 
 	// JQUERY
-
 	// Render charts upon page resize
 	$(window).resize(function() {
-		dc.filterAll(); // Reset filters as filters are not re-sizable
+		// Filters are not re-sizable ...
 		renderCharts(); // Re-render charts
 	});
 
@@ -227,146 +309,5 @@ d3.csv("/data/MINI.csv", function(data) {
 		airlineDelayChart.r(d3.scale.linear().domain([0, byCarrier.top(1)[0].value]))
 
 		dc.redrawAll();
-	});
-
-
-
-
-
-	$('#reset-compare').on('click', function() {
-		$('#comparison-dropbox').show();
-		$('#comparison-chart').hide();
-	});
-
-	// Graph test
-
-	$('#test').on('click', function() {
-
-		var cache = jQuery.extend(true, [], byDate.top(Infinity));
-
-		var name = $('#airport-select').val() + weekdayChart.filters();
-
-		jQuery.each(cache, function(i, val) {
-			val[name] = val.value;
-			delete val.value;
-		});
-
-
-
-		if ($('#comparison-dropbox').is(":visible")) {
-
-			$('#comparison-dropbox').hide();
-			$('#comparison-chart').show();
-
-			chart = c3.generate({
-				bindto: '#comparison-chart',
-				size: { height: 120 },
-				padding: { top: 0, right: 0, bottom: 0, left: 0 },
-				data: {
-					json: cache,
-					keys: { x: 'key', value: [name] },
-					types: { value: [name] }
-				},
-				axis: {
-					x: { type: 'timeseries', tick: { format: '%d.' }	}
-				}
-			});
-		} else {
-			chart.load({
-				json: cache,
-				keys: { x: 'key', value: [name] }
-			});
-		}
-	});
-
-	$('#test2').on('click', function() {
-
-		// different group!
-		var cache = jQuery.extend(true, [], byCarrier.top(Infinity));
-
-		var name = $('#airport-select').val();
-
-		jQuery.each(cache, function(i, val) {
-			val[name] = val.value;
-			delete val.value;
-		});
-
-		if ($('#comparison-dropbox').is(":visible")) {
-
-			$('#comparison-dropbox').hide();
-			$('#comparison-chart').show();
-
-			chart = c3.generate({
-				bindto: '#comparison-chart',
-				bar: { width: { ratio: 0.5 } }, // or width: 100 
-				size: { height: 120 },
-				padding: { top: 0, right: 0, bottom: 0, left: 0 },
-				data: {
-					json: cache,
-					keys: { x: 'key', value: [name] },
-					types: { value: [name] },
-					type: 'bar'
-				},
-				axis: {
-					// CAHNGEd TYPE
-					x: { type: 'category'	}
-				}
-			});
-		} else {
-			chart.load({
-				json: cache,
-				keys: { x: 'key', value: [name] },
-				types: { value: [name] },
-				type: 'bar'
-			});
-		}
-	});
-
-	$('#test3').on('click', function() {
-
-		// different group!
-		var cache = jQuery.extend(true, [], byDelay.top(Infinity));
-
-		var name = $('#airport-select').val() + weekdayChart.filters();
-
-		jQuery.each(cache, function(i, val) {
-			val[name] = val.value;
-			delete val.value;
-		});
-
-		if ($('#comparison-dropbox').is(":visible")) {
-
-			$('#comparison-dropbox').hide();
-			$('#comparison-chart').show();
-
-			chart = c3.generate({
-				bindto: '#comparison-chart',
-				// bar: { width: { ratio: 1 } }, // or width: 100 
-				size: { height: 120 },
-				padding: { top: 0, right: 0, bottom: 0, left: 0 },
-				data: {
-					json: cache,
-					keys: { x: 'key', value: [name] },
-					types: { value: [name] },
-					type: 'scatter' //dasdasdasdasd
-				},
-				axis: {
-						x: {tick: {fit: false}, label: 'Arrival Delay in Minutes' }
-				}
-				// axis: { x: { tick: { count: 10 } } }
-				// axis: {
-				// 	// CAHNGEd TYPE
-				// 	x: { type: 'category'	}
-				// }
-
-			});
-		} else {
-			chart.load({
-				json: cache,
-				keys: { x: 'key', value: [name] },
-				types: { value: [name] },
-				type: 'scatter' //dasdasdasdasd
-			});
-		}
 	});
 });
