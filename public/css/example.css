@@ -24,3 +24,6 @@
 
 /* Remove whitespace below bubble chart */
 .no-bottom-padding { padding-bottom: 0px;}
+
+/*  */
+.reset { position: absolute; top: 5px; right: 10px; }

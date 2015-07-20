@@ -3,14 +3,17 @@
 
 // Define charts
 var totalAverageDelay = dc.numberDisplay('#delay'),
-		movementsChart = dc.lineChart('#movements-chart'),
-		movementsTimeChart = dc.barChart('#movements-time-chart'),
-		weekdayChart = dc.rowChart('#weekday-chart'),
-		todChart = dc.barChart('#tod-chart'),
-		delayChart = dc.barChart('#delay-length-chart'),
-		distanceChart = dc.barChart('#distance-chart'),
-		airlineDelayChart= dc.bubbleChart('#airline-delay-chart');
-		flightsTable = dc.dataTable('#flights-table');
+		flightsTable = dc.dataTable('#flightsTable'),
+		movementsChart = dc.lineChart('#movementsChart'),
+		// all charts that shall have a reset button --> var name == anchor name!!!
+		resetableCharts = [
+			movementsTimeChart = dc.barChart('#movementsTimeChart'),
+			weekdayChart = dc.rowChart('#weekdayChart'),
+			todChart = dc.barChart('#todChart'),
+			delayChart = dc.barChart('#delayChart'),
+			distanceChart = dc.barChart('#distanceChart'),
+			airlineDelayChart= dc.bubbleChart('#airlineDelayChart')
+		];
 
 // Make groups available
 var	byDate,
@@ -111,13 +114,14 @@ d3.csv('/data/MINI.csv', function(data) {
 	var minDate = new Date(2008, 10, 31),
 			maxDate = new Date(2009, 0, 1);
 
+
 	// Non-graph data representation
 	dc.dataCount('#flights')
 	.dimension(flights)
 	.group(all)
 	.html({ some:'%filter-count', all:'%total-count' });
 
-	dc.dataCount('#reset-all')
+	dc.dataCount('#resetAll')
 	.dimension(flights)
 	.group(all)
 	.html({	some: '<a class=\'btn btn-app\'><i class=\'fa fa-chain-broken\'></i>Clear all filters</a>',
@@ -235,6 +239,11 @@ d3.csv('/data/MINI.csv', function(data) {
 		+ 'Number of Flights: ' + numberFormat(p.value.n);
 	});
 
+	// Add reset buttons
+	resetableCharts.forEach(function(chart) {
+    $('#' + chart.anchorName()).prepend('<div class=\'box-tools pull-right\'><a href=\'javascript:' + chart.anchorName() + '.filterAll(); dc.redrawAll();\'><button style=\'display: none;\' class=\'btn btn-box-tool reset\'><i class=\'fa fa-chain-broken\'></i></button></a></div>');
+	});
+
 	// Correct group ordering of table
 	function reorderTable() {
 		var table =  $('#flights-table');
@@ -326,10 +335,12 @@ d3.csv('/data/MINI.csv', function(data) {
 
 	// JQUERY
 	// Reset button
-	$('#reset-all').on('click', function() {
+	$('#resetAll').on('click', function() {
 		dc.filterAll();
-		$('#airport-select').val('ALL');
+
+		$('#airportSelect').val('ALL');
 		airport.filterAll();
+
 		dc.redrawAll();
 	});
 
@@ -340,20 +351,12 @@ d3.csv('/data/MINI.csv', function(data) {
 	});
 
 	// Airport selection menu
-	$('#airport-select').on('change', function() {
+	$('#airportSelect').on('change', function() {
 		if (this.value == 'ALL') airport.filterAll();
 		else airport.filter(this.value);
-		
-		// // Update max radius
-		// airlineDelayChart.r(d3.scale.linear().domain([0, byCarrier.top(1)[0].value]))
 
 		dc.redrawAll();
 	});
-
-	// $('#reset-all').on('click', function() {
-	// 	dc.filterAll();
-	// 	dc.redrawAll();
-	// });
 
 	// 	$('#LOADTEST').on('click', function() {
 	// 	flights.add([{'DateTime':new Date(2009, 0, 1),'Airport':'JFK','Airport2':'IAD','Inbound':'1','Carrier':'B6','Delay':'-17','Distance':'228'}]);

@@ -17,13 +17,13 @@ block content
 			.col-md-8.col-sm-12.col-xs-12
 				h1
 					strong Airport 
-					select.form-control#airport-select
+					select.form-control#airportSelect
 						option(value='ALL') show all
 						option(value='ATL') Atlanta (ATL)
 						option(value='ORD') Chicago (ORD) 
 						option(value='JFK') New York (JFK)
 					|  
-					span.hidden-xs#reset-all
+					span.hidden-xs#resetAll
 
 			// Compare Box
 			.col-md-4.col-sm-12.col-xs-12
@@ -46,10 +46,9 @@ block content
 						|	
 						h3.box-title Number of Flights 
 							small (per hour)
-						+reset-single
 					.box-body.loading-height-main
-						#movements-chart
-						.no-y-axis#movements-time-chart
+						#movementsChart
+						.no-y-axis#movementsTimeChart
 					+loading
 
 			// Total Flights
@@ -87,9 +86,8 @@ block content
 						|	
 						h3.box-title Mean Delay 
 							small (min)
-						+reset-single
 					.box-body.loading-height-side
-						#weekday-chart
+						#weekdayChart
 					+loading
 
 		// Time of Day, Delay, and Distance
@@ -101,9 +99,8 @@ block content
 						i.fa.fa-bar-chart-o
 						|	
 						h3.box-title Time of Day
-						+reset-single
 					.box-body.loading-height-side
-						.no-y-axis#tod-chart
+						.no-y-axis#todChart
 					+loading
 
 			// Delay
@@ -114,9 +111,8 @@ block content
 						|	
 						h3.box-title Delay Length 
 							small (min)
-						+reset-single
 					.box-body.loading-height-side
-						.no-y-axis#delay-length-chart
+						.no-y-axis#delayChart
 					+loading
 
 			// Distance
@@ -126,10 +122,9 @@ block content
 						i.fa.fa-bar-chart-o
 						|	
 						h3.box-title Flight Distance 
-							small (miles)
-						+reset-single
+							small (mi.)
 					.box-body.loading-height-side
-						.no-y-axis#distance-chart
+						.no-y-axis#distanceChart
 					+loading
 
 		// Average Delay by Airline
@@ -141,10 +136,8 @@ block content
 						|	
 						h3.box-title Average Delay by Airline 
 							small (radius: number of flights, colour: mean delay)
-						span#tod-chart-reset
-							+reset-single
 					.box-body.loading-height-side.no-bottom-padding
-						#airline-delay-chart
+						#airlineDelayChart
 					+loading
 
 		// Flight Table (hidden on XS)
@@ -159,7 +152,7 @@ block content
 							button.btn.btn-box-tool(data-widget="collapse")
 								i.fa.fa-minus
 					.box-body.loading-height-side
-						table.table.table-bordered.table-hover#flights-table
+						table.table.table-bordered.table-hover#flightsTable
 					+loading
 
 block scripts
@@ -172,12 +165,6 @@ block scripts
 	// Page specific logic
 	script(src='js/example.js', type='text/javascript')
 	script(src='js/comparable.js', type='text/javascript')
-
-mixin reset-single
-	// Clear filter icon
-	.box-tools.pull-right
-		button.btn.btn-box-tool.disabled
-			i.fa.fa-chain-broken
 
 mixin loading
 	// Loading overlay and icon
