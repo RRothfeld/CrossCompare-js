@@ -2,8 +2,14 @@ var crosscompare = {
 	active: {},
 	charts: {},
 	chartHeight: 200, // default
+	chartAnchor: '#crosscompare', // default
 	height: function(number) {
 		this.chartHeight = number;
+
+		return this; // chainable
+	},
+	anchor: function(selector) {
+		this.chartAnchor = selector;
 
 		return this; // chainable
 	},
@@ -40,7 +46,7 @@ var crosscompare = {
 		var name = +Math.random();
 
 		var filters = chart.filters()[0];
-
+		console.log(chart.filters());
 		$.each(cache, function(i, val) {
 			// if there is a filter, check if single filter, if data does not equal filter: delete; if filter range, check if data is within range otherwise: delete;
 			if (typeof filters !== 'undefined' &&
@@ -64,7 +70,7 @@ var crosscompare = {
 
 			if (chartType == 'line') {
 				crossChart = c3.generate({
-					bindto: '#crosscompare',
+					bindto: this.chartAnchor,
 					size: { height: this.chartHeight },
 					padding: { top: 0, right: 0, bottom: 0, left: 0 },
 					data: {
@@ -81,7 +87,7 @@ var crosscompare = {
 				});
 			} else {
 				crossChart = c3.generate({
-					bindto: '#crosscompare',
+					bindto: this.chartAnchor,
 					bar: { width: { ratio: 0.5 } }, // or width: 100 
 					size: { height: this.chartHeight },
 					padding: { top: 0, right: 0, bottom: 0, left: 0 },

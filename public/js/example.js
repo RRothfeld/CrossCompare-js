@@ -26,7 +26,7 @@ var dateInFormat = d3.time.format('%d-%m-%Y %H:%M'),
 
 // Load data from csv file
 //d3.csv('/data/flightsDec08.csv', function(data) {
-d3.csv('/data/MICRO.csv', function(data) {
+d3.csv('/data/MINI.csv', function(data) {
 
 	// Parse dates and times from .csv
 	data.forEach(function (d) {
@@ -98,11 +98,10 @@ d3.csv('/data/MICRO.csv', function(data) {
 		function() { return { n: 0, sumDelay: 0 }; }
 	);
 
-	// Date range (January = 0, February = 1, ...) // MAKE RANGE RESPONSIVE
-	console.log();
-
-	var minDate = new Date(2008, 10, 31),
-			maxDate = new Date(2009, 0, 1);
+	// Date range
+	var minDate = d3.time.day(date.bottom(1)[0].DateTime),
+			lastDay = d3.time.day(date.top(1)[0].DateTime),
+			maxDate = lastDay.setDate(lastDay.getDate() + 1);
 
 
 	// Non-graph data representation
@@ -322,7 +321,8 @@ d3.csv('/data/MICRO.csv', function(data) {
 	renderCharts();
 
 	// Latest 7-days show on startup
-	movementsTimeChart.filter([new Date(2008, 11, 25), new Date(2009, 0, 1)]);
+	var weekAgoDay = lastDay;
+	movementsTimeChart.filter([weekAgoDay.setDate(weekAgoDay.getDate() - 7), maxDate]);
 
 	// jQuery Events
 	// Reset button
