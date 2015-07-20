@@ -15,9 +15,6 @@ var totalAverageDelay = dc.numberDisplay('#delay'),
 			airlineDelayChart= dc.bubbleChart('#airlineDelayChart')
 		];
 
-// Make groups available
-var	groups = [];
-
 // http://colorbrewer2.org/
 var colorRange = ['rgb(215,48,39)','rgb(252,141,89)','rgb(254,224,139)','rgb(217,239,139)','rgb(145,207,96)','rgb(26,152,80)'];
 
@@ -29,7 +26,7 @@ var dateInFormat = d3.time.format('%d-%m-%Y %H:%M'),
 
 // Load data from csv file
 //d3.csv('/data/flightsDec08.csv', function(data) {
-d3.csv('/data/MINI.csv', function(data) {
+d3.csv('/data/MICRO.csv', function(data) {
 
 	// Parse dates and times from .csv
 	data.forEach(function (d) {
@@ -54,7 +51,7 @@ d3.csv('/data/MINI.csv', function(data) {
 			carrier = flights.dimension(function(d) { return d.Carrier; });
 
 	// Define groups (reduce to counts)
-	byDate = date.group(d3.time.day), groups.push(byDate),
+	byDate = date.group(d3.time.day),
 	byDateInbound = date.group(d3.time.hour).reduce(
 		function(p, v) { if (v.Inbound == 1) p++;	return p; },
 		function(p, v) { if (v.Inbound == 1) p--; return p; },
@@ -122,13 +119,14 @@ d3.csv('/data/MINI.csv', function(data) {
 
 	totalAverageDelay
 	.group(averageDelay)
+	.formatNumber(precisionFormat)
 	.valueAccessor(function(d) { return d.n ? d.sumDelay / d.n : 0; });
 
 	// Define charts properties
 	movementsChart
 	.renderArea(true)
 	.height(310)
-	.margins({top: 5, right: 30, bottom: 20, left: 20})
+	.margins({top: 5, right: 30, bottom: 20, left: 25})
 	.dimension(date)
 	.group(byDateInbound, 'Inbound Flights')
 	.stack(byDateOutbound, 'Outbound Flights')
@@ -142,7 +140,7 @@ d3.csv('/data/MINI.csv', function(data) {
 
 	movementsTimeChart
 	.height(40)
-	.margins({top: 0, right: 30, bottom: 17, left: 20})
+	.margins({top: 0, right: 30, bottom: 17, left: 25})
 	.dimension(date)
 	.group(byDate)
 	.elasticY(true)
@@ -284,11 +282,17 @@ d3.csv('/data/MINI.csv', function(data) {
 		},
 	])
 	.sortBy(function(d) { return -d.DateTime; }) // minus as newest is top
+	.on('postRender', function(chart) { // Correct group ordering of table
+		var table =  $('#' + chart.anchorName());
+		var tbodies = table.children('tbody');
+		table.append(tbodies.get().reverse());
+	})
 	.on('postRedraw', function(chart) { // Correct group ordering of table
 		var table =  $('#' + chart.anchorName());
 		var tbodies = table.children('tbody');
 		table.append(tbodies.get().reverse());
 	});
+
 
 	// Update charts' widths
 	function renderCharts() {
@@ -345,8 +349,24 @@ d3.csv('/data/MINI.csv', function(data) {
 		dc.redrawAll();
 	});
 
-	// 	$('#LOADTEST').on('click', function() {
-	// 	flights.add([{'DateTime':new Date(2009, 0, 1),'Airport':'JFK','Airport2':'IAD','Inbound':'1','Carrier':'B6','Delay':'-17','Distance':'228'}]);
-	// 	dc.renderAll();
-	// });
+	// Example handling for showing/hiding CrossCompare
+	$('.openCross').on('click', function() {
+		$('.box.box-danger').removeClass('hidden');
+	});
+
+	$('#resetCrossCompare').on('click', function() {
+		$('.box.box-danger').addClass('hidden');
+	});
+
+
+	// CrossCompare specific logic
+	crosscompare
+	.height(300)
+	.resetOn('#resetCrossCompare')
+	.add('#crossMovementsChart', movementsChart, 'line')
+	.add('#crossWeekdayChart', weekdayChart, 'bar')
+	.add('#crossTodChart', todChart, 'bar')
+	.add('#crossDelayChart', delayChart, 'bar')
+	.add('#crossDistanceChart', distanceChart, 'bar')
+	.add('#crossAirlineDelayChart', airlineDelayChart, 'scatter');
 });

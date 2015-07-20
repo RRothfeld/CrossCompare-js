@@ -1,9 +1,6 @@
 /* Change row chart's y-axis' text color */
 .dc-chart g.row text {fill: black;}
 
-/* Show hand icon on box headers */
-.comparable { cursor: move; }
-
 /* Insert gap between Mean Delay and 'minutes' */
 #delay { padding-right: 5px; }
 
@@ -26,4 +23,4 @@
 .no-bottom-padding { padding-bottom: 0px;}
 
 /* Reposition reset buttons into box-header */
-.reset { position: absolute; top: 5px; right: 10px; }
+.reset { position: absolute; top: 5px; right: 40px; }
