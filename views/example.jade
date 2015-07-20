@@ -142,7 +142,7 @@ block content
 						h3.box-title Average Delay by Airline 
 							small (radius: number of flights, colour: mean delay)
 						span#tod-chart-reset
-						+reset-single
+							+reset-single
 					.box-body.loading-height-side.no-bottom-padding
 						#airline-delay-chart
 					+loading
@@ -176,7 +176,7 @@ block scripts
 mixin reset-single
 	// Clear filter icon
 	.box-tools.pull-right
-		button.btn.btn-box-tool.reset.disabled
+		button.btn.btn-box-tool.disabled
 			i.fa.fa-chain-broken
 
 mixin loading

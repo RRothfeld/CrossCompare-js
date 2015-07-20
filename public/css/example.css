@@ -20,7 +20,7 @@
 .loading-height-side { min-height: 170px; }
 
 /* Hide y-axis on all charts with the specified class */
-.no-y-axis svg g g.axis.y path { stroke: none; }
+.no-y-axis svg g g.axis.y { display: none; }
 
 /* Remove whitespace below bubble chart */
 .no-bottom-padding { padding-bottom: 0px;}

@@ -1,3 +1,6 @@
+
+// DC VERSION 2.1.0-dev
+
 // Define charts
 var totalAverageDelay = dc.numberDisplay('#delay'),
 		movementsChart = dc.lineChart('#movements-chart'),
@@ -22,13 +25,19 @@ var	byDate,
 // http://colorbrewer2.org/
 var colorRange = ['rgb(215,48,39)','rgb(252,141,89)','rgb(254,224,139)','rgb(217,239,139)','rgb(145,207,96)','rgb(26,152,80)'];
 
+// Date and number formats
+var dateInFormat = d3.time.format('%d-%m-%Y %H:%M'),
+		dateOutFormat = d3.time.format('%d/%m/%Y %H:%M'),
+		numberFormat = d3.format('0,000'),
+		precisionFormat = d3.format('.2f');
+
 // Load data from csv file
-//d3.csv("/data/flightsDec08.csv", function(data) {
-d3.csv("/data/MINI.csv", function(data) {
+//d3.csv('/data/flightsDec08.csv', function(data) {
+d3.csv('/data/MINI.csv', function(data) {
 
 	// Parse dates and times from .csv
 	data.forEach(function (d) {
-		d.DateTime = d3.time.format('%d-%m-%Y %H:%M').parse(d.DateTime);
+		d.DateTime = dateInFormat.parse(d.DateTime);
 	});
 
 	// Set up crossfilter
@@ -41,7 +50,7 @@ d3.csv("/data/MINI.csv", function(data) {
 			weekday = flights.dimension(function(d) {
 				// Make sunday last (let week begin with Monday)
 				var adjustedNum = (d.DateTime.getDay() == 0) ? 7 : d.DateTime.getDay() ;
-				return '' + adjustedNum + ' ' + d3.time.format("%A")(d.DateTime);
+				return '' + adjustedNum + ' ' + d3.time.format('%A')(d.DateTime);
 			}),
 			hour = flights.dimension(function(d) { return d.DateTime.getHours(); }),
 			delay = flights.dimension(function(d) { return Math.max(-60, Math.min(179, d.Delay)); }),
@@ -73,26 +82,20 @@ d3.csv("/data/MINI.csv", function(data) {
 		function(p, v) {
 			++p.n;
 			p.sumDelay += Number(v.Delay);
-			p.avgDelay = p.sumDelay / p.n;
 			p.sumDistance += Number(v.Distance);
-			p.avgDistance = p.sumDistance / p.n;
 			return p;
 		},
 		function(p, v) {
 			--p.n;
 			p.sumDelay -= Number(v.Delay);
-			p.avgDelay = p.sumDelay / p.n;
 			p.sumDistance -= Number(v.Distance);
-			p.avgDistance = p.sumDistance / p.n;
 			return p;
 		},
 		function() { 
 			return {
 				n: 0,
 				sumDelay: 0,
-				avgDelay: 0,
-				sumDistance: 0,
-				avgDistance: 0
+				sumDistance: 0
 			};
 		}
 	),
@@ -125,17 +128,6 @@ d3.csv("/data/MINI.csv", function(data) {
 	.valueAccessor(function(d) { return d.n ? d.sumDelay / d.n : 0; });
 
 	// Define charts properties
-	movementsTimeChart
-	.height(40)
-	.margins({top: 0, right: 30, bottom: 17, left: 20})
-	.dimension(date)
-	.group(byDate)
-	.elasticY(true)
-	.x(d3.time.scale().domain([minDate, maxDate]))
-	.xUnits(d3.time.days)
-	.yAxis().ticks(0);
-	movementsTimeChart.xAxis().ticks(d3.time.week); // not chainable
-
 	movementsChart
 	.renderArea(true)
 	.height(310)
@@ -148,8 +140,18 @@ d3.csv("/data/MINI.csv", function(data) {
 	.renderHorizontalGridLines(true)
 	.rangeChart(movementsTimeChart)
 	.mouseZoomable(false)
-	.brushOn(false);
-	movementsChart.xAxis().ticks(4);
+	.brushOn(false)
+	.xAxis().ticks(4);
+
+	movementsTimeChart
+	.height(40)
+	.margins({top: 0, right: 30, bottom: 17, left: 20})
+	.dimension(date)
+	.group(byDate)
+	.elasticY(true)
+	.x(d3.time.scale().domain([minDate, maxDate]))
+	.xUnits(d3.time.days)
+	.xAxis().ticks(d3.time.week);
 
 	weekdayChart
 	.height(144)
@@ -167,17 +169,8 @@ d3.csv("/data/MINI.csv", function(data) {
 	.dimension(hour)
 	.group(byHour)
 	.elasticY(true)
-	.x(d3.scale.linear().domain([0, 24]))
-	.title(function(d) { return 'TEEEST'; })
-	.renderTitle(true)
-	.filterPrinter(function (filters) {
-		var filter = filters[0], s = '';
-		s += filter[0] + '% -> ' + filter[1] + '%';
-		return s;
-	});
-	todChart.yAxis().ticks(0);
+	.x(d3.scale.linear().domain([0, 24]));
 
-	// Make into percentiles
 	delayChart
 	.height(150)
 	.margins({top: 0, right: 25, bottom: 17, left: 10})
@@ -185,9 +178,8 @@ d3.csv("/data/MINI.csv", function(data) {
 	.group(byDelay)
 	.elasticY(true)
 	.x(d3.scale.linear().domain([-60, 180]))
-	.xUnits(function(){ return 24; })  // ( 180 + 60 ) / 10
-	.yAxis().ticks(0);
-
+	.xUnits(function(){ return 24; });  // ( 180 + 60 ) / 10
+	
 	distanceChart
 	.height(150)
 	.margins({top: 0, right: 30, bottom: 17, left: 5})
@@ -197,8 +189,6 @@ d3.csv("/data/MINI.csv", function(data) {
 	.x(d3.scale.linear().domain([0, 2500]))
 	.xUnits(function(){ return 25; }) // ( 2500 + 0 ) / 100
 	.xAxis().ticks(6);
-	distanceChart
-	.yAxis().ticks(0); // not chainable
 
 	airlineDelayChart
 	.height(300)
@@ -214,16 +204,35 @@ d3.csv("/data/MINI.csv", function(data) {
 	.elasticX(true)
 	.colors(colorRange)
 	.colorDomain([60, 0]) // switched
-	.colorAccessor(function (d) { return d.value.avgDelay; })
-	.keyAccessor(function (p) { return p.value.avgDelay; })
-	.valueAccessor(function (p) { return p.value.avgDistance; })
+	.colorAccessor(function (d) { return d.value.sumDelay / d.value.n; })
+	.keyAccessor(function (p) { return p.value.sumDelay / p.value.n; })
+	.valueAccessor(function (p) { return p.value.sumDistance / p.value.n; })
 	.radiusValueAccessor(function (p) { return p.value.n; })
 	.renderHorizontalGridLines(true)
 	.renderVerticalGridLines(true)
 	.xAxisLabel('Mean Delay (min)')
-	.yAxisLabel('Mean Flight Distance (mi.)')
-	.on("preRedraw", function(chart) {
+	.yAxisLabel('Mean Flight Distance (miles)')
+	.on('preRedraw', function(chart) {
 		airlineDelayChart.r(d3.scale.linear().domain([0, byCarrier.top(1)[0].value]))
+	});
+
+	// Format info labels
+	movementsChart.title(function(p) {
+		return 'Date: ' + dateOutFormat(p.key) + '\n'
+		+ 'Number of Flights: ' + numberFormat(p.value);
+	});
+
+	weekdayChart.title(function(p) {
+		return p.key.split(' ')[1] + '\n'
+		+ 'Mean Delay: ' + precisionFormat(p.value.sumDelay / p.value.n) + ' minutes\n'
+		+ 'Number of Flights: ' + numberFormat(p.value.n);
+	});
+
+	airlineDelayChart.title(function(p) {
+		return 'Airline: ' + p.key + '\n'
+		+ 'Mean Delay: ' + precisionFormat(p.value.sumDelay / p.value.n) + ' minutes\n'
+		+ 'Mean Distance: ' + numberFormat(precisionFormat(p.value.sumDistance / p.value.n)) + ' miles\n'
+		+ 'Number of Flights: ' + numberFormat(p.value.n);
 	});
 
 	// Correct group ordering of table
@@ -236,11 +245,11 @@ d3.csv("/data/MINI.csv", function(data) {
 	flightsTable
 	.size(15)
 	.dimension(carrier)
-	.group(function (d) { return d3.time.format("%d %B %Y")(d.DateTime) })
+	.group(function (d) { return d3.time.format('%d %B %Y')(d.DateTime) })
 	.columns([
 		{
 			label: 'Time',
-			format: function (d) { return d3.time.format("%H:%M")(d.DateTime) }
+			format: function (d) { return d3.time.format('%H:%M')(d.DateTime) }
 		},
 		{
 			label: 'Delay',
@@ -269,7 +278,7 @@ d3.csv("/data/MINI.csv", function(data) {
 		},
 		{
 			label: 'Distance',
-			format: function (d) { return d3.format("0,000")(d.Distance) + ' miles'; }
+			format: function (d) { return d3.format('0,000')(d.Distance) + ' miles'; }
 		},
 		{
 			label: 'Type',
@@ -280,7 +289,7 @@ d3.csv("/data/MINI.csv", function(data) {
 		},
 	])
 	.sortBy(function(d) { return -d.DateTime; }) // minus as newest is top
-	.on("postRedraw", function(chart) { reorderTable(); });
+	.on('postRedraw', function(chart) { reorderTable(); });
 
 	// Update charts' widths
 	function renderCharts() {
@@ -307,7 +316,6 @@ d3.csv("/data/MINI.csv", function(data) {
 
 		// Hide loading icons
 		$('.loading').hide();
-
 	}
 
 	// Render charts upon page load
@@ -348,7 +356,7 @@ d3.csv("/data/MINI.csv", function(data) {
 	// });
 
 	// 	$('#LOADTEST').on('click', function() {
-	// 	flights.add([{"DateTime":new Date(2009, 0, 1),"Airport":"JFK","Airport2":"IAD","Inbound":"1","Carrier":"B6","Delay":"-17","Distance":"228"}]);
+	// 	flights.add([{'DateTime':new Date(2009, 0, 1),'Airport':'JFK','Airport2':'IAD','Inbound':'1','Carrier':'B6','Delay':'-17','Distance':'228'}]);
 	// 	dc.renderAll();
 	// });
 });
