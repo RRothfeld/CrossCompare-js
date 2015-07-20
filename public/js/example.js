@@ -16,14 +16,7 @@ var totalAverageDelay = dc.numberDisplay('#delay'),
 		];
 
 // Make groups available
-var	byDate,
-		byHour,
-		byDelay,
-		byDistance,
-		byWeekday,
-		byCarrier,
-		delayByCarrier,
-		averageDelay;
+var	groups = [];
 
 // http://colorbrewer2.org/
 var colorRange = ['rgb(215,48,39)','rgb(252,141,89)','rgb(254,224,139)','rgb(217,239,139)','rgb(145,207,96)','rgb(26,152,80)'];
@@ -61,7 +54,7 @@ d3.csv('/data/MINI.csv', function(data) {
 			carrier = flights.dimension(function(d) { return d.Carrier; });
 
 	// Define groups (reduce to counts)
-	byDate = date.group(d3.time.day),
+	byDate = date.group(d3.time.day), groups.push(byDate),
 	byDateInbound = date.group(d3.time.hour).reduce(
 		function(p, v) { if (v.Inbound == 1) p++;	return p; },
 		function(p, v) { if (v.Inbound == 1) p--; return p; },
@@ -244,13 +237,6 @@ d3.csv('/data/MINI.csv', function(data) {
     $('#' + chart.anchorName()).prepend('<div class=\'box-tools pull-right\'><a href=\'javascript:' + chart.anchorName() + '.filterAll(); dc.redrawAll();\'><button style=\'display: none;\' class=\'btn btn-box-tool reset\'><i class=\'fa fa-chain-broken\'></i></button></a></div>');
 	});
 
-	// Correct group ordering of table
-	function reorderTable() {
-		var table =  $('#flights-table');
-		var tbodies = table.children('tbody');
-		table.append(tbodies.get().reverse());
-	}
-
 	flightsTable
 	.size(15)
 	.dimension(carrier)
@@ -298,7 +284,11 @@ d3.csv('/data/MINI.csv', function(data) {
 		},
 	])
 	.sortBy(function(d) { return -d.DateTime; }) // minus as newest is top
-	.on('postRedraw', function(chart) { reorderTable(); });
+	.on('postRedraw', function(chart) { // Correct group ordering of table
+		var table =  $('#' + chart.anchorName());
+		var tbodies = table.children('tbody');
+		table.append(tbodies.get().reverse());
+	});
 
 	// Update charts' widths
 	function renderCharts() {
@@ -320,9 +310,6 @@ d3.csv('/data/MINI.csv', function(data) {
 		// Update all charts
 		dc.renderAll();
 
-		// Correct group ordering of table
-		reorderTable();
-
 		// Hide loading icons
 		$('.loading').hide();
 	}
@@ -333,7 +320,7 @@ d3.csv('/data/MINI.csv', function(data) {
 	// Latest 7-days show on startup
 	movementsTimeChart.filter([new Date(2008, 11, 25), new Date(2009, 0, 1)]);
 
-	// JQUERY
+	// jQuery Events
 	// Reset button
 	$('#resetAll').on('click', function() {
 		dc.filterAll();
