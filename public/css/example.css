@@ -1,0 +1,26 @@
+/* Change row chart's y-axis' text color */
+.dc-chart g.row text {fill: black;}
+
+/* Insert gap between Mean Delay and 'minutes' */
+#delay { padding-right: 5px; }
+
+/* Reduce space below Latest Flights table */
+.table { margin-bottom: 0px; }
+
+/* Style Latest Flights table's head row  */
+.dc-table-head { padding: 5px; background-color: #F3F3F3; }
+
+/* Give main box a height before content is loaded */
+.loading-height-main { min-height: 380px; }
+
+/* Give side boxes a height before content is loaded */
+.loading-height-side { min-height: 170px; }
+
+/* Hide y-axis on all charts with the specified class */
+.no-y-axis svg g g.axis.y { display: none; }
+
+/* Remove whitespace below bubble chart */
+.no-bottom-padding { padding-bottom: 0px;}
+
+/* Reposition reset buttons into box-header */
+.reset { position: absolute; top: 5px; right: 40px; }
