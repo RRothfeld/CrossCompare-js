@@ -1,3 +1,14 @@
+// INFO
+
+
+
+
+
+
+
+
+
+
 
 // DC VERSION 2.1.0-dev
 
@@ -26,7 +37,7 @@ var dateInFormat = d3.time.format('%d-%m-%Y %H:%M'),
 
 // Load data from csv file
 //d3.csv('/data/flightsDec08.csv', function(data) {
-d3.csv('/data/MINI.csv', function(data) {
+d3.csv('/data/MICRO.csv', function(data) {
 
 	// Parse dates and times from .csv
 	data.forEach(function (d) {
@@ -52,16 +63,17 @@ d3.csv('/data/MINI.csv', function(data) {
 
 	// Define groups (reduce to counts)
 	byDate = date.group(d3.time.day),
-	byDateInbound = date.group(d3.time.hour).reduce(
-		function(p, v) { if (v.Inbound == 1) p++;	return p; },
-		function(p, v) { if (v.Inbound == 1) p--; return p; },
-		function() { return 0; }
-	),
-	byDateOutbound = date.group(d3.time.hour).reduce(
-		function(p, v) { if (v.Inbound != 1) p++; return p; },
-		function(p, v) { if (v.Inbound != 1) p--; return p; },
-		function() { return 0; }
-	),
+	byDateHour = date.group(d3.time.hour),
+	// byDateInbound = date.group(d3.time.hour).reduce(
+	// 	function(p, v) { if (v.Inbound == 1) p++;	return p; },
+	// 	function(p, v) { if (v.Inbound == 1) p--; return p; },
+	// 	function() { return 0; }
+	// ),
+	// byDateOutbound = date.group(d3.time.hour).reduce(
+	// 	function(p, v) { if (v.Inbound != 1) p++; return p; },
+	// 	function(p, v) { if (v.Inbound != 1) p--; return p; },
+	// 	function() { return 0; }
+	// ),
 	byHour = hour.group(),
 	byDelay = delay.group(function(d) { return Math.floor(d / 10) * 10; }),
 	byDistance = distance.group(function(d) { return Math.floor(d / 100) * 100; }),
@@ -127,8 +139,9 @@ d3.csv('/data/MINI.csv', function(data) {
 	.height(310)
 	.margins({top: 5, right: 30, bottom: 20, left: 25})
 	.dimension(date)
-	.group(byDateInbound, 'Inbound Flights')
-	.stack(byDateOutbound, 'Outbound Flights')
+	// .group(byDateInbound, 'Inbound Flights')
+	// .stack(byDateOutbound, 'Outbound Flights')
+	.group(byDateHour)
 	.elasticY(true)
 	.x(d3.time.scale().domain([minDate, maxDate]))
 	.renderHorizontalGridLines(true)
@@ -302,7 +315,8 @@ d3.csv('/data/MINI.csv', function(data) {
 				small = $('#4-4-12-width').width();
 		
 		// Set chart widths
-		movementsChart.width(large).legend(dc.legend().x(large - 135).y(0).itemHeight(10).gap(10));
+		movementsChart.width(large)
+		//.legend(dc.legend().x(large - 135).y(0).itemHeight(10).gap(10));
 		movementsTimeChart.width(large);
 		weekdayChart.width(medium);
 		todChart.width(small);
@@ -321,8 +335,8 @@ d3.csv('/data/MINI.csv', function(data) {
 	renderCharts();
 
 	// Latest 7-days show on startup
-	var weekAgoDay = lastDay;
-	movementsTimeChart.filter([weekAgoDay.setDate(weekAgoDay.getDate() - 7), maxDate]);
+	var weekAgoDay = lastDay; 																// CHANGE BACK TO 7 !!!!!
+	movementsTimeChart.filter([weekAgoDay.setDate(weekAgoDay.getDate() - 2), maxDate]);
 
 	// jQuery Events
 	// Reset button
@@ -361,12 +375,16 @@ d3.csv('/data/MINI.csv', function(data) {
 
 	// CrossCompare specific logic
 	crosscompare
-	.height(300)
-	.resetOn('#resetCrossCompare')
+	.setHeight(300)
 	.add('#crossMovementsChart', movementsChart, 'line')
 	.add('#crossWeekdayChart', weekdayChart, 'bar')
 	.add('#crossTodChart', todChart, 'bar')
 	.add('#crossDelayChart', delayChart, 'bar')
-	.add('#crossDistanceChart', distanceChart, 'bar')
-	.add('#crossAirlineDelayChart', airlineDelayChart, 'scatter');
+	.add('#crossDistanceChart', distanceChart, 'bar');
+	//.add('#crossAirlineDelayChart', airlineDelayChart, 'scatter');
+
+	$('#resetCrossCompare').on('click', function() {
+		crosscompare.reset();
+	});
+
 });
