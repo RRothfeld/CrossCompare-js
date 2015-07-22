@@ -10,10 +10,9 @@ var methodOverride = require('method-override');
 	
 // configuration
 var port = process.env.PORT || 3000;
-// var dbConf = require('./config/db');
 
 // connect to our mongoDB database(s)
-// mongoConnection = mongoose.createConnection(dbConf.url);
+// mongoConnection = mongoose.createConnection('mongodb://localhost:27017/MScProj');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
