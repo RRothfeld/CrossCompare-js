@@ -25,139 +25,255 @@ block content
 
 		// Airport and Compare (Header)
 		.row
-			// Airport Select
-			.col-md-12.col-sm-12.col-xs-12
-				h1
+			// Airport Select <---------------------------- ADD AIRLINE SELECT
+			.col-md-6.col-sm-6.col-xs-12
+				h3
 					strong Airport 
+					// AUTOMATE OPTION INSERT ? --> future work (out of scope, requires ARP db)
 					select.form-control#airportSelect
 						option(value='ALL') show all
 						option(value='ATL') Atlanta (ATL)
-						option(value='ORD') Chicago (ORD) 
+						option(value='ORD') Chicago (ORD)
 						option(value='JFK') New York (JFK)
 					|  
-					span.hidden-xs#resetAll
+					strong Airline 
+					select.form-control#airportSelect
+						option(value='ALL') show all
+						option(value='ATL') A
+						option(value='ORD') B
+						option(value='JFK') C
+					|  
+					span.pull-right#resetAll
+
+			// Total Flights <---------------------------------- make smaller, no picture needed!
+			.col-md-3.col-sm-3.col-xs-6
+				span.info-box-text Total Flights
+				|									 
+				span.info-box-number#flights 
+				+loading
+
+			// Average Delay
+			.col-md-3.col-sm-3.col-xs-6
+				span.info-box-text Mean Delay
+				|									 
+				span.info-box-number
+					#delay 
+					|  minutes
+				+loading
 
 		// Movement, date, and KPIs
 		.row
 			// Movements by Date
-			.col-md-8.col-sm-12.col-xs-12#8-12-12-width
-				.box.box-primary
+			.col-md-6.col-sm-6.col-xs-12#width-half
+				.box.box-solid
 					.box-header.with-border
 						h3.box-title Number of Flights 
 							small (per hour)
 						.box-tools.pull-right
+							button.btn.btn-box-tool.infoMovementsChart_open
+								i.fa.fa-info
+								|  Info
+							// Info content
+							#infoMovementsChart
+								.box.box-solid.info
+									+info
+									.box-body
+										p Test test test test. Test test test test. Test test test test. Test test test test. Test test test test. Test test test test. Test test test test. Test test test test. Test test test test. Test test test test. Test test test test. Test test test test. Test test test test. Test test test test. Test test test test. Test test test test. Test test test test. Test test test test.
 							button.btn.btn-box-tool.openCross#crossMovementsChart
 								i.fa.fa-bar-chart
-					.box-body.loading-height-main
-						#movementsChart
+								|  Compare
+							button.btn.btn-box-tool.disabled#resetmovementsTimeChart
+								i.fa.fa-chain-broken
+								|  Reset
+					.box-body.loading-height-tall
+						.no-y-axis-line#movementsChart
 						.no-y-axis#movementsTimeChart
+							// vvvv allows for identifying wether a filter is active or not
+							.reset
 					+loading
 
-			// Total Flights
-			.col-md-4.col-sm-6.col-xs-12
-				.info-box
-					span.info-box-icon.bg-blue
-						i.fa.fa-plane
-					|								 
-					.info-box-content
-						span.info-box-text Total Flights
-						|									 
-						span.info-box-number#flights 
-						+loading
-
-			// Average Delay
-			.col-md-4.col-sm-6.col-xs-12
-				.info-box
-						span.info-box-icon.bg-blue
-							i.fa.fa-clock-o
-						|								 
-						.info-box-content
-							span.info-box-text Mean Delay
-							|									 
-							span.info-box-number
-								#delay 
-								|  minutes
-							+loading
-
-			// Weekday Average Delay
-			.col-md-4.col-sm-12.col-xs-12#4-12-12-width
-				.box.box-primary
+			// Top 10 Airline Average Delay
+			.col-md-6.col-sm-6.col-xs-12
+				.box.box-solid
 					.box-header.with-border
-						h3.box-title Mean Delay 
-							small (min)
+						h3.box-title Airline und oder Destination 
+							small (something)
 						.box-tools.pull-right
-							button.btn.btn-box-tool.openCross#crossWeekdayChart
+							button.btn.btn-box-tool.infoXXXXXX_open
+								i.fa.fa-info
+							// Info content
+							.info.box.box-solid#infoXXXX
+								+info
+								.box-body
+									p Test test test test.
+							button.btn.btn-box-tool.openCross#crossXXXX
 								i.fa.fa-bar-chart
-					.box-body.loading-height-side
-						#weekdayChart
+							button.btn.btn-box-tool.disabled#resetXXXX
+								i.fa.fa-chain-broken
+					.box-body.loading-height-tall
+						#XXXX
+							.reset
 					+loading
 
 		// Time of Day, Delay, and Distance
 		.row
-			// Time of Day
-			.col-md-4.col-sm-4.col-xs-12#4-4-12-width
-				.box.box-primary
+			// Top Destinations
+			.col-md-3.col-sm-3.col-xs-12#width-quarter
+				.box.box-solid
 					.box-header.with-border
-						h3.box-title Time of Day
+						h3.box-title Top Destinations
 						.box-tools.pull-right
-							button.btn.btn-box-tool.openCross#crossTodChart
+							button.btn.btn-box-tool.infoXXX_open
+								i.fa.fa-info
+							// Info content
+							.info.box.box-solid#infoXXXX
+								+info
+								.box-body
+									p Test test test test.
+							button.btn.btn-box-tool.openCross#crossXXXX
 								i.fa.fa-bar-chart
-					.box-body.loading-height-side
-						.no-y-axis#todChart
+							button.btn.btn-box-tool.disabled#resetXXXX
+								i.fa.fa-chain-broken
+					.box-body.loading-height-tall
+						#XXXX
+							.reset
+					+loading
+
+			// Day of Week
+			.col-md-3.col-sm-3.col-xs-12
+				.box.box-solid
+					.box-header.with-border
+						h3.box-title Day of Week
+						.box-tools.pull-right
+							button.btn.btn-box-tool.infoWeekdayChart_open
+								i.fa.fa-info
+							// Info content
+							.info.box.box-solid#infoWeekdayChart
+								+info
+								.box-body
+									p Test test test test.
+							button.btn.btn-box-tool.openCross#crossWeekdayChart
+								i.fa.fa-bar-chart
+							button.btn.btn-box-tool.disabled#resetweekdayChart
+								i.fa.fa-chain-broken
+					.box-body.loading-height-tall
+						#weekdayChart
+							.reset
 					+loading
 
 			// Delay
-			.col-md-4.col-sm-4.col-xs-12
-				.box.box-primary
+			.col-md-6.col-sm-6.col-xs-12
+				.box.box-solid
 					.box-header.with-border
 						h3.box-title Delay Length 
 							small (min)
 						.box-tools.pull-right
+							button.btn.btn-box-tool.infoDelayChart_open
+								i.fa.fa-info
+							// Info content
+							.info.box.box-solid#infoDelayChart
+								+info
+								.box-body
+									p Test test test test.
 							button.btn.btn-box-tool.openCross#crossDelayChart
 								i.fa.fa-bar-chart
-					.box-body.loading-height-side
+							button.btn.btn-box-tool.disabled#resetdelayChart
+								i.fa.fa-chain-broken
+					.box-body.loading-height-short
 						.no-y-axis#delayChart
+							.reset
+					+loading
+
+			// Time of Day
+			.col-md-3.col-sm-3.col-xs-12
+				.box.box-solid
+					.box-header.with-border
+						h3.box-title Time of Day
+						.box-tools.pull-right
+							button.btn.btn-box-tool.infoTodChart_open
+								i.fa.fa-info
+							// Info content
+							.info.box.box-solid#infoTodChart
+								+info
+								.box-body
+									p Test test test test.
+							button.btn.btn-box-tool.openCross#crossTodChart
+								i.fa.fa-bar-chart
+							button.btn.btn-box-tool.disabled#resettodChart
+								i.fa.fa-chain-broken
+					.box-body.loading-height-short
+						.no-y-axis#todChart
+							.reset
 					+loading
 
 			// Distance
-			.col-md-4.col-sm-4.col-xs-12
-				.box.box-primary
+			.col-md-3.col-sm-3.col-xs-12
+				.box.box-solid
 					.box-header.with-border
 						h3.box-title Flight Distance 
 							small (mi.)
 						.box-tools.pull-right
+							button.btn.btn-box-tool.infoDistanceChart_open
+								i.fa.fa-info
+							// Info content
+							.info.box.box-solid#infoDistanceChart
+								+info
+								.box-body
+									p Test test test test.
 							button.btn.btn-box-tool.openCross#crossDistanceChart
 								i.fa.fa-bar-chart
-					.box-body.loading-height-side
+							button.btn.btn-box-tool.disabled#resetdistanceChart
+								i.fa.fa-chain-broken
+					.box-body.loading-height-short
 						.no-y-axis#distanceChart
+							.reset
 					+loading
 
-		// Average Delay by Airline
-		.row
-			.col-xs-12#12-width
-				.box.box-primary
-					.box-header.with-border
-						h3.box-title Average Delay by Airline 
-							small (radius: number of flights, colour: mean delay)
-						.box-tools.pull-right
-							button.btn.btn-box-tool.openCross#crossAirlineDelayChart
-								i.fa.fa-bar-chart
-					.box-body.loading-height-side.no-bottom-padding
-						#airlineDelayChart
-					+loading
+		//- // Average Delay by Airline <------------------- SCATTER PLOT? x: time; y: delay; points flights stacked by airline
+		//- .row
+		//- 	.col-xs-12#width-full
+		//- 		.box.box-solid
+		//- 			.box-header.with-border
+		//- 				h3.box-title Average Delay by Airline 
+		//- 					small (radius: number of flights, colour: mean delay)
+		//- 				.box-tools.pull-right
+		//- 					button.btn.btn-box-tool.infoAirlineDelayChart_open
+		//- 						i.fa.fa-info
+		//- 					// Info content
+		//- 					.info.box.box-solid#infoAirlineDelayChart
+		//- 						+info
+		//- 						.box-body
+		//- 							p Test test test test.
+		//- 					button.btn.btn-box-tool.openCross#crossAirlineDelayChart
+		//- 						i.fa.fa-bar-chart
+		//- 					button.btn.btn-box-tool.disabled#resetairlineDelayChart
+		//- 						i.fa.fa-chain-broken
+		//- 			.box-body.loading-height-short.no-bottom-padding
+		//- 				#airlineDelayChart
+		//- 					.reset
+		//- 			+loading
 
 		// Flight Table (hidden on XS)
 		.row
 			.col-md-12.hidden-xs
-				.box.box-default
+				.box.box-solid
 					.box-header.with-border
 						h3.box-title Latest Flights
 						.box-tools.pull-right
+							button.btn.btn-box-tool.infoFlightsTable_open
+								i.fa.fa-info
+							// Info content
+							.info.box.box-solid#infoFlightsTable
+								+info
+								.box-body
+									p Test test test test.
 							button.btn.btn-box-tool(data-widget="collapse")
 								i.fa.fa-minus
-					.box-body.loading-height-side
+					.box-body.loading-height-short
 						table.table.table-bordered.table-hover#flightsTable
 					+loading
+
+		//- a(href='/data/example.csv') download data
 
 block scripts
 	// Page specific plugins
@@ -165,8 +281,9 @@ block scripts
 	script(src='js/plugins/crossfilter.min.js', type='text/javascript')
 	script(src='js/plugins/dc.min.js', type='text/javascript')
 	script(src='js/plugins/c3.min.js', type='text/javascript')
+	script(src='js/plugins/jquery.popupoverlay.min.js', type='text/javascript')
 	//script(src='js/plugins/jquery-ui.min.js', type='text/javascript')
-
+	
 	// Page specific logic
 	script(src='js/example.js', type='text/javascript')
 	script(src='js/crosscompare.js', type='text/javascript')
@@ -175,3 +292,11 @@ mixin loading
 	// Loading overlay and icon
 	.overlay.loading
 		i.fa.fa-refresh.fa-spin
+
+mixin info
+	// Information tooltip
+	.box-header
+		h3.box-title Info
+		.box-tools.pull-right
+			button.btn.btn-box-tool.info_close
+				i.fa.fa-times

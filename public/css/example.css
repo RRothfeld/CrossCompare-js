@@ -8,19 +8,30 @@
 .table { margin-bottom: 0px; }
 
 /* Style Latest Flights table's head row  */
-.dc-table-head { padding: 5px; background-color: #F3F3F3; }
+.dc-table-head { padding: 5px; background-color: #F5F5F5; }
 
-/* Give main box a height before content is loaded */
-.loading-height-main { min-height: 380px; }
+/* Give boxes a height before content is loaded */
+.loading-height-tall { min-height: 315px; }
+.loading-height-short { min-height: 90px; }
 
-/* Give side boxes a height before content is loaded */
-.loading-height-side { min-height: 170px; }
-
-/* Hide y-axis on all charts with the specified class */
+/* Hide y-axis and tick labels on all charts with the specified class */
 .no-y-axis svg g g.axis.y { display: none; }
+
+/* Hide y-axis and tick lines on all charts with the specified class */
+.no-y-axis-line svg g g.axis.y path { stroke: none; }
+.no-y-axis-line svg g g.axis.y .tick line {  display: none; }
 
 /* Remove whitespace below bubble chart */
 .no-bottom-padding { padding-bottom: 0px;}
 
-/* Reposition reset buttons into box-header */
-.reset { position: absolute; top: 5px; right: 40px; }
+/* Design of tooltip box */
+.info {
+	max-width: 500px;
+	min-width: 300px;
+	margin-bottom: 10px;
+	background-color: #F5F5F5;
+	box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+/* Ensure titlebar button width */
+.btn-box-tool { min-width: 25px; }

@@ -131,7 +131,7 @@ crosscompare.render = function(anchor) {
 			size: { height: this.height },
 			padding: { top: 0, right: 0, bottom: 0, left: 0 },
 			data: { json: cache, keys: { x: 'key', value: [name] }, types: { value: [name] } },
-			zoom: { enabled: true, rescale: true },
+			zoom: { enabled: true },
 		};
 
 		if ( chartType == 'line') {
