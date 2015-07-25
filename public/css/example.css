@@ -6,8 +6,9 @@
 
 /* Reset button dimensions */
 #resetButton { padding: 0px; } /* overwrite bootstraps padding */
+a.btn-block { padding-top: 15px; }
 #resetAll { width: 100%; }
-#resetAll a { height: 45px; }
+#resetAll a { height: 51px; }
 
 /* Reduce space below Latest Flights table */
 .table { margin-bottom: 0px; }
