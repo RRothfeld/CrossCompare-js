@@ -36,16 +36,24 @@ return values that are not the chart.
 **/
 var crosscompare = {
 	height: 200, // default
-	width: 'auto',
+	width: 200, // default
+	width: 'auto', // <----------------------- remove or actually use
 	anchor: '#crosscompare', // default
 	flash: true,
 	chart: {},
-	charts: {}
+	charts: {},
+	queue: []
 };
 
 crosscompare.setHeight = function(height) {
 	if (height >= 0)
 		this.height = height;
+	return this;
+};
+
+crosscompare.setWidth = function(width) {
+	if (width >= 0)
+		this.width = width;
 	return this;
 };
 
@@ -67,23 +75,23 @@ crosscompare.add = function(anchor, chart, type) {
 
 	// render crosscompare chart if anchor clicked
 	$(anchor).on('click', function() {
-		crosscompare.render(anchor);
+		// flashing animation (10 ms -> 700 ms)
+		if (crosscompare.flash)
+			$(chart.anchor()).fadeTo(10, 0.3).fadeTo(700, 1.0);
+
+		crosscompare.cache(chart);
+
+		var number = crosscompare.queue.length;
+		if (number > 1)
+			$('#crosscompareInfoNr').text(number + ' states');
+		else 
+			$('#crosscompareInfoNr').text(number + ' state');
 	});
 
 	return this;
 };
 
-crosscompare.reset = function() {
-	this.chart.rendered.destroy();
-	this.chart = {};
-};
-
-crosscompare.render = function(anchor) {
-
-	// retrieve dc.js chart via its anchor
-	var chart = this.charts[anchor].chart;
-	var chartType = this.charts[anchor].type;
-
+crosscompare.cache = function(chart) {
 	// retrieve filter for naming the categorization
 	//var name = chart.filters();
 	var name = Math.random();
@@ -115,61 +123,78 @@ crosscompare.render = function(anchor) {
 		}
 	});
 
+	this.queue.push({ key: name, datapoints: cache});
+};
 
-	// flashing animation (10 ms -> 700 ms)
-	if (this.flash)
-		$(chart.anchor()).fadeTo(10, 0.3).fadeTo(700, 1.0);
+crosscompare.reset = function() {
+	// this.chart.rendered.destroy();
+	this.chart = {};
+	this.queue = [];
+};
 
-	// if no chart rendered or chart rendered is not the one to be rendered
-	if ($.isEmptyObject(this.chart) || this.chart.source != chart) {
-		
-		// fill active as to signal that a crosscompare has been created
-		this.chart.source = chart;
+crosscompare.render = function(anchor) {
 
-		var options = {
-			bindto: this.anchor,
-			size: { height: this.height },
-			padding: { top: 0, right: 0, bottom: 0, left: 0 },
-			data: { json: cache, keys: { x: 'key', value: [name] }, types: { value: [name] } },
-			zoom: { enabled: true },
-		};
+	$.each(crosscompare.queue, function(i, item) {
 
-		if ( chartType == 'line') {
-			options.axis = { x: { 
-				type: 'timeseries',
-				tick: { format: '%d.', fit: false },
-				// TODO MAKE RESPONSIVE !!!! <-----------------------------------------------------
-				max: new Date(2009,0,1),
-				min: new Date(2008,11,30)
-			} };
-		} else if ( chartType == 'bar') {
-			options.bar = { width: { ratio: 0.5 } };
-			options.data.type = chartType;
-			// Bar chart not always category  <-----------------------------------------------------
-			// only if x is not a number
-			// also if number --> x tick fit: false
-			//options.axis = { x: { type: 'category' } };
+		// retrieve dc.js chart via its anchor
+		var chart = crosscompare.charts[anchor].chart;
+		var chartType = crosscompare.charts[anchor].type;
+
+		var cache = item.datapoints;
+
+		// if no chart rendered or chart rendered is not the one to be rendered
+		if ($.isEmptyObject(crosscompare.chart) || crosscompare.chart.source != chart) {
+			
+			// fill active as to signal that a crosscompare has been created
+			crosscompare.chart.source = chart;
+
+			var options = {
+				bindto: crosscompare.anchor,
+				size: { height: crosscompare.height, width: crosscompare.width },
+				padding: { top: 0, right: 0, bottom: 0, left: 0 },
+				data: { json: cache, keys: { x: 'key', value: [item.key] }, types: { value: [item.key] } },
+				zoom: { enabled: true }
+			};
+
+			if ( chartType == 'line') {
+				options.axis = { x: { 
+					type: 'timeseries',
+					tick: { format: '%d.', fit: false },
+					// TODO MAKE RESPONSIVE !!!! <-----------------------------------------------------
+					max: new Date(2009,0,1),
+					min: new Date(2008,11,30)
+				} };
+			} else if ( chartType == 'bar') {
+				options.bar = { width: { ratio: 0.5 } };
+				options.data.type = chartType;
+				// Bar chart not always category  <-----------------------------------------------------
+				// only if x is not a number
+				// also if number --> x tick fit: false
+				//options.axis = { x: { type: 'category' } };
+			}
+
+			// make available later (see below)
+			crosscompare.chart.rendered = c3.generate(options);
+
+		} else {
+
+			//TODO UPDATE x-axis range <-----------------------------------------------------
+
+			var options = {
+				json: cache,
+				keys: { x: 'key', value: [item.key] }
+			};
+
+			// if line, no change required, otherwise
+			if (chartType != 'line')
+				options.type = chartType;
+
+			// load additional data
+			crosscompare.chart.rendered.load(options);
 		}
 
-		// make available later (see below)
-		this.chart.rendered = c3.generate(options);
+	});
 
-	} else {
-
-		//TODO UPDATE x-axis range <-----------------------------------------------------
-
-		var options = {
-			json: cache,
-			keys: { x: 'key', value: [name] }
-		};
-
-		// if line, no change required, otherwise
-		if (chartType != 'line')
-			options.type = chartType;
-
-		// load additional data
-		this.chart.rendered.load(options);
-	}
 };
 
 // Node.js export

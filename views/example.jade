@@ -7,59 +7,83 @@ block links
 
 	// Page specific styles
 	link(href='css/example.css', rel='stylesheet', type='text/css')
+	link(href='css/crosscompare.css', rel='stylesheet', type='text/css')
 
 block content
+	// CrossCompare
+	#crosscompareInfo
+		| You have added 
+		span#crosscompareInfoNr 1 state
+		| . 
+		.pull-right
+			button.btn.btn-xs.btn-primary.maxCrossCompare_open.closeCross Show Comparison
+			|  
+			button.btn.btn-xs.btn-default.closeCross Close
+
+	#maxCrossCompare
+		.box.box-solid
+			.box-header.with-border
+				h3.box-title CrossCompare
+				.box-tools.pull-right
+					button.btn.btn-box-tool.maxCrossCompare_close.openCross
+						i.fa.fa-minus
+						|  Minimize
+					button.btn.btn-box-tool.maxCrossCompare_close#resetCrossCompare
+						i.fa.fa-times
+						|  Close and reset
+			.box-body
+				#crosscompare
+
 	// Main content
 	section.content
-		// CrossCompare
-		.row
-			.col-xs-12
-				.box.box-danger.hidden
-					.box-header.with-border
-						h3.box-title CrossCompare
-						.box-tools.pull-right
-							button.btn.btn-box-tool#resetCrossCompare
-								i.fa.fa-times
-					.box-body
-						#crosscompare
-
 		// Airport and Compare (Header)
 		.row
-			// Airport Select <---------------------------- ADD AIRLINE SELECT
-			.col-md-6.col-sm-6.col-xs-12
-				h3
-					strong Airport 
-					// AUTOMATE OPTION INSERT ? --> future work (out of scope, requires ARP db)
-					select.form-control#airportSelect
-						option(value='ALL') show all
-						option(value='ATL') Atlanta (ATL)
-						option(value='ORD') Chicago (ORD)
-						option(value='JFK') New York (JFK)
-					|  
-					strong Airline 
-					select.form-control#airportSelect
-						option(value='ALL') show all
-						option(value='ATL') A
-						option(value='ORD') B
-						option(value='JFK') C
-					|  
-					span.pull-right#resetAll
+			// Airport Select
+			.col-md-3.col-sm-3.col-xs-12
+				.box.box-primary
+					.box-body.selection
+						.col-xs-3.text-center Airport 
+						// AUTOMATE OPTION INSERT
+						//future work (out of scope, requires ARP db)
+						strong
+							select.form-control.col-xs-9#airportSelect
+								option(value='ALL') show all
+								option(value='ATL') Atlanta (ATL)
+								option(value='ORD') Chicago (ORD)
+								option(value='JFK') New York (JFK)
 
-			// Total Flights <---------------------------------- make smaller, no picture needed!
-			.col-md-3.col-sm-3.col-xs-6
-				span.info-box-text Total Flights
-				|									 
-				span.info-box-number#flights 
-				+loading
+			// Airline Select
+			.col-md-3.col-sm-3.col-xs-12
+				.box.box-default
+					.box-body.selection
+						.col-xs-3.text-center Airline 
+						strong
+							select.form-control.col-xs-9#airlineSelect
+								option(value='ALL') show all
+								option(value='B6') Jetblue (B6)
+								option(value='CO') CO
+								option(value='DL') Delta (DL)
+
+			// Total Flights
+			.col-md-2.col-sm-2.col-xs-6
+				.box.box-info
+					.box-body.selection
+						#flights 
+					+loading
 
 			// Average Delay
-			.col-md-3.col-sm-3.col-xs-6
-				span.info-box-text Mean Delay
-				|									 
-				span.info-box-number
-					#delay 
-					|  minutes
-				+loading
+			.col-md-2.col-sm-2.col-xs-6
+				.box.box-info
+					.box-body.selection
+						| Mean Delay: 
+						strong#delay 
+						small  (min)
+					+loading
+
+			.col-md-2.col-sm-2.col-xs-6
+				.col-xs-6.pull-right#resetButton
+					.box.box-solid
+						#resetAll
 
 		// Movement, date, and KPIs
 		.row
@@ -78,7 +102,7 @@ block content
 								.box.box-solid.info
 									+info
 									.box-body
-										p Test test test test. Test test test test. Test test test test. Test test test test. Test test test test. Test test test test. Test test test test. Test test test test. Test test test test. Test test test test. Test test test test. Test test test test. Test test test test. Test test test test. Test test test test. Test test test test. Test test test test. Test test test test.
+										p Test test test test. Test test test test.
 							button.btn.btn-box-tool.openCross#crossMovementsChart
 								i.fa.fa-bar-chart
 								|  Compare
@@ -117,25 +141,26 @@ block content
 
 		// Time of Day, Delay, and Distance
 		.row
-			// Top Destinations
+			// Top Airports
 			.col-md-3.col-sm-3.col-xs-12#width-quarter
 				.box.box-solid
 					.box-header.with-border
-						h3.box-title Top Destinations
+						h3.box-title Connections 
+							small (in- and outbound flights)
 						.box-tools.pull-right
-							button.btn.btn-box-tool.infoXXX_open
+							button.btn.btn-box-tool.infoairportsChart_open
 								i.fa.fa-info
 							// Info content
-							.info.box.box-solid#infoXXXX
+							.info.box.box-solid#infoairportsChart
 								+info
 								.box-body
 									p Test test test test.
-							button.btn.btn-box-tool.openCross#crossXXXX
+							button.btn.btn-box-tool.openCross#crossairportsChart
 								i.fa.fa-bar-chart
-							button.btn.btn-box-tool.disabled#resetXXXX
+							button.btn.btn-box-tool.disabled#resetairportsChart
 								i.fa.fa-chain-broken
 					.box-body.loading-height-tall
-						#XXXX
+						#airportsChart
 							.reset
 					+loading
 
@@ -256,24 +281,18 @@ block content
 		// Flight Table (hidden on XS)
 		.row
 			.col-md-12.hidden-xs
-				.box.box-solid
+				.box.box-solid.collapsed-box
 					.box-header.with-border
 						h3.box-title Latest Flights
 						.box-tools.pull-right
-							button.btn.btn-box-tool.infoFlightsTable_open
-								i.fa.fa-info
-							// Info content
-							.info.box.box-solid#infoFlightsTable
-								+info
-								.box-body
-									p Test test test test.
-							button.btn.btn-box-tool(data-widget="collapse")
-								i.fa.fa-minus
+							a.btn.btn-box-tool(href='/data/example.csv')
+								i.fa.fa-download
+								|  Download Data
+							button.btn.btn-box-tool(data-widget='collapse')
+								i.fa.fa-plus
 					.box-body.loading-height-short
 						table.table.table-bordered.table-hover#flightsTable
 					+loading
-
-		//- a(href='/data/example.csv') download data
 
 block scripts
 	// Page specific plugins

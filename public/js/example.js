@@ -10,6 +10,7 @@ var totalAverageDelay = dc.numberDisplay('#delay'),
 		flightsTable = dc.dataTable('#flightsTable'),
 		movementsChart = dc.lineChart('#movementsChart'),
 		movementsTimeChart = dc.barChart('#movementsTimeChart'),
+		airportsChart = dc.rowChart('#airportsChart'),
 		weekdayChart = dc.rowChart('#weekdayChart'),
 		todChart = dc.barChart('#todChart'),
 		delayChart = dc.barChart('#delayChart'),
@@ -44,6 +45,7 @@ d3.csv('/data/MICRO.csv', function(data) {
 	// Define dimensions
 	var airport = flights.dimension(function(d) { return d.Airport; }),
 			date = flights.dimension(function(d) { return d.DateTime; }),
+			scndAirport = flights.dimension(function(d) { return d.Airport2; }),
 			weekday = flights.dimension(function(d) {
 				// Make sunday last (let week begin with Monday)
 				var adjustedNum = (d.DateTime.getDay() == 0) ? 7 : d.DateTime.getDay() ;
@@ -68,6 +70,7 @@ d3.csv('/data/MICRO.csv', function(data) {
 	// 	function() { return 0; }
 	// ),
 	byHour = hour.group(),
+	byScndAirport = scndAirport.group(),
 	byDelay = delay.group(function(d) { return Math.floor(d / 5) * 5; }),
 	byDistance = distance.group(function(d) { return Math.floor(d / 100) * 100; }),
 	byWeekday = weekday.group().reduce(
@@ -106,25 +109,26 @@ d3.csv('/data/MICRO.csv', function(data) {
 	//--------------------------------DC----------------------------------------------------
 
 	// second row height
-	var heightBottom = 100;
+	var heightTall = 300,
+			heightShort = 100;
 
 	// Date range
 	var minDate = d3.time.day(date.bottom(1)[0].DateTime),
 			lastDay = d3.time.day(date.top(1)[0].DateTime),
 	 		maxDate = lastDay.setDate(lastDay.getDate() + 1);
 
-
 	// Non-graph data representation
 	dc.dataCount('#flights')
 	.dimension(flights)
 	.group(all)
-	.html({ some:'%filter-count', all:'%total-count' });
+	.html({ some:'Total Flights: <strong>%filter-count</strong><small>/%total-count</small>',
+		all:'Total Flights: <strong>%filter-count</strong><small> (all)</small>' });
 
 	dc.dataCount('#resetAll')
 	.dimension(flights)
 	.group(all)
-	.html({	some: '<a class=\'btn btn-box-tool btn-app\'><i class=\'fa fa-chain-broken\'></i>Clear all filters</a>',
-		all:'<a class=\'btn btn-box-tool btn-app disabled\'><i class=\'fa fa-chain-broken\'></i>Clear all filters</a>' });
+	.html({	some: '<a class=\'btn btn-default btn-block\'><i class=\'fa fa-chain-broken\'></i> Reset All</a>',
+		all:'<a class=\'btn btn-block btn-default disabled\'><i class=\'fa fa-chain-broken\'></i> Reset All</a>' });
 
 	totalAverageDelay
 	.group(averageDelay)
@@ -159,8 +163,17 @@ d3.csv('/data/MICRO.csv', function(data) {
 	.round(d3.time.day.round)
 	.xAxis().ticks(d3.time.days);
 
+	airportsChart
+	.height(heightTall)
+	.margins({top: 0, right: 25, bottom: 17, left: 5})
+	.dimension(scndAirport)
+	.group(byScndAirport)
+	.elasticX(true)
+	.ordering(function(d) { return -d.value; })
+	.xAxis().ticks(3);
+
 	weekdayChart
-	.height(heightBottom)
+	.height(heightTall)
 	.margins({top: 0, right: 25, bottom: 17, left: 5})
 	.dimension(weekday)
 	.group(byWeekday)
@@ -170,7 +183,7 @@ d3.csv('/data/MICRO.csv', function(data) {
 	.xAxis().ticks(3);
 
 	todChart
-	.height(heightBottom)
+	.height(heightShort)
 	.margins({top: 0, right: 25, bottom: 17, left: 5})
 	.dimension(hour)
 	.group(byHour)
@@ -179,7 +192,7 @@ d3.csv('/data/MICRO.csv', function(data) {
 	.round(dc.round.floor);
 
 	delayChart
-	.height(heightBottom)
+	.height(heightShort)
 	.margins({top: 0, right: 25, bottom: 17, left: 10})
 	.dimension(delay)
 	.group(byDelay)
@@ -189,7 +202,7 @@ d3.csv('/data/MICRO.csv', function(data) {
 	.round(function(n) { return Math.round(n / 5) * 5; });
 	
 	distanceChart
-	.height(heightBottom)
+	.height(heightShort)
 	.margins({top: 0, right: 30, bottom: 17, left: 5})
 	.dimension(distance)
 	.group(byDistance)
@@ -229,6 +242,11 @@ d3.csv('/data/MICRO.csv', function(data) {
 		+ 'Number of Flights: ' + numberFormat(p.value);
 	});
 
+	airportsChart.title(function(p) {
+		return p.key + '\n'
+		+ 'Number of Flights: ' + numberFormat(p.value.n);
+	});
+
 	weekdayChart.title(function(p) {
 		return p.key.split(' ')[1] + '\n'
 		+ 'Mean Delay: ' + precisionFormat(p.value.sumDelay / p.value.n) + ' minutes\n'
@@ -244,16 +262,16 @@ d3.csv('/data/MICRO.csv', function(data) {
 
 	resetableCharts = [
 		movementsTimeChart,
+		airportsChart,
 		weekdayChart,
 		todChart,
 		delayChart,
-		distanceChart,
-		// airlineDelayChart
+		distanceChart
 	];
 
 	// Add reset button handling
 	resetableCharts.forEach(function(chart) {
-		chart.on('filtered', function(chart, filter) { checkReset(chart); });
+		chart.on('preRedraw', function(chart, filter) { checkReset(chart); });
 
 		$('#reset' + chart.anchorName()).click(function() {
 			chart.filterAll();
@@ -262,15 +280,12 @@ d3.csv('/data/MICRO.csv', function(data) {
 	});
 
 	function checkReset(chart) {
-		setTimeout(function() {
 			var chartName = chart.anchorName();
 
 			if ($('#' + chartName).find('.reset').css('display') != 'none')
 				$('#reset' + chartName).removeClass('disabled');
 			else
 				$('#reset' + chartName).addClass('disabled');
-
-		}, 50);// need timeout otherwise check is performed, before reset is inserted
 	};
 
 	flightsTable
@@ -342,6 +357,7 @@ d3.csv('/data/MICRO.csv', function(data) {
 		movementsChart.width(half)
 		//.legend(dc.legend().x(large - 135).y(0).itemHeight(10).gap(10));
 		movementsTimeChart.width(half);
+		airportsChart.width(quarter);
 		weekdayChart.width(quarter);
 		delayChart.width(half);
 		todChart.width(quarter);
@@ -367,6 +383,9 @@ d3.csv('/data/MICRO.csv', function(data) {
 		$('#airportSelect').val('ALL');
 		airport.filterAll();
 
+		$('#airlineSelect').val('ALL');
+		carrier.filterAll();
+
 		dc.redrawAll();
 	});
 
@@ -384,21 +403,29 @@ d3.csv('/data/MICRO.csv', function(data) {
 		dc.redrawAll();
 	});
 
+	// Airline selection menu
+	$('#airlineSelect').on('change', function() {
+		if (this.value == 'ALL') carrier.filterAll();
+		else carrier.filter(this.value);
+
+		dc.redrawAll();
+	});
+
 //-------------------------------CC-----------------------------------------------
 
 	// Example handling for showing/hiding CrossCompare
 	$('.openCross').on('click', function() {
-		$('.box.box-danger').removeClass('hidden');
+		$('#crosscompareInfo').slideDown('fast');
 	});
 
-	$('#resetCrossCompare').on('click', function() {
-		$('.box.box-danger').addClass('hidden');
+	$('.closeCross').on('click', function() {
+		$('#crosscompareInfo').slideUp('fast');
 	});
-
 
 	// CrossCompare specific logic
 	crosscompare
-	.setHeight(300)
+	.setHeight(400)
+	.setWidth(800)
 	.add('#crossMovementsChart', movementsChart, 'line')
 	.add('#crossWeekdayChart', weekdayChart, 'bar')
 	.add('#crossTodChart', todChart, 'bar')
@@ -406,12 +433,22 @@ d3.csv('/data/MICRO.csv', function(data) {
 	.add('#crossDistanceChart', distanceChart, 'bar');
 	//.add('#crossAirlineDelayChart', airlineDelayChart, 'scatter');
 
+	
+
+	$('.maxCrossCompare_open').on('click', function() {
+		crosscompare.render('#crossMovementsChart');
+	});
+
+	$('#maxCrossCompare').popup({ transition: '0.2s all 0.1s' });
+
 	$('#resetCrossCompare').on('click', function() {
 		crosscompare.reset();
 	});
 
-});
 
+
+
+});
 //-------------------------------Overlay-----------------------------------------------
 var infoOptions = {
 	type: 'tooltip',
@@ -423,9 +460,8 @@ var infoOptions = {
 };
 
 $('#infoMovementsChart').popup(infoOptions, { tooltipanchor: $('.infoMovementsChart_open') });
+$('#infoairportsChart').popup(infoOptions, {  tooltipanchor: $('.infoairportsChart_open') });
 $('#infoWeekdayChart').popup(infoOptions, {  tooltipanchor: $('.infoWeekdayChart_open') });
 $('#infoTodChart').popup(infoOptions, { tooltipanchor: $('.infoMovementsChart_open') });
 $('#infoDelayChart').popup(infoOptions, { tooltipanchor: $('.infoMovementsChart_open') });
-$('#infoDistanceChart').popup(infoOptions, { horizontal: 'left', tooltipanchor: $('.infoMovementsChart_open') });
-// $('#infoAirlineDelayChart').popup(infoOptions, { horizontal: 'left', tooltipanchor: $('.infoMovementsChart_open') });
-$('#infoFlightsTable').popup(infoOptions, { horizontal: 'left', tooltipanchor: $('.infoMovementsChart_open') });
+$('#infoDistanceChart').popup(infoOptions, { tooltipanchor: $('.infoMovementsChart_open') });

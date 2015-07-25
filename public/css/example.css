@@ -1,8 +1,13 @@
 /* Change row chart's y-axis' text color */
-.dc-chart g.row text {fill: black;}
+.dc-chart g.row text { fill: black; }
 
-/* Insert gap between Mean Delay and 'minutes' */
-#delay { padding-right: 5px; }
+/**/
+.selection { font-size: 14pt; min-height: 45px; }
+
+/* Reset button dimensions */
+#resetButton { padding: 0px; } /* overwrite bootstraps padding */
+#resetAll { width: 100%; }
+#resetAll a { height: 45px; }
 
 /* Reduce space below Latest Flights table */
 .table { margin-bottom: 0px; }
