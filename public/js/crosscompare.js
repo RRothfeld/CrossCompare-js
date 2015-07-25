@@ -37,9 +37,8 @@ return values that are not the chart.
 var crosscompare = {
 	height: 200, // default
 	width: 200, // default
-	width: 'auto', // <----------------------- remove or actually use
 	anchor: '#crosscompare', // default
-	flash: true,
+	flash: true, // default
 	chart: {},
 	charts: {},
 	queue: []
@@ -82,10 +81,9 @@ crosscompare.add = function(anchor, chart, type) {
 		crosscompare.cache(chart);
 
 		var number = crosscompare.queue.length;
-		if (number > 1)
-			$('#crosscompareInfoNr').text(number + ' states');
-		else 
-			$('#crosscompareInfoNr').text(number + ' state');
+		var text = ' state';
+		if (number > 1)	text += 's';
+		$('#crosscompareInfoNr').text(number + text);
 	});
 
 	return this;

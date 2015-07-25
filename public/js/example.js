@@ -19,7 +19,6 @@ var totalAverageDelay = dc.numberDisplay('#delay'),
 
 // http://colorbrewer2.org/
 var colorRange = ['rgb(165,0,38)','rgb(215,48,39)','rgb(244,109,67)','rgb(253,174,97)','rgb(254,224,139)','rgb(217,239,139)','rgb(166,217,106)','rgb(102,189,99)','rgb(26,152,80)','rgb(0,104,55)'];
-// ['rgb(165,0,38)','rgb(215,48,39)','rgb(244,109,67)','rgb(253,174,97)','rgb(254,224,144)','rgb(224,243,248)','rgb(171,217,233)','rgb(116,173,209)','rgb(69,117,180)','rgb(49,54,149)'];
 
 // Date and number formats
 var dateInFormat = d3.time.format('%d-%m-%Y %H:%M'),
@@ -175,6 +174,7 @@ d3.csv('/data/MICRO.csv', function(data) {
 	.dimension(scatter)
 	.group(byScatter)
 	.symbolSize(6)
+	//.elasticY(true) NOT WORKING
 	.y(d3.scale.linear().domain([-60, 185]))
 	.x(d3.scale.linear().domain([0, 24]))
 	.renderHorizontalGridLines(true);
@@ -402,13 +402,14 @@ d3.csv('/data/MICRO.csv', function(data) {
 		dc.redrawAll();
 	});
 
+	// Colour chooser
 	var colours = false;
 	$('#colourflightDelay').on('click', function() {
 		$(this).find('i').toggle();
 
 		if (!colours) {
 			flightDelay.colors(colorRange)
-			flightDelay.colorDomain([60, 0]) // switched
+			flightDelay.colorDomain([90, 0]) // switched
 			flightDelay.colorAccessor(function (d) { return d.key[1]; })
 			colours = true;
 		} else {
@@ -439,7 +440,7 @@ d3.csv('/data/MICRO.csv', function(data) {
 	.add('#crossTodChart', todChart, 'bar')
 	.add('#crossDelayChart', delayChart, 'bar')
 	.add('#crossDistanceChart', distanceChart, 'bar')
-	.add('#crossflightDelay', flightDelay, 'scatter');	
+	.add('#crossflightDelay', flightDelay, 'scatter');
 
 	$('.maxCrossCompare_open').on('click', function() {
 		crosscompare.render('#crossMovementsChart');
