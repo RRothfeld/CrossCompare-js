@@ -18,7 +18,7 @@ block content
 		.pull-right
 			button.btn.btn-xs.btn-primary.maxCrossCompare_open.closeCross Show Comparison
 			|  
-			button.btn.btn-xs.btn-default.closeCross Close
+			button.btn.btn-xs.btn-default.closeCross.resetCrossCompare Close
 
 	#maxCrossCompare
 		.box.box-solid
@@ -28,9 +28,9 @@ block content
 					button.btn.btn-box-tool.maxCrossCompare_close.openCross
 						i.fa.fa-minus
 						|  Minimize
-					button.btn.btn-box-tool.maxCrossCompare_close#resetCrossCompare
+					button.btn.btn-box-tool.maxCrossCompare_close.resetCrossCompare
 						i.fa.fa-times
-						|  Close and reset
+						|  Close
 			.box-body
 				#crosscompare
 
@@ -80,6 +80,7 @@ block content
 						small  (min)
 					+loading
 
+			// Reset All Button
 			.col-md-2.col-sm-2.col-xs-6
 				.col-xs-6.pull-right#resetButton
 					.box.box-solid
@@ -116,26 +117,30 @@ block content
 							.reset
 					+loading
 
-			// Top 10 Airline Average Delay
+			// Delay Airline Scatter Plot
 			.col-md-6.col-sm-6.col-xs-12
 				.box.box-solid
 					.box-header.with-border
-						h3.box-title Airline und oder Destination 
-							small (something)
+						h3.box-title Delay by Time of Day 
+							small (min)
 						.box-tools.pull-right
-							button.btn.btn-box-tool.infoXXXXXX_open
+							button.btn.btn-box-tool#colourflightDelay
+								i.fa.fa-eye
+								i.fa.fa-eye-slash(style="display: none")
+								|  Colours
+							button.btn.btn-box-tool.infoflightDelay_open
 								i.fa.fa-info
 							// Info content
-							.info.box.box-solid#infoXXXX
+							.info.box.box-solid#infoflightDelay
 								+info
 								.box-body
 									p Test test test test.
-							button.btn.btn-box-tool.openCross#crossXXXX
+							button.btn.btn-box-tool.openCross#crossflightDelay
 								i.fa.fa-bar-chart
-							button.btn.btn-box-tool.disabled#resetXXXX
+							button.btn.btn-box-tool.disabled#resetflightDelay
 								i.fa.fa-chain-broken
 					.box-body.loading-height-tall
-						#XXXX
+						.no-y-axis-line#flightDelay
 							.reset
 					+loading
 
@@ -253,30 +258,6 @@ block content
 						.no-y-axis#distanceChart
 							.reset
 					+loading
-
-		//- // Average Delay by Airline <------------------- SCATTER PLOT? x: time; y: delay; points flights stacked by airline
-		//- .row
-		//- 	.col-xs-12#width-full
-		//- 		.box.box-solid
-		//- 			.box-header.with-border
-		//- 				h3.box-title Average Delay by Airline 
-		//- 					small (radius: number of flights, colour: mean delay)
-		//- 				.box-tools.pull-right
-		//- 					button.btn.btn-box-tool.infoAirlineDelayChart_open
-		//- 						i.fa.fa-info
-		//- 					// Info content
-		//- 					.info.box.box-solid#infoAirlineDelayChart
-		//- 						+info
-		//- 						.box-body
-		//- 							p Test test test test.
-		//- 					button.btn.btn-box-tool.openCross#crossAirlineDelayChart
-		//- 						i.fa.fa-bar-chart
-		//- 					button.btn.btn-box-tool.disabled#resetairlineDelayChart
-		//- 						i.fa.fa-chain-broken
-		//- 			.box-body.loading-height-short.no-bottom-padding
-		//- 				#airlineDelayChart
-		//- 					.reset
-		//- 			+loading
 
 		// Flight Table (hidden on XS)
 		.row
