@@ -81,9 +81,6 @@ crosscompare.cache = function(chart) {
 	// cache the charts underlying data (deep copy)
 	var cache = $.extend(true, [], chart.group().all());
 
-	// IF STACKED (CURRENTLY REMOVED)
-	//console.log(chart.stack());
-
 	$.each(cache, function(i, val) {
 		if (typeof filters !== 'undefined' && // if there is a filter,
 			((filters.length == 1 // check if single filter,

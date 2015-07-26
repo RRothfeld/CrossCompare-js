@@ -60,16 +60,6 @@ d3.csv('/data/MICRO.csv', function(data) {
 	// Define groups (reduce to counts)
 	byDate = date.group(d3.time.day),
 	byDateHour = date.group(d3.time.hour),
-	// byDateInbound = date.group(d3.time.hour).reduce(
-	// 	function(p, v) { if (v.Inbound == 1) p++;	return p; },
-	// 	function(p, v) { if (v.Inbound == 1) p--; return p; },
-	// 	function() { return 0; }
-	// ),
-	// byDateOutbound = date.group(d3.time.hour).reduce(
-	// 	function(p, v) { if (v.Inbound != 1) p++; return p; },
-	// 	function(p, v) { if (v.Inbound != 1) p--; return p; },
-	// 	function() { return 0; }
-	// ),
 	byHour = hour.group(),
 	byScndAirport = scndAirport.group(),
 	byScatter = scatter.group(),
@@ -144,8 +134,6 @@ d3.csv('/data/MICRO.csv', function(data) {
 	.height(250)
 	.margins({top: 5, right: 30, bottom: 20, left: 25})
 	.dimension(date)
-	// .group(byDateInbound, 'Inbound Flights')
-	// .stack(byDateOutbound, 'Outbound Flights')
 	.group(byDateHour)
 	.mouseZoomable(true)
 	.elasticY(true)
