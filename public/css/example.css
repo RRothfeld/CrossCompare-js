@@ -1,7 +1,7 @@
 /* Change row chart's y-axis' text color */
 .dc-chart g.row text { fill: black; }
 
-/**/
+/* Top row boxes */
 .selection { font-size: 14pt; min-height: 45px; }
 
 /* Reset button dimensions */

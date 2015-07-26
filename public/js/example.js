@@ -435,15 +435,15 @@ d3.csv('/data/MICRO.csv', function(data) {
 	crosscompare
 	.setHeight(400)
 	.setWidth(800)
-	.add('#crossMovementsChart', movementsChart, 'line')
-	.add('#crossWeekdayChart', weekdayChart, 'bar')
-	.add('#crossTodChart', todChart, 'bar')
-	.add('#crossDelayChart', delayChart, 'bar')
-	.add('#crossDistanceChart', distanceChart, 'bar')
-	.add('#crossflightDelay', flightDelay, 'scatter');
+	.add(movementsChart, 'line')
+	.add(weekdayChart, 'bar')
+	.add(todChart, 'bar')
+	.add(delayChart, 'bar')
+	.add(distanceChart, 'bar')
+	.add(flightDelay, 'scatter');
 
 	$('.maxCrossCompare_open').on('click', function() {
-		crosscompare.render('#crossMovementsChart');
+		crosscompare.render();
 	});
 
 	$('#maxCrossCompare').popup({ transition: '0.2s all 0.1s' });

@@ -1,39 +1,7 @@
-/*!
- *  dc 2.1.0-dev
- *  http://dc-js.github.io/dc.js/
- *  Copyright 2012-2015 Nick Zhu & the dc.js Developers
- *  https://github.com/dc-js/dc.js/blob/master/AUTHORS
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- */
 
-/**
 
-The entire dc.js library is scoped under the **dc** name space. It does not introduce anything else
-into the global name space.
 
-#### Function Chaining
-Most dc functions are designed to allow function chaining, meaning they return the current chart
-instance whenever it is appropriate. This way chart configuration can be written in the following
-style:
-```js
-chart.width(300)
-    .height(300)
-    .filter('sunday')
-```
-The getter forms of functions do not participate in function chaining because they necessarily
-return values that are not the chart.
-**/
+
 var crosscompare = {
 	height: 200, // default
 	width: 200, // default
@@ -68,7 +36,9 @@ crosscompare.setFlash = function(active) {
 	return this;
 }
 
-crosscompare.add = function(anchor, chart, type) {
+crosscompare.add = function(chart, type) {
+
+	var anchor = chart.anchor() + '-cross';
 	// add chart to charts with given name
 	this.charts[anchor] = { 'chart': chart, 'type': type};
 
@@ -78,12 +48,23 @@ crosscompare.add = function(anchor, chart, type) {
 		if (crosscompare.flash)
 			$(chart.anchor()).fadeTo(10, 0.3).fadeTo(700, 1.0);
 
-		crosscompare.cache(chart);
+		var text = 'You have cached ';
+		if ($.isEmptyObject(crosscompare.chart)) // nothing so far
+			text += '1 state.';
+		else if (crosscompare.chart.source == chart) // added same chart
+			text += (crosscompare.queue.length + 1) + ' states.';
+		else { // added smth else
+			crosscompare.reset();
+			text = 'Overwritten with new state.'
+		}
 
-		var number = crosscompare.queue.length;
-		var text = ' state';
-		if (number > 1)	text += 's';
-		$('#crosscompareInfoNr').text(number + text);
+		// fill active as to signal that a crosscompare has been created
+		crosscompare.chart.source = chart;
+
+		$('#crosscompareInfoTxt').text(text);
+
+		crosscompare.cache(chart);
+		
 	});
 
 	return this;
@@ -115,84 +96,125 @@ crosscompare.cache = function(chart) {
 			delete val.value;
 
 		} else {
-			// in multi-value groups, read out correct value?  <------------------------------------
+			// in multi-value groups, read out correct value?  <----------------------ERROR
 			val[name] = val.value;
 			delete val.value;
 		}
 	});
 
-	this.queue.push({ key: name, datapoints: cache});
+	this.queue.push({ id: name, datapoints: cache});
 };
 
 crosscompare.reset = function() {
-	// this.chart.rendered.destroy();
 	this.chart = {};
 	this.queue = [];
 };
 
-crosscompare.render = function(anchor) {
+crosscompare.render = function() {
+
+	var anchor = this.chart.source.anchor() + '-cross';
+
+	var first = true;
+
+	// retrieve chart type
+	var chartType = crosscompare.charts[anchor].type;
+
+	var globalMin, globalMin;
 
 	$.each(crosscompare.queue, function(i, item) {
 
-		// retrieve dc.js chart via its anchor
-		var chart = crosscompare.charts[anchor].chart;
-		var chartType = crosscompare.charts[anchor].type;
-
 		var cache = item.datapoints;
 
+		var n = cache[0].key,
+				isDate = n instanceof Date,
+				isNumber = !isNaN(parseFloat(n)) && isFinite(n);
+
+		var min, max, axisRange;
+		if (isDate || isNumber) {
+			// find min
+			for (i = 0; i < cache.length; i++) {
+				if (cache[i][item.id] != null) {
+					min = cache[i].key;
+					break;
+				}
+			};
+			// find max
+			for (i = cache.length -1; i >= 0; i--) {
+				if (cache[i][item.id] != null) {
+					max = cache[i].key;
+					break;
+				}
+			};
+
+			if (!first) {
+				min = Math.min(min, globalMin);
+				max = Math.max(max, globalMax);
+			}
+
+			globalMin = min;
+			globalMax = max;
+		}
+
 		// if no chart rendered or chart rendered is not the one to be rendered
-		if ($.isEmptyObject(crosscompare.chart) || crosscompare.chart.source != chart) {
-			
-			// fill active as to signal that a crosscompare has been created
-			crosscompare.chart.source = chart;
+		if (first) {
 
 			var options = {
 				bindto: crosscompare.anchor,
 				size: { height: crosscompare.height, width: crosscompare.width },
 				padding: { top: 0, right: 0, bottom: 0, left: 0 },
-				data: { json: cache, keys: { x: 'key', value: [item.key] }, types: { value: [item.key] } },
+				data: { json: cache, keys: { x: 'key', value: [item.id] }, types: { value: [item.id] } },
 				zoom: { enabled: true }
 			};
 
-			if ( chartType == 'line') {
-				options.axis = { x: { 
-					type: 'timeseries',
-					tick: { format: '%d.', fit: false },
-					// TODO MAKE RESPONSIVE !!!! <-----------------------------------------------------
-					max: new Date(2009,0,1),
-					min: new Date(2008,11,30)
+			if (isDate || isNumber) {
+
+				console.log('isses date?');console.log(isDate);
+				console.log(cache);
+
+				options.axis = { x: {
+					tick: { fit: false },
+					min: globalMin,
+					max: globalMax
 				} };
-			} else if ( chartType == 'bar') {
-				options.bar = { width: { ratio: 0.5 } };
+
+				if (isDate) { // this style otherwise overwriting upper
+					options.axis.x.type = 'timeseries';
+					options.axis.x.tick.format = '%d/%m/%Y';
+				}
+			} else { // Category
+				options.axis = { x: { type: 'category' } };
+			}
+
+			if (chartType != 'line')
 				options.data.type = chartType;
-				// Bar chart not always category  <-----------------------------------------------------
-				// only if x is not a number
-				// also if number --> x tick fit: false
-				//options.axis = { x: { type: 'category' } };
+
+			if (chartType == 'bar') { // <-------------------------- make responsive
+				options.bar = { width: { ratio: 0.2 } };
 			}
 
 			// make available later (see below)
 			crosscompare.chart.rendered = c3.generate(options);
+			first = false;
 
 		} else {
 
-			//TODO UPDATE x-axis range <-----------------------------------------------------
-
 			var options = {
 				json: cache,
-				keys: { x: 'key', value: [item.key] }
+				keys: { x: 'key', value: [item.id] }
 			};
 
 			// if line, no change required, otherwise
 			if (chartType != 'line')
 				options.type = chartType;
 
+			// Update chart range
+			crosscompare.chart.rendered.axis.range({ min: {x: globalMin}, max: {x: globalMax} });
+
 			// load additional data
 			crosscompare.chart.rendered.load(options);
+
 		}
-
 	});
-
 };
 
 // Node.js export
