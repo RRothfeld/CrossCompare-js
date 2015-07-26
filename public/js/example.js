@@ -26,7 +26,6 @@ var dateInFormat = d3.time.format('%d-%m-%Y %H:%M'),
 		numberFormat = d3.format('0,000'),
 		precisionFormat = d3.format('.2f');
 
-
 //--------------------------------Crossfilter-----------------------------------------
 
 // Load data from csv file
@@ -66,9 +65,11 @@ d3.csv('/data/MICRO.csv', function(data) {
 	byDelay = delay.group(function(d) { return Math.floor(d / 5) * 5; }),
 	byDistance = distance.group(function(d) { return Math.floor(d / 100) * 100; }),
 	byWeekday = weekday.group().reduce(
-		function(p, v) { ++p.n; p.sumDelay += Number(v.Delay); return p; },
-		function(p, v) { --p.n; p.sumDelay -= Number(v.Delay); return p; },
-		function() { return { n: 0, sumDelay: 0 }; }
+		function(p, v) { ++p.n; p.sumDelay += Number(v.Delay);
+			p.avgDelay = p.n ? p.sumDelay / p.n : 0; return p; },
+		function(p, v) { --p.n; p.sumDelay -= Number(v.Delay);
+			p.avgDelay = p.n ? p.sumDelay / p.n : 0; return p; },
+		function() { return { n: 0, sumDelay: 0, avgDelay: 0 }; }
 	),
 	byCarrier = carrier.group(),
 	delayByCarrier = carrier.group().reduce(
@@ -102,7 +103,7 @@ d3.csv('/data/MICRO.csv', function(data) {
 
 	// second row height
 	var heightTall = 300,
-			heightShort = 100;
+			heightShort = 107;
 
 	// Date range
 	var minDate = d3.time.day(date.bottom(1)[0].DateTime),
@@ -162,7 +163,6 @@ d3.csv('/data/MICRO.csv', function(data) {
 	.dimension(scatter)
 	.group(byScatter)
 	.symbolSize(6)
-	//.elasticY(true) NOT WORKING
 	.y(d3.scale.linear().domain([-60, 185]))
 	.x(d3.scale.linear().domain([0, 24]))
 	.renderHorizontalGridLines(true);
@@ -183,7 +183,7 @@ d3.csv('/data/MICRO.csv', function(data) {
 	.margins({top: 0, right: 25, bottom: 17, left: 5})
 	.dimension(weekday)
 	.group(byWeekday)
-	.valueAccessor(function(d) { return d.value.n ? d.value.sumDelay / d.value.n : 0; })
+	.valueAccessor(function(d) { return d.value.avgDelay; })
 	.elasticX(true)
 	.label(function (d) { return d.key.split(' ')[1]; })
 	.xAxis().ticks(3);
@@ -231,7 +231,7 @@ d3.csv('/data/MICRO.csv', function(data) {
 
 	weekdayChart.title(function(p) {
 		return p.key.split(' ')[1] + '\n'
-		+ 'Mean Delay: ' + precisionFormat(p.value.sumDelay / p.value.n) + ' minutes\n'
+		+ 'Mean Delay: ' + precisionFormat(p.value.avgDelay) + ' minutes\n'
 		+ 'Number of Flights: ' + numberFormat(p.value.n);
 	});
 
@@ -265,7 +265,7 @@ d3.csv('/data/MICRO.csv', function(data) {
 	};
 
 	flightsTable
-	.size(15)
+	.size(20)
 	.dimension(carrier)
 	.group(function (d) { return d3.time.format('%d %B %Y')(d.DateTime) })
 	.columns([
@@ -331,7 +331,6 @@ d3.csv('/data/MICRO.csv', function(data) {
 		
 		// Set chart widths
 		movementsChart.width(half)
-		//.legend(dc.legend().x(large - 135).y(0).itemHeight(10).gap(10));
 		movementsTimeChart.width(half);
 		flightDelay.width(half);
 		airportsChart.width(quarter);
@@ -339,7 +338,6 @@ d3.csv('/data/MICRO.csv', function(data) {
 		delayChart.width(half);
 		todChart.width(quarter);
 		distanceChart.width(quarter);
-		// airlineDelayChart.width(full);
 
 		// Update all charts
 		dc.renderAll();
@@ -401,7 +399,7 @@ d3.csv('/data/MICRO.csv', function(data) {
 			flightDelay.colorAccessor(function (d) { return d.key[1]; })
 			colours = true;
 		} else {
-			flightDelay.colors(['#1d75b2']); // standard blue
+			flightDelay.colors(d3.scale.category10().range()[0]); // standard blue
 			colours = false;
 		}
 
@@ -423,23 +421,21 @@ d3.csv('/data/MICRO.csv', function(data) {
 	crosscompare
 	.setHeight(500)
 	.setWidth(900)
+	.addLegend('#airportSelect')
+	.addLegend('#airlineSelect')
+	.addLegend(movementsTimeChart)
 	.add(movementsChart, 'line')
-	.add(flightDelay, 'scatter')
 	.add(airportsChart, 'bar')
-	.add(weekdayChart, 'bar', 'n')
+	.add(weekdayChart, 'bar', 'avgDelay')
 	.add(todChart, 'bar')
 	.add(delayChart, 'bar')
 	.add(distanceChart, 'bar');
 
-	$('.maxCrossCompare_open').on('click', function() {
-		crosscompare.render();
-	});
+	$('.maxCrossCompare_open').on('click', function() { crosscompare.render(); });
 
 	$('#maxCrossCompare').popup({ transition: '0.2s all 0.1s' });
 
-	$('.resetCrossCompare').on('click', function() {
-		crosscompare.reset();
-	});
+	$('.resetCrossCompare').on('click', function() { crosscompare.reset(); });
 
 });
 //-------------------------------Overlay-----------------------------------------------

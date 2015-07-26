@@ -13,3 +13,8 @@
 	border-bottom-left-radius: 3px;
 	padding: 10px;
 }
+
+.c3-ygrid-line.zero line {
+	stroke: gray;
+	stroke-width: 1.5;
+}

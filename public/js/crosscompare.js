@@ -3,13 +3,17 @@
 
 
 var crosscompare = {
+	// Settings
 	height: 200, // default
 	width: 200, // default
 	padding: { top: 20, right: 5, bottom: 10, left: 25 }, // default
 	anchor: '#crosscompare', // default
 	xGrid: false, // default
-	yGrid: true, // default
+	yGrid: false, // default
 	flash: true, // default
+	legend: [], // default
+
+	// Operational
 	chart: {},
 	charts: {},
 	queue: []
@@ -54,6 +58,12 @@ crosscompare.setFlash = function(active) {
 	return this;
 }
 
+crosscompare.addLegend = function(legend) {
+	if (typeof legend !== 'undefined')
+		this.legend.push(legend);
+	return this;
+}
+
 crosscompare.add = function(chart, type, value) {
 
 	var anchor = chart.anchor() + '-cross';
@@ -92,13 +102,23 @@ crosscompare.add = function(chart, type, value) {
 crosscompare.cache = function(chart) {
 	// retrieve filter for naming the categorization
 	//var name = chart.filters();
-	var name = Math.random(); //<------------------------------------------------------
+	//<------------------------------------------------------
+	// $.each(this.legend, function(i, dimension) {
+	// 	console.log(dimension.filter());
+	// 	name += dimension.filter() + ' ';
+	// });
+	var name;								// ==
+	if (this.legend.length != 0) { // no legend specified
+		name = '' + (this.queue.length + 1); //<------------------------------------------------------
+	}
 
 		// cache the charts underlying data (deep copy)
 	var cache = $.extend(true, [], chart.group().all());
 
 	// retrieve data filters and filter cache
 	var filters = chart.filters();
+
+	// SCATTER IS NOT BEING FILTERED and x values are false <------------------------
 
 	// give specific value if it's a group and a name for the value has been provided
 	var anchor = chart.anchor() + '-cross';
@@ -113,10 +133,10 @@ crosscompare.cache = function(chart) {
 		if (value != 'default')
 			cache[i].value = cache[i].value[value];
 
-		if (chartType == 'scatter') {
-			cache[i].value = cache[i].key[1];
-			cache[i].key = cache[i].key[0];
-		}
+		// if (chartType == 'scatter') {
+		// 	cache[i].value = cache[i].key[1];
+		// 	cache[i].key = cache[i].key[0];
+		// }
 
 		if (typeof filters !== 'undefined' && filters.length > 0) {
 
@@ -152,12 +172,12 @@ crosscompare.render = function() {
 
 		var anchor = this.chart.source.anchor() + '-cross';
 
-		var first = true;
-
 		// retrieve chart type
 		var chartType = crosscompare.charts[anchor].type;
 
 		var globalMin, globalMin;
+
+		var first = true;
 
 		$.each(crosscompare.queue, function(i, item) {
 
@@ -202,7 +222,7 @@ crosscompare.render = function() {
 					padding: crosscompare.padding,
 					data: { json: cache, keys: { x: 'key', value: [item.id] }, types: { value: [item.id] } },
 					zoom: { enabled: true },
-					color: { pattern: d3.scale.category20().range() }
+					color: { pattern: d3.scale.category10().range() }
 				};
 
 				if (isDate || isNumber) {
@@ -219,7 +239,6 @@ crosscompare.render = function() {
 					}
 				} else { // Category -> overwrites previous axis settings above
 					options.axis = { x: { type: 'category' } };
-					options.data.order = 'desc';
 				}
 
 				if (chartType != 'line')
@@ -229,11 +248,12 @@ crosscompare.render = function() {
 					// Todo in future: responsive, im moment einfach nur guter mittelwert
 					options.bar = { width: { ratio: 0.2 } };
 
-				if (chartType == 'scatter'); //design scatter some more!!!!! <-----------------
-
 				options.grid = {
 					x: { show: crosscompare.xGrid },
-					y: { show: crosscompare.yGrid }
+					y: {
+						show: crosscompare.yGrid,
+						lines: [{value: 0, class: 'zero'}]
+					}
 				}
 
 				// make available later (see below)

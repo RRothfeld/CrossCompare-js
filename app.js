@@ -4,7 +4,6 @@ var app = express();
 var path = require('path');
 var logger = require('morgan');
 // var mongoose = require('mongoose');
-var favicon = require('serve-favicon');
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 	
@@ -24,7 +23,6 @@ app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride('X-HTTP-Method-Override'));
 app.use(express.static(__dirname + '/public'));
-app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 
 // routes
