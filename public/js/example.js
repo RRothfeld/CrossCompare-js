@@ -421,14 +421,15 @@ d3.csv('/data/MICRO.csv', function(data) {
 
 	// CrossCompare specific logic
 	crosscompare
-	.setHeight(400)
-	.setWidth(800)
+	.setHeight(500)
+	.setWidth(900)
 	.add(movementsChart, 'line')
-	.add(weekdayChart, 'bar')
+	.add(flightDelay, 'scatter')
+	.add(airportsChart, 'bar')
+	.add(weekdayChart, 'bar', 'n')
 	.add(todChart, 'bar')
 	.add(delayChart, 'bar')
-	.add(distanceChart, 'bar')
-	.add(flightDelay, 'scatter');
+	.add(distanceChart, 'bar');
 
 	$('.maxCrossCompare_open').on('click', function() {
 		crosscompare.render();
