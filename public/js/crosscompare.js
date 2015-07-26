@@ -5,7 +5,10 @@
 var crosscompare = {
 	height: 200, // default
 	width: 200, // default
+	padding: { top: 20, right: 5, bottom: 10, left: 25 }, // default
 	anchor: '#crosscompare', // default
+	xGrid: false, // default
+	yGrid: true, // default
 	flash: true, // default
 	chart: {},
 	charts: {},
@@ -24,11 +27,26 @@ crosscompare.setWidth = function(width) {
 	return this;
 };
 
+crosscompare.setPadding = function(top, right, bottom, left) {
+	if (typeof top === 'number' && typeof right === 'number' &&
+		typeof bottom === 'number' &&	typeof left === 'number')
+		this.padding = { top: top, right: right, bottom: bottom, left: left};
+	return this;
+}
+
 crosscompare.setAnchor = function(anchor) {
 	if (typeof anchor !== 'undefined' && anchor.length > 0)
 		this.anchor = anchor;
 	return this;
 };
+
+crosscompare.setGrid = function(xGrid, yGrid) {
+	if (typeof xGrid === 'boolean' && typeof yGrid === 'boolean') {
+		this.xGrid = xGrid;
+		this.yGrid = yGrid;
+	}
+	return this;
+}
 
 crosscompare.setFlash = function(active) {
 	if (typeof active === 'boolean')
@@ -85,7 +103,7 @@ crosscompare.cache = function(chart) {
 	// give specific value if it's a group and a name for the value has been provided
 	var anchor = chart.anchor() + '-cross';
 	var value = this.charts[anchor].value;
-
+	var chartType = this.charts[anchor].type;
 
 	// have to go reverse, as deleting elements from array prob in JS
 	var i = cache.length;
@@ -95,11 +113,16 @@ crosscompare.cache = function(chart) {
 		if (value != 'default')
 			cache[i].value = cache[i].value[value];
 
+		if (chartType == 'scatter') {
+			cache[i].value = cache[i].key[1];
+			cache[i].key = cache[i].key[0];
+		}
+
 		if (typeof filters !== 'undefined' && filters.length > 0) {
 
 			if (filters[0].constructor === Array) { // number range as filter
 				if (cache[i].key < filters[0][0] || cache[i].key > filters[0][1]) {
-					cache[i][name] = null;
+					cache[i][name] = null; // cannot delete, else c3 hover is broken
 					delete cache[i].value;
 				}
 			} else { // filters are actual elements
@@ -176,9 +199,10 @@ crosscompare.render = function() {
 				var options = {
 					bindto: crosscompare.anchor,
 					size: { height: crosscompare.height, width: crosscompare.width },
-					padding: { top: 0, right: 0, bottom: 0, left: 0 },
+					padding: crosscompare.padding,
 					data: { json: cache, keys: { x: 'key', value: [item.id] }, types: { value: [item.id] } },
-					zoom: { enabled: true }
+					zoom: { enabled: true },
+					color: { pattern: d3.scale.category20().range() }
 				};
 
 				if (isDate || isNumber) {
@@ -201,8 +225,15 @@ crosscompare.render = function() {
 				if (chartType != 'line')
 					options.data.type = chartType;
 
-				if (chartType == 'bar') { // <-------------------------- make responsive
+				if (chartType == 'bar')
+					// Todo in future: responsive, im moment einfach nur guter mittelwert
 					options.bar = { width: { ratio: 0.2 } };
+
+				if (chartType == 'scatter'); //design scatter some more!!!!! <-----------------
+
+				options.grid = {
+					x: { show: crosscompare.xGrid },
+					y: { show: crosscompare.yGrid }
 				}
 
 				// make available later (see below)
