@@ -30,7 +30,7 @@ var dateInFormat = d3.time.format('%d-%m-%Y %H:%M'),
 
 // Load data from csv file
 //d3.csv('/data/flightsDec08.csv', function(data) {
-d3.csv('/data/MICRO.csv', function(data) {
+d3.csv('/data/example.csv', function(data) {
 
 	// Parse dates and times from .csv
 	data.forEach(function (d) {
@@ -54,7 +54,7 @@ d3.csv('/data/MICRO.csv', function(data) {
 			hour = flights.dimension(function(d) { return d.DateTime.getHours(); }),
 			delay = flights.dimension(function(d) { return Math.max(-60, Math.min(179, d.Delay)); }),
 			distance = flights.dimension(function(d) { return Math.min(d.Distance, 2499); }),
-			carrier = flights.dimension(function(d) { return d.Carrier; });
+			airline = flights.dimension(function(d) { return d.Airline; });
 
 	// Define groups (reduce to counts)
 	byDate = date.group(d3.time.day),
@@ -70,28 +70,6 @@ d3.csv('/data/MICRO.csv', function(data) {
 		function(p, v) { --p.n; p.sumDelay -= Number(v.Delay);
 			p.avgDelay = p.n ? p.sumDelay / p.n : 0; return p; },
 		function() { return { n: 0, sumDelay: 0, avgDelay: 0 }; }
-	),
-	byCarrier = carrier.group(),
-	delayByCarrier = carrier.group().reduce(
-		function(p, v) {
-			++p.n;
-			p.sumDelay += Number(v.Delay);
-			p.sumDistance += Number(v.Distance);
-			return p;
-		},
-		function(p, v) {
-			--p.n;
-			p.sumDelay -= Number(v.Delay);
-			p.sumDistance -= Number(v.Distance);
-			return p;
-		},
-		function() { 
-			return {
-				n: 0,
-				sumDelay: 0,
-				sumDistance: 0
-			};
-		}
 	),
 	averageDelay = flights.groupAll().reduce(
 		function(p, v) { ++p.n; p.sumDelay += Number(v.Delay); return p; },
@@ -162,7 +140,7 @@ d3.csv('/data/MICRO.csv', function(data) {
 	.clipPadding(10)
 	.dimension(scatter)
 	.group(byScatter)
-	.symbolSize(6)
+	.symbolSize(4)
 	.y(d3.scale.linear().domain([-60, 185]))
 	.x(d3.scale.linear().domain([0, 24]))
 	.renderHorizontalGridLines(true);
@@ -173,7 +151,7 @@ d3.csv('/data/MICRO.csv', function(data) {
 	.margins({top: 0, right: 25, bottom: 17, left: 5})
 	.dimension(scndAirport)
 	.group(byScndAirport)
-	.rowsCap(10)
+	.rowsCap(9)
 	.elasticX(true)
 	.ordering(function(d) { return -d.value; })
 	.xAxis().ticks(3);
@@ -266,7 +244,7 @@ d3.csv('/data/MICRO.csv', function(data) {
 
 	flightsTable
 	.size(20)
-	.dimension(carrier)
+	.dimension(airline)
 	.group(function (d) { return d3.time.format('%d %B %Y')(d.DateTime) })
 	.columns([
 		{
@@ -296,7 +274,7 @@ d3.csv('/data/MICRO.csv', function(data) {
 		},
 		{
 			label: 'Airline',
-			format: function (d) { return d.Carrier; }
+			format: function (d) { return d.Airline; }
 		},
 		{
 			label: 'Distance',
@@ -361,7 +339,7 @@ d3.csv('/data/MICRO.csv', function(data) {
 		airport.filterAll();
 
 		$('#airlineSelect').val('ALL');
-		carrier.filterAll();
+		airline.filterAll();
 
 		dc.redrawAll();
 	});
@@ -382,8 +360,8 @@ d3.csv('/data/MICRO.csv', function(data) {
 
 	// Airline selection menu
 	$('#airlineSelect').on('change', function() {
-		if (this.value == 'ALL') carrier.filterAll();
-		else carrier.filter(this.value);
+		if (this.value == 'ALL') airline.filterAll();
+		else airline.filter(this.value);
 
 		dc.redrawAll();
 	});
@@ -420,14 +398,14 @@ d3.csv('/data/MICRO.csv', function(data) {
 	// CrossCompare specific logic
 	crosscompare
 	.setHeight(500)
-	.setWidth(900)
+	.setBarRatio(0.2)
 	.setDateFormat('%d/%m %Hh')
 	.addLegend('#airportSelect')
 	.addLegend('#airlineSelect')
 	.addLegend(movementsTimeChart)
 	.addLegend(airportsChart, 'Airports')
 	.addLegend(delayChart, 'Delay')
-	.add(movementsChart, { yLabel: 'Flights per Hour' })
+	.add(movementsChart, { type: 'area-spline', yLabel: 'Flights per Hour' })
 	.add(airportsChart, { type: 'bar', order: 'desc',
 		yLabel: 'Flights', xLabel: 'Connected Airports' })
 	.add(weekdayChart, { type: 'bar', value: 'avgDelay',
@@ -436,7 +414,10 @@ d3.csv('/data/MICRO.csv', function(data) {
 	.add(delayChart, { type: 'bar', yLabel: 'Flights', xLabel: 'Delay (min)' })
 	.add(distanceChart, { type: 'bar', yLabel: 'Flights', xLabel: 'Distance (miles)' });
 
-	$('.maxCrossCompare_open').on('click', function() { crosscompare.render(); });
+	$('.maxCrossCompare_open').on('click', function() { 
+		var width = $(window).width() * 0.78;
+		crosscompare.setWidth(width).render();
+	});
 
 	$('#maxCrossCompare').popup({ transition: '0.2s all 0.1s' });
 

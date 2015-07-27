@@ -43,21 +43,25 @@ a.btn-block { padding-top: 15px; }
 .btn-box-tool { min-width: 25px; }
 
 /* to avoid deformed div showing initially */
-#maxCrossCompare { display: none; }
+#maxCrossCompare { display: none; width: 80%; }
 
 /* design CC slide in info */
 #crosscompareInfo {
 	color: #FFF;
 	background-color: rgba(0, 0, 0, 0.5);
-	height: 45px;
+
 	position:	fixed;
 	top: 0;
 	z-index: 10000;
 	display: none;
-	width: 26%;
-	margin: 0 0 0 -13%;
+	min-width: 200px;
+	width: 20%;
+	margin: 0 0 0 -11%;
 	left:50%;
 	border-bottom-right-radius: 3px;
 	border-bottom-left-radius: 3px;
 	padding: 10px;
 }
+
+/* darken background */
+.content-wrapper { background-color: #ecf0f5; }

@@ -12,6 +12,11 @@ module.exports = function(app) {
 		res.render('example');
 	});
 
+	// GET example page
+	app.get('/tutorial', function(req, res) {
+		res.render('tutorial');
+	});
+
 	// GET documentation page
 	app.get('/docs', function(req, res) {
 		res.render('docs');

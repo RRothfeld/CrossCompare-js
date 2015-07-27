@@ -1,0 +1,68 @@
+extends layout
+
+block links
+	// Plugin specific styles
+	link(href='css/plugins/dc.css', rel='stylesheet', type='text/css')
+	link(href='css/plugins/c3.min.css', rel='stylesheet', type='text/css')
+
+	// Page specific styles
+	link(href='css/docs.css', rel='stylesheet', type='text/css')
+	link(href='css/tutorial.css', rel='stylesheet', type='text/css')
+
+block content
+	// Main content
+	section.content
+		.container
+			h1 Tutorial
+			p This tutorial will explain each step required to make basic use of crosscompare. Further information on options and available functions can be found in the 
+				a(href='/docs') API reference
+				| .
+
+			// Section
+			h2 Outcome
+
+			.row
+				.col-md-4.col-xs-12#width
+					.box.box-solid
+						.box-header.with-border
+							h3.box-title#crosscompare-info Cache either chart...
+						.box-body
+							#crosscompare
+				.col-md-4.col-xs-12
+					.box.box-solid
+						.box-header.with-border
+							h3.box-title Bar Chart
+						.box-body
+							#bar-chart
+				.col-md-4.col-xs-12
+					.box.box-solid
+						.box-header.with-border
+							h3.box-title Row Chart
+						.box-body
+							#row-chart
+
+			.row
+				.col-md-4.col-xs-12.text-center
+					.col-xs-6
+						a.btn.btn-primary(href='javascript:crosscompare.render();') Render
+					.col-xs-6
+						a.btn.btn-primary(href='javascript:crosscompare.reset();') Reset
+				.col-md-4.col-xs-12.text-center
+					a.btn.btn-primary(href='#width')#bar-chart-cross Cache Bar Chart
+				.col-md-4.col-xs-12.text-center
+					a.btn.btn-primary(href='#width')#row-chart-cross Cache Row Chart
+
+			// Section
+			h2 Instructions
+			p include scripts und stylesheets
+
+block scripts
+	// Page specific plugins
+	script(src='js/plugins/d3.min.js', type='text/javascript')
+	script(src='js/plugins/crossfilter.min.js', type='text/javascript')
+	script(src='js/plugins/dc.min.js', type='text/javascript')
+	script(src='js/plugins/c3.min.js', type='text/javascript')
+	
+	// Page specific logic
+	script(src='js/crosscompare.js', type='text/javascript')
+	script(src='js/tutorial.js', type='text/javascript')

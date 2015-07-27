@@ -11,7 +11,7 @@ block links
 block content
 	// CrossCompare
 	#crosscompareInfo
-		span#crosscompareInfoTxt -
+		span#crosscompare-info -
 		.pull-right
 			button.btn.btn-xs.btn-primary.maxCrossCompare_open.closeCross Show Comparison
 			|  
@@ -57,8 +57,8 @@ block content
 						strong
 							select.form-control.col-xs-9#airlineSelect
 								option(value='ALL') show all
+								option(value='AA') American (AA)
 								option(value='B6') Jetblue (B6)
-								option(value='CO') CO
 								option(value='DL') Delta (DL)
 
 			// Total Flights
@@ -78,7 +78,7 @@ block content
 					+loading
 
 			// Reset All Button
-			.col-md-2.col-sm-2.col-xs-12
+			.col-md-2.col-sm-2.hidden-xs
 				.col-xs-8.pull-right#resetButton
 					.box.box-solid
 						#resetAll
@@ -92,7 +92,7 @@ block content
 						h3.box-title Number of Flights 
 							small (per hour)
 						.box-tools.pull-right
-							button.btn.btn-box-tool.infoMovementsChart_open
+							button.btn.btn-box-tool.infoMovementsChart_open.hidden-xs
 								i.fa.fa-info
 								|  Info
 							// Info content
@@ -125,7 +125,7 @@ block content
 								i.fa.fa-eye
 								i.fa.fa-eye-slash(style="display: none")
 								|  Colours
-							button.btn.btn-box-tool.infoflightDelay_open
+							button.btn.btn-box-tool.infoflightDelay_open.hidden-xs
 								i.fa.fa-info
 							// Info content
 							.info.box.box-solid#infoflightDelay
@@ -150,7 +150,7 @@ block content
 						h3.box-title Connections 
 							small (in- and outbound flights)
 						.box-tools.pull-right
-							button.btn.btn-box-tool.infoairportsChart_open
+							button.btn.btn-box-tool.infoairportsChart_open.hidden-xs
 								i.fa.fa-info
 							// Info content
 							.info.box.box-solid#infoairportsChart
@@ -172,7 +172,7 @@ block content
 					.box-header.with-border
 						h3.box-title Day of Week
 						.box-tools.pull-right
-							button.btn.btn-box-tool.infoWeekdayChart_open
+							button.btn.btn-box-tool.infoWeekdayChart_open.hidden-xs
 								i.fa.fa-info
 							// Info content
 							.info.box.box-solid#infoWeekdayChart
@@ -195,7 +195,7 @@ block content
 						h3.box-title Delay Length 
 							small (min)
 						.box-tools.pull-right
-							button.btn.btn-box-tool.infoDelayChart_open
+							button.btn.btn-box-tool.infoDelayChart_open.hidden-xs
 								i.fa.fa-info
 							// Info content
 							.info.box.box-solid#infoDelayChart
@@ -217,7 +217,7 @@ block content
 					.box-header.with-border
 						h3.box-title Time of Day
 						.box-tools.pull-right
-							button.btn.btn-box-tool.infoTodChart_open
+							button.btn.btn-box-tool.infoTodChart_open.hidden-xs
 								i.fa.fa-info
 							// Info content
 							.info.box.box-solid#infoTodChart
@@ -240,7 +240,7 @@ block content
 						h3.box-title Flight Distance 
 							small (mi.)
 						.box-tools.pull-right
-							button.btn.btn-box-tool.infoDistanceChart_open
+							button.btn.btn-box-tool.infoDistanceChart_open.hidden-xs
 								i.fa.fa-info
 							// Info content
 							.info.box.box-solid#infoDistanceChart
@@ -281,8 +281,8 @@ block scripts
 	script(src='js/plugins/jquery.popupoverlay.min.js', type='text/javascript')
 	
 	// Page specific logic
-	script(src='js/example.js', type='text/javascript')
 	script(src='js/crosscompare.js', type='text/javascript')
+	script(src='js/example.js', type='text/javascript')
 
 mixin loading
 	// Loading overlay and icon

@@ -1,10 +1,317 @@
 extends layout
 
 block links
+	link(href='css/docs.css', rel='stylesheet', type='text/css')
 
 block content
 	// Main content
 	section.content
-		h1 Documentation
+		.container
+			h1 API Reference
+			p All important functions and modifiers, for you to use crosscompare.js, are listed below. Functions required for usage are listed under 
+				a(href='#essentials') Essentials
+				| , while mandatory options and settings can be found further down, under 
+				a(href='#options') Options
+				| .
+			p Function parameters enclosed in square brackets are optional and can be provided to modify certain behaviour. Most functions allow for 
+				strong function chaining 
+				| (i.e. they return the crosscompare instance) and, thus, can be written in the following style:
+			pre crosscompare.setHeight(200)
+				| .setWidth(300)
+				| .add(chart1)
+				| .add(chart2);
+
+			// Section
+			h2#essentials Essentials
+
+			// add
+			.row
+				.container
+					h3#add
+						a(href='#add') # 
+						| crosscompare
+						.breakpoint .
+						strong add
+						| (
+						i chart, [options]
+						| )
+					p type, value, anchor, order, yLabel, xLabel
+						code code
+						| asdasd.
+					//- 'type': 'line','bar' 'area' 'area-spline'
+					//- 'value': 'default',
+					//- 'anchor': chart.anchor() + '-cross',
+					//- 'order': 'default',
+					//- 'yLabel': '',
+					//- 'xLabel': ''
+					pre paymentsByTotal.filter([100, 200]); 
+						comment //comment
+						br
+						| paymentsByTotal.filter(120);
+					p text text or by pressing 
+						kbd ESC
+						|  asdasd.
+
+			// render
+			.row
+				.container
+					h3#render
+						a(href='#render') # 
+						| crosscompare
+						.breakpoint .
+						strong render
+						| ()
+					p Not chainable!
+						code code
+						| asdasd.
+					pre paymentsByTotal.filter([100, 200]); 
+						comment //comment
+						br
+						| paymentsByTotal.filter(120);
+					p text text or by pressing 
+						kbd ESC
+						|  asdasd.
+
+			// reset
+			.row
+				.container
+						h3#reset
+							a(href='#reset') # 
+							| crosscompare
+							.breakpoint .
+							strong reset
+							| ()
+						p Not chainable!
+							code code
+							| asdasd.
+						pre paymentsByTotal.filter([100, 200]); 
+							comment //comment
+							br
+							| paymentsByTotal.filter(120);
+						p text text or by pressing 
+							kbd ESC
+							|  asdasd.										
+
+			// Section
+			h2#options Options
+
+			// addLegend
+			.row
+				.container
+						h3#addLegend
+							a(href='#addLegend') # 
+							| crosscompare
+							.breakpoint .
+							strong addLegend
+							| (
+							i legend, title
+							| )
+						p text text text
+							code code
+							| asdasd.
+						pre paymentsByTotal.filter([100, 200]); 
+							comment //comment
+							br
+							| paymentsByTotal.filter(120);
+						p text text or by pressing 
+							kbd ESC
+							|  asdasd.
+
+			// setHeight
+			.row
+				.container
+						h3#setHeight
+							a(href='#setHeight') # 
+							| crosscompare
+							.breakpoint .
+							strong setHeight
+							| (
+							i integer
+							| )
+						p text text text
+							code code
+							| asdasd.
+						pre paymentsByTotal.filter([100, 200]); 
+							comment //comment
+							br
+							| paymentsByTotal.filter(120);
+						p text text or by pressing 
+							kbd ESC
+							|  asdasd.
+
+			// setWidth
+			.row
+				.container
+						h3#setWidth
+							a(href='#setWidth') # 
+							| crosscompare
+							.breakpoint .
+							strong setWidth
+							| (
+							i integer
+							| )
+						p text text text
+							code code
+							| asdasd.
+						pre paymentsByTotal.filter([100, 200]); 
+							comment //comment
+							br
+							| paymentsByTotal.filter(120);
+						p text text or by pressing 
+							kbd ESC
+							|  asdasd.
+
+			// setPadding
+			.row
+				.container
+						h3#setPadding
+							a(href='#setPadding') # 
+							| crosscompare
+							.breakpoint .
+							strong setPadding
+							| (
+							i top, right, bottom, left
+							| )
+						p text text text
+							code code
+							| asdasd.
+						pre paymentsByTotal.filter([100, 200]); 
+							comment //comment
+							br
+							| paymentsByTotal.filter(120);
+						p text text or by pressing 
+							kbd ESC
+							|  asdasd.
+
+			// setAnchor
+			.row
+				.container
+						h3#setAnchor
+							a(href='#setAnchor') # 
+							| crosscompare
+							.breakpoint .
+							strong setAnchor
+							| (
+							i string
+							| )
+						p text text text
+							code code
+							| asdasd.
+						pre paymentsByTotal.filter([100, 200]); 
+							comment //comment
+							br
+							| paymentsByTotal.filter(120);
+						p text text or by pressing 
+							kbd ESC
+							|  asdasd.
+
+			// setDateFormat
+			.row
+				.container
+						h3#setDateFormat
+							a(href='#setDateFormat') # 
+							| crosscompare
+							.breakpoint .
+							strong setDateFormat
+							| (
+							i string
+							| )
+						p text text text
+							code code
+							| asdasd.
+						pre paymentsByTotal.filter([100, 200]); 
+							comment //comment
+							br
+							| paymentsByTotal.filter(120);
+					.col-xs-12
+						p text text or by pressing 
+							kbd ESC
+							|  asdasd.
+
+			// setOverwrite
+			.row
+				.container
+						h3#setOverwrite
+							a(href='#setOverwrite') # 
+							| crosscompare
+							.breakpoint .
+							strong setOverwrite
+							| (
+							i boolean
+							| )
+						p text text text
+							code code
+							| asdasd.
+						pre paymentsByTotal.filter([100, 200]); 
+							comment //comment
+							br
+							| paymentsByTotal.filter(120);
+						p text text or by pressing 
+							kbd ESC
+							|  asdasd.
+
+			// setGrid
+			.row
+				.container
+						h3#setGrid
+							a(href='#setGrid') # 
+							| crosscompare
+							.breakpoint .
+							strong setGrid
+							| (
+							i boolean, boolean
+							| )
+						p text text text
+							code code
+							| asdasd.
+						pre paymentsByTotal.filter([100, 200]); 
+							comment //comment
+							br
+							| paymentsByTotal.filter(120);
+						p text text or by pressing 
+							kbd ESC
+							|  asdasd.
+
+			// setFlash
+			.row
+				.container
+						h3#setFlash
+							a(href='#setFlash') # 
+							| crosscompare
+							.breakpoint .
+							strong setFlash
+							| (
+							i boolean
+							| )
+						p text text text
+							code code
+							| asdasd.
+						pre paymentsByTotal.filter([100, 200]); 
+							comment //comment
+							br
+							| paymentsByTotal.filter(120);
+						p text text or by pressing 
+							kbd ESC
+							|  asdasd.
+
+			// clear
+			.row
+				.container
+						h3#clear
+							a(href='#clear') # 
+							| crosscompare
+							.breakpoint .
+							strong clear
+							| ()
+						p Not chainable!
+							code code
+							| asdasd.
+						pre paymentsByTotal.filter([100, 200]); 
+							comment //comment
+							br
+							| paymentsByTotal.filter(120);
+						p text text or by pressing 
+							kbd ESC
+							|  asdasd.
 
 block scripts

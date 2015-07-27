@@ -1,0 +1,16 @@
+/* Make comments look more like comments */
+pre comment { color: gray; }
+
+pre { max-width: 750px; }
+
+/* space out API boxes */
+.row { margin-top: 10px; }
+
+/* space out sections */
+h2 { margin-top: 60px; padding-bottom: 2px; border-bottom: 1px solid Gainsboro;}
+
+/* Align paragraphs with code boxes */
+p { padding-left: 3px; padding-right: 3px; }
+
+/* Allow for readable breaking of headers on small screens */
+.breakpoint { display: inline-block;}

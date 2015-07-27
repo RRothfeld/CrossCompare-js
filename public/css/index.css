@@ -29,4 +29,6 @@
 .placeholder {
 	height: 200px;
 	background-color: #aaaaaa;
+	margin-left: 10px;
+	margin-right: 10px;
 }

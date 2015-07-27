@@ -3,19 +3,20 @@
 
 
 var crosscompare = {
-	// Settings
-	height: 200, // default
-	width: 200, // default
-	padding: { top: 20, right: 5, bottom: 10, left: 25 }, // default
-	anchor: '#crosscompare', // default
-	dateFormat: '%d/%m/%Y', // default
-	overwrite: false, // default
-	xGrid: false, // default
-	yGrid: false, // default
-	flash: true, // default
-	legends: [], // default
+	// Setting variables (with default values)
+	height: 200,
+	width: 'auto',
+	padding: { top: 20, right: 5, bottom: 10, left: 25 },
+	barRatio: 0.5,
+	anchor: '#crosscompare',
+	dateFormat: '%d/%m/%Y',
+	overwrite: false,
+	xGrid: false,
+	yGrid: false,
+	flash: true,
+	legends: [],
 
-	// Operational
+	// Operational variables
 	chart: {},
 	charts: {},
 	queue: []
@@ -39,6 +40,12 @@ crosscompare.setPadding = function(top, right, bottom, left) {
 		this.padding = { top: top, right: right, bottom: bottom, left: left};
 	return this;
 }
+
+crosscompare.setBarRatio = function(ratio) {
+	if (ratio >= 0)
+		this.barRatio = ratio;
+	return this;
+};
 
 crosscompare.setAnchor = function(anchor) {
 	if (typeof anchor !== 'undefined' && anchor.length > 0)
@@ -112,14 +119,14 @@ crosscompare.add = function(chart, options) {
 		else if (crosscompare.chart.source == chart) // added same chart
 			text += (crosscompare.queue.length + 1) + ' states.';
 		else { // added smth else
-			crosscompare.reset();
+			crosscompare.clear();
 			text = 'Overwritten with new state.'
 		}
 
 		// fill active as to signal that a crosscompare has been created
 		crosscompare.chart.source = chart;
 
-		$('#crosscompareInfoTxt').text(text);
+		$(crosscompare.anchor + '-info').text(text);
 
 		crosscompare.cache(anchor);
 		
@@ -211,9 +218,18 @@ crosscompare.cache = function(anchor) {
 };
 
 crosscompare.reset = function() {
+	var chart = crosscompare.chart.rendered;
+	if (typeof chart !== 'undefined')
+		chart.destroy();
+
+	crosscompare.clear();
+};
+
+crosscompare.clear = function () {
+	$(crosscompare.anchor + '-info').text('Cache cleared.');
 	this.chart = {};
 	this.queue = [];
-};
+}
 
 crosscompare.render = function() {
 
@@ -281,19 +297,25 @@ crosscompare.render = function() {
 
 				var options = {
 					bindto: crosscompare.anchor,
-					size: { height: crosscompare.height, width: crosscompare.width },
+					size: { height: crosscompare.height },
 					padding: crosscompare.padding,
 					data: { json: cache, keys: { x: 'key', value: [item.id] }, types: { value: [item.id] } },
 					zoom: { enabled: true },
 					color: { pattern: d3.scale.category10().range() }
 				};
 
+				if (crosscompare.legends.length == 0) 
+					options.legend = { show: false };
+
+				if (crosscompare.width != 'auto')
+					options.size.width = crosscompare.width;
+
 				if (isDate || isNumber) {
 
 					options.axis = { x: {
 						tick: { fit: false },
-						min: globalMin,
-						max: globalMax
+						min: Number(globalMin),
+						max: Number(globalMax)
 					} };
 
 					if (isDate) { // this style otherwise overwriting upper
@@ -309,7 +331,7 @@ crosscompare.render = function() {
 
 				if (type == 'bar')
 					// Todo in future: responsive, im moment einfach nur guter mittelwert
-					options.bar = { width: { ratio: 0.2 } };
+					options.bar = { width: { ratio: crosscompare.barRatio } };
 
 				options.grid = {
 					x: { show: crosscompare.xGrid },
@@ -348,7 +370,7 @@ crosscompare.render = function() {
 			}
 		});
 
-	} else return 'No data queued.';
+	} else $(crosscompare.anchor + '-info').text('Nothing cached.');
 };
 
 // Node.js export
