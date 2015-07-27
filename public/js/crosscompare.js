@@ -154,18 +154,17 @@ crosscompare.cache = function(anchor) {
 
 				if (typeof filters !== 'undefined' && filters.length > 0) {
 
-					if (item.title != '')	legend += item.title + ':';
+					if (item.title != '')
+						legend += item.title + ':';
 
 					if (filters[0].constructor === Array) {
 
-						if (filters[0][0] instanceof Date) {
-							legend += '[' + format(filters[0][0]) + ' - ' + format(filters[0][1]) + '] ';
-						} else {
-							legend += '[' + filters[0][0] + ' - ' + filters[0][1] + '] ';
-						}
-					} else {
-						legend += '[' + filters + '] ';
-					}
+						if (filters[0][0] instanceof Date)
+							legend += format(filters[0][0]) + ' - ' + format(filters[0][1]);
+						else
+							legend += filters[0][0] + ' - ' + filters[0][1];
+					} else
+						legend += filters;
 				}			
 			}
 		});

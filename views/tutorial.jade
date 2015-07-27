@@ -16,41 +16,60 @@ block content
 			h1 Tutorial
 			p This tutorial will explain each step required to make basic use of crosscompare. Further information on options and available functions can be found in the 
 				a(href='/docs') API reference
-				| .
+				| . + DC + C3 + D3 + Crossfilter
 
 			// Section
-			h2 Outcome
+			h2 Preview
+			p This will be the outcome of this tutorial. Try it out! Filters can be applied via dragging or selection within these charts. Then press 
+				kbd Add to Cache
+				|  below the respective chart. Change some filter and press the same button again. Repeat if you like. Press 
+				kbd Render
+				|  if you want to see the comparison. You can then continue adding and re-render the comparison.
+			p 
+				i.fa.fa-exclamation-circle
+				| Please be aware that the cache will be reset whenever you try to cache data from different charts.
+			p
+				i.fa.fa-lightbulb-o
+				| You will get the best results by filtering one chart, but caching the other.
 
+			// Preview
 			.row
 				.col-md-4.col-xs-12#width
-					.box.box-solid
-						.box-header.with-border
-							h3.box-title#crosscompare-info Cache either chart...
-						.box-body
-							#crosscompare
-				.col-md-4.col-xs-12
-					.box.box-solid
-						.box-header.with-border
-							h3.box-title Bar Chart
-						.box-body
-							#bar-chart
-				.col-md-4.col-xs-12
-					.box.box-solid
-						.box-header.with-border
-							h3.box-title Row Chart
-						.box-body
-							#row-chart
+					.col-xs-12
+						.box.box-solid
+							.box-header.with-border
+								h3.box-title#crosscompare-info Cache either chart...
+							.box-body
+								#crosscompare
+					.col-xs-12.text-center
+						.col-xs-6
+							a.btn.btn-primary(href='javascript:crosscompare.render();') Render
+							hr.visible-xs
+						.col-xs-6
+							a.btn.btn-primary(href='javascript:crosscompare.reset();') Reset
+							hr.visible-xs
 
-			.row
-				.col-md-4.col-xs-12.text-center
-					.col-xs-6
-						a.btn.btn-primary(href='javascript:crosscompare.render();') Render
-					.col-xs-6
-						a.btn.btn-primary(href='javascript:crosscompare.reset();') Reset
-				.col-md-4.col-xs-12.text-center
-					a.btn.btn-primary(href='#width')#bar-chart-cross Cache Bar Chart
-				.col-md-4.col-xs-12.text-center
-					a.btn.btn-primary(href='#width')#row-chart-cross Cache Row Chart
+				.col-md-4.col-xs-12
+					.col-xs-12
+						.box.box-solid
+							.box-header.with-border
+								h3.box-title Row Chart
+							.box-body
+								#row-chart
+					.col-xs-12.text-center
+						a.btn.btn-primary#row-chart-cross Add to Cache
+						hr.visible-xs
+
+				.col-md-4.col-xs-12
+					.col-xs-12
+						.box.box-solid
+							.box-header.with-border
+								h3.box-title Bar Chart
+							.box-body
+								#bar-chart
+					.col-xs-12.text-center
+						a.btn.btn-primary#bar-chart-cross Add to Cache
+						hr.visible-xs
 
 			// Section
 			h2 Instructions

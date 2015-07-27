@@ -1,48 +1,63 @@
 // Set up crossfilter
 var ndx = crossfilter([
-	{time: "15", type: "tab"},
-	{time: "16", type: "tab"},
-	{time: "16", type: "visa"},
-	{time: "17", type: "tab"},
-	{time: "18", type: "tab"},
-	{time: "18", type: "tab"},
-	{time: "18", type: "cash"},
-	{time: "19", type: "tab"},
-	{time: "20", type: "tab"},
-	{time: "20", type: "tab"},
-	{time: "21", type: "cash"},
-	{time: "21", type: "visa"}
+	{key: 'C', value: '6'},	{key: 'B', value: '5'},
+	{key: 'B', value: '0'},	{key: 'C', value: '3'},
+	{key: 'A', value: '8'},	{key: 'B', value: '6'},
+	{key: 'B', value: '9'},	{key: 'C', value: '6'},
+	{key: 'B', value: '1'},	{key: 'B', value: '9'},
+	{key: 'A', value: '8'},	{key: 'B', value: '2'},
+	{key: 'A', value: '3'},	{key: 'B', value: '8'},
+	{key: 'B', value: '0'},	{key: 'A', value: '5'},
+	{key: 'A', value: '9'},	{key: 'C', value: '3'},
+	{key: 'C', value: '1'},	{key: 'A', value: '5'},
+	{key: 'B', value: '3'},	{key: 'A', value: '2'},
+	{key: 'B', value: '3'},	{key: 'C', value: '2'},
+	{key: 'B', value: '0'},	{key: 'C', value: '2'},
+	{key: 'C', value: '6'},	{key: 'B', value: '7'},
+	{key: 'B', value: '9'},	{key: 'C', value: '4'},
+	{key: 'B', value: '5'},	{key: 'A', value: '6'},
+	{key: 'A', value: '0'},	{key: 'A', value: '6'},
+	{key: 'A', value: '9'},	{key: 'A', value: '7'},
+	{key: 'C', value: '2'},	{key: 'B', value: '8'},
+	{key: 'C', value: '4'},	{key: 'C', value: '3'},
+	{key: 'B', value: '8'},	{key: 'B', value: '2'},
+	{key: 'B', value: '6'},	{key: 'B', value: '1'},
+	{key: 'A', value: '1'},	{key: 'A', value: '6'},
+	{key: 'A', value: '6'},	{key: 'B', value: '4'},
+	{key: 'B', value: '7'},	{key: 'C', value: '7'},
+	{key: 'A', value: '7'},	{key: 'A', value: '7'}
 ]);
 
 // Define dimensions
-var time = ndx.dimension(function(d) { return d.time; }),
-		type = ndx.dimension(function(d) { return d.type; });
+var key = ndx.dimension(function(d) { return d.key; }),
+		value = ndx.dimension(function(d) { return d.value; });
 
 // Define groups
-var timeGroup = time.group(),
-		typeGroup = type.group();
+var keyGroup = key.group(),
+		valueGroup = value.group();
 
 //--------------------------------DC----------------------------------------------------
 
 // Define charts properties
-var timeChart = dc.barChart('#bar-chart'),
-		typeChart = dc.rowChart('#row-chart');
+var keyChart = dc.rowChart('#row-chart'),
+		valueChart = dc.barChart('#bar-chart');
 
-timeChart
-.dimension(time)
-.group(timeGroup)
+keyChart
+.dimension(key)
+.group(keyGroup);
 
-.x(d3.scale.linear().domain([15, 22]));
-
-typeChart
-.dimension(type)
-.group(typeGroup);
+valueChart
+.dimension(value)
+.group(valueGroup)
+.x(d3.scale.linear().domain([0, 10]));
 
 // OPTIONAL
-timeChart.round(dc.round.floor)
+valueChart.round(dc.round.floor)
 var width = $('#width').width();
-timeChart.width(width);
-typeChart.width(width); // für CC nich nötig
+valueChart.width(width);
+keyChart.width(width); // für CC nich nötig
+keyChart.margins({top: 0, right: 35, bottom: 25, left: 5})
+valueChart.margins({top: 5, right: 35, bottom: 25, left: 15})
 
 // Update all charts
 dc.renderAll();
@@ -50,5 +65,9 @@ dc.renderAll();
 //-------------------------------CC-----------------------------------------------
 
 crosscompare
-.add(timeChart)
-.add(typeChart, { type: 'bar', order: 'desc' });
+.add(keyChart, { type: 'bar', order: 'desc' })
+.add(valueChart);
+
+//OPTIONAL
+crosscompare
+.addLegend(keyChart);
