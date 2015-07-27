@@ -313,7 +313,7 @@ crosscompare.render = function() {
 
 				options.grid = {
 					x: { show: crosscompare.xGrid },
-					y: { show: crosscompare.yGrid, lines: [ { value: 0, class: 'zero' } ] }
+					y: { show: crosscompare.yGrid }
 				}
 
 				if (yLabel != '')
