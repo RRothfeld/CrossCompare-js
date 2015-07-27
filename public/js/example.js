@@ -421,15 +421,20 @@ d3.csv('/data/MICRO.csv', function(data) {
 	crosscompare
 	.setHeight(500)
 	.setWidth(900)
+	.setDateFormat('%d/%m %Hh')
 	.addLegend('#airportSelect')
 	.addLegend('#airlineSelect')
 	.addLegend(movementsTimeChart)
-	.add(movementsChart, 'line')
-	.add(airportsChart, 'bar')
-	.add(weekdayChart, 'bar', 'avgDelay')
-	.add(todChart, 'bar')
-	.add(delayChart, 'bar')
-	.add(distanceChart, 'bar');
+	.addLegend(airportsChart, 'Airports')
+	.addLegend(delayChart, 'Delay')
+	.add(movementsChart, { yLabel: 'Flights per Hour' })
+	.add(airportsChart, { type: 'bar', order: 'desc',
+		yLabel: 'Flights', xLabel: 'Connected Airports' })
+	.add(weekdayChart, { type: 'bar', value: 'avgDelay',
+		yLabel: 'Average Delay', xLabel: 'Day of Week' })
+	.add(todChart, { type: 'bar', yLabel: 'Flights', xLabel: 'Time of Day (hour)' })
+	.add(delayChart, { type: 'bar', yLabel: 'Flights', xLabel: 'Delay (min)' })
+	.add(distanceChart, { type: 'bar', yLabel: 'Flights', xLabel: 'Distance (miles)' });
 
 	$('.maxCrossCompare_open').on('click', function() { crosscompare.render(); });
 

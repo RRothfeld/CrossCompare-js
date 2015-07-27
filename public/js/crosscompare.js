@@ -8,10 +8,12 @@ var crosscompare = {
 	width: 200, // default
 	padding: { top: 20, right: 5, bottom: 10, left: 25 }, // default
 	anchor: '#crosscompare', // default
+	dateFormat: '%d/%m/%Y', // default
+	overwrite: false, // default
 	xGrid: false, // default
 	yGrid: false, // default
 	flash: true, // default
-	legend: [], // default
+	legends: [], // default
 
 	// Operational
 	chart: {},
@@ -44,6 +46,18 @@ crosscompare.setAnchor = function(anchor) {
 	return this;
 };
 
+crosscompare.setDateFormat = function(format) {
+	if (typeof format !== 'undefined' && format.length > 0)
+		this.dateFormat = format;
+	return this;
+};
+
+crosscompare.setOverwrite = function(overwrite) {
+	if (typeof overwrite === 'boolean')
+		this.overwrite = overwrite;
+	return this;
+}
+
 crosscompare.setGrid = function(xGrid, yGrid) {
 	if (typeof xGrid === 'boolean' && typeof yGrid === 'boolean') {
 		this.xGrid = xGrid;
@@ -58,18 +72,33 @@ crosscompare.setFlash = function(active) {
 	return this;
 }
 
-crosscompare.addLegend = function(legend) {
+crosscompare.addLegend = function(legend, title) {
 	if (typeof legend !== 'undefined')
-		this.legend.push(legend);
+		this.legends.push({ 'legend': legend, 'title': (title ? title : '') });
 	return this;
 }
 
-crosscompare.add = function(chart, type, value) {
+crosscompare.add = function(chart, options) {
 
-	var anchor = chart.anchor() + '-cross';
-	// add chart to charts with given name
-	this.charts[anchor] = { 'chart': chart, 'type': type };
-	this.charts[anchor].value = (typeof value === 'undefined') ? 'default' : value;
+	// options: type, value, anchor, order, yLabel, xLabel
+	var allOptions = {
+		'chart': chart,
+		'type': 'line',
+		'value': 'default',
+		'anchor': chart.anchor() + '-cross',
+		'order': 'default',
+		'yLabel': '',
+		'xLabel': ''
+	};
+
+	if(typeof options !== 'undefined')
+		$.each(options, function(key, value) {
+			allOptions[key] = value;
+		});
+
+	var anchor = allOptions.anchor;
+
+	this.charts[anchor] = allOptions;
 
 	// render crosscompare chart if anchor clicked
 	$(anchor).on('click', function() {
@@ -92,38 +121,63 @@ crosscompare.add = function(chart, type, value) {
 
 		$('#crosscompareInfoTxt').text(text);
 
-		crosscompare.cache(chart);
+		crosscompare.cache(anchor);
 		
 	});
 
 	return this;
 };
 
-crosscompare.cache = function(chart) {
-	// retrieve filter for naming the categorization
-	//var name = chart.filters();
-	//<------------------------------------------------------
-	// $.each(this.legend, function(i, dimension) {
-	// 	console.log(dimension.filter());
-	// 	name += dimension.filter() + ' ';
-	// });
-	var name;								// ==
-	if (this.legend.length != 0) { // no legend specified
-		name = '' + (this.queue.length + 1); //<------------------------------------------------------
+crosscompare.cache = function(anchor) {
+
+	var legend = '';
+
+	if (this.legends.length == 0) // no legend specified
+		legend += (this.queue.length + 1);
+	else {
+		$.each(this.legends, function(i, item) {
+
+			if (typeof item.legend === 'string') { // string --> legend via html selection
+				if (item.title != '')	legend += item.title + ':';
+				legend += $(item.legend).val() + ' ';
+			} else { // chart --> legend via filter
+
+				var filters = item.legend.filters(),
+						format = d3.time.format(crosscompare.dateFormat)
+
+				if (typeof filters !== 'undefined' && filters.length > 0) {
+
+					if (item.title != '')	legend += item.title + ':';
+
+					if (filters[0].constructor === Array) {
+
+						if (filters[0][0] instanceof Date) {
+							legend += '[' + format(filters[0][0]) + ' - ' + format(filters[0][1]) + '] ';
+						} else {
+							legend += '[' + filters[0][0] + ' - ' + filters[0][1] + '] ';
+						}
+					} else {
+						legend += '[' + filters + '] ';
+					}
+				}			
+			}
+		});
+
+		if (!this.overwrite)
+			$.each(crosscompare.queue, function(key, value) {
+				if (value.id == legend)
+					legend += '(' + (crosscompare.queue.length + 1) + ')';
+			});
 	}
+
+	var chart = this.charts[anchor].chart;
+	var value = this.charts[anchor].value;
 
 		// cache the charts underlying data (deep copy)
 	var cache = $.extend(true, [], chart.group().all());
 
 	// retrieve data filters and filter cache
 	var filters = chart.filters();
-
-	// SCATTER IS NOT BEING FILTERED and x values are false <------------------------
-
-	// give specific value if it's a group and a name for the value has been provided
-	var anchor = chart.anchor() + '-cross';
-	var value = this.charts[anchor].value;
-	var chartType = this.charts[anchor].type;
 
 	// have to go reverse, as deleting elements from array prob in JS
 	var i = cache.length;
@@ -133,16 +187,11 @@ crosscompare.cache = function(chart) {
 		if (value != 'default')
 			cache[i].value = cache[i].value[value];
 
-		// if (chartType == 'scatter') {
-		// 	cache[i].value = cache[i].key[1];
-		// 	cache[i].key = cache[i].key[0];
-		// }
-
 		if (typeof filters !== 'undefined' && filters.length > 0) {
 
 			if (filters[0].constructor === Array) { // number range as filter
 				if (cache[i].key < filters[0][0] || cache[i].key > filters[0][1]) {
-					cache[i][name] = null; // cannot delete, else c3 hover is broken
+					cache[i][legend] = null; // cannot delete, else c3 hover is broken
 					delete cache[i].value;
 				}
 			} else { // filters are actual elements
@@ -154,11 +203,11 @@ crosscompare.cache = function(chart) {
 		}
 
 		// rename as per cat, so c3 can stack values
-		cache[i][name] = cache[i].value;
+		cache[i][legend] = cache[i].value;
 		delete cache[i].value;
 	};
 
-	this.queue.push({ id: name, datapoints: cache});
+	this.queue.push({ 'anchor': anchor, 'id': legend, 'data': cache});
 };
 
 crosscompare.reset = function() {
@@ -170,10 +219,12 @@ crosscompare.render = function() {
 
 	if (this.queue.length > 0) { // if queued data exists
 
-		var anchor = this.chart.source.anchor() + '-cross';
-
 		// retrieve chart type
-		var chartType = crosscompare.charts[anchor].type;
+		var anchor = crosscompare.queue[0].anchor,
+				type = crosscompare.charts[anchor].type,
+				order = crosscompare.charts[anchor].order,
+				yLabel = crosscompare.charts[anchor].yLabel,
+				xLabel = crosscompare.charts[anchor].xLabel;
 
 		var globalMin, globalMin;
 
@@ -181,13 +232,25 @@ crosscompare.render = function() {
 
 		$.each(crosscompare.queue, function(i, item) {
 
-			var cache = item.datapoints;
+			var cache = item.data;
+
+			function sort(key, asc) {
+				cache = cache.sort(function(a, b) {
+					if (asc) return (a[key] > b[key]) ? 1 : ((a[key] < b[key]) ? -1 : 0);
+					else return (b[key] > a[key]) ? 1 : ((b[key] < a[key]) ? -1 : 0);
+				});
+			}
+
+			if (order != 'default') {
+				if (order == 'asc') sort([item.id], true);
+				else sort([item.id], false);
+			}
 
 			var n = cache[0].key,
 					isDate = n instanceof Date,
 					isNumber = !isNaN(parseFloat(n)) && isFinite(n);
 
-			var min, max, axisRange;
+			var min, max;
 			if (isDate || isNumber) {
 				// find min
 				for (i = 0; i < cache.length; i++) {
@@ -235,29 +298,33 @@ crosscompare.render = function() {
 
 					if (isDate) { // this style otherwise overwriting upper
 						options.axis.x.type = 'timeseries';
-						options.axis.x.tick.format = '%d/%m/%Y';
+						options.axis.x.tick.format = crosscompare.dateFormat;
 					}
 				} else { // Category -> overwrites previous axis settings above
 					options.axis = { x: { type: 'category' } };
 				}
 
-				if (chartType != 'line')
-					options.data.type = chartType;
+				if (type != 'line')
+					options.data.type = type;
 
-				if (chartType == 'bar')
+				if (type == 'bar')
 					// Todo in future: responsive, im moment einfach nur guter mittelwert
 					options.bar = { width: { ratio: 0.2 } };
 
 				options.grid = {
 					x: { show: crosscompare.xGrid },
-					y: {
-						show: crosscompare.yGrid,
-						lines: [{value: 0, class: 'zero'}]
-					}
+					y: { show: crosscompare.yGrid, lines: [ { value: 0, class: 'zero' } ] }
 				}
+
+				if (yLabel != '')
+					options.axis.y = { label: yLabel };					
+
+				if (xLabel != '')
+					options.axis.x.label = xLabel; // other format than y axis, otherwise overwrite of x
 
 				// make available later (see below)
 				crosscompare.chart.rendered = c3.generate(options);
+
 				first = false;
 
 			} else {
@@ -268,8 +335,8 @@ crosscompare.render = function() {
 				};
 
 				// if line, no change required, otherwise
-				if (chartType != 'line')
-					options.type = chartType;
+				if (type != 'line')
+					options.type = type;
 
 				if (isDate || isNumber)
 					// Update chart range
@@ -280,6 +347,7 @@ crosscompare.render = function() {
 
 			}
 		});
+
 	} else return 'No data queued.';
 };
 
