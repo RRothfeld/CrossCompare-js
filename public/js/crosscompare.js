@@ -165,9 +165,13 @@ crosscompare.cache = function(anchor) {
 							legend += filters[0][0] + ' - ' + filters[0][1];
 					} else
 						legend += filters;
-				}			
+				}
 			}
 		});
+
+		// Prevent empty legend in case legends have been provided but no filters
+		if (legend == '')
+			legend = 'ALL ';
 
 		if (!this.overwrite)
 			$.each(crosscompare.queue, function(key, value) {
@@ -179,7 +183,7 @@ crosscompare.cache = function(anchor) {
 	var chart = this.charts[anchor].chart;
 	var value = this.charts[anchor].value;
 
-		// cache the charts underlying data (deep copy)
+	// cache the charts underlying data (deep copy)
 	var cache = $.extend(true, [], chart.group().all());
 
 	// retrieve data filters and filter cache
@@ -235,35 +239,33 @@ crosscompare.render = function() {
 	if (this.queue.length > 0) { // if queued data exists
 
 		// retrieve chart type
-		var anchor = crosscompare.queue[0].anchor,
-				type = crosscompare.charts[anchor].type,
-				order = crosscompare.charts[anchor].order,
-				yLabel = crosscompare.charts[anchor].yLabel,
-				xLabel = crosscompare.charts[anchor].xLabel;
+		var anchor = this.queue[0].anchor,
+				type = this.charts[anchor].type,
+				order = this.charts[anchor].order,
+				yLabel = this.charts[anchor].yLabel,
+				xLabel = this.charts[anchor].xLabel;
 
-		var globalMin, globalMin;
+		var globalMin, globalMax;
+		
+		var orderBy = this.queue[0].id, // always sort by first dimension
+				n = this.queue[0].data[0].key,
+				isDate = n instanceof Date,
+				isNumber = !isNaN(parseFloat(n)) && isFinite(n);
 
-		var first = true;
+		var testo = [], typeso = [];
 
-		$.each(crosscompare.queue, function(i, item) {
+		function sort(key, asc) {
+			testo = testo.sort(function(a, b) {
+				if (asc) return (a[key] > b[key]) ? 1 : ((a[key] < b[key]) ? -1 : 0);
+				else return (b[key] > a[key]) ? 1 : ((b[key] < a[key]) ? -1 : 0);
+			});
+		}
+
+		$.each(crosscompare.queue, function(index, item) {
 
 			var cache = item.data;
 
-			function sort(key, asc) {
-				cache = cache.sort(function(a, b) {
-					if (asc) return (a[key] > b[key]) ? 1 : ((a[key] < b[key]) ? -1 : 0);
-					else return (b[key] > a[key]) ? 1 : ((b[key] < a[key]) ? -1 : 0);
-				});
-			}
-
-			if (order != 'default') {
-				if (order == 'asc') sort([item.id], true);
-				else sort([item.id], false);
-			}
-
-			var n = cache[0].key,
-					isDate = n instanceof Date,
-					isNumber = !isNaN(parseFloat(n)) && isFinite(n);
+			typeso.push(item.id);
 
 			var min, max;
 			if (isDate || isNumber) {
@@ -274,6 +276,7 @@ crosscompare.render = function() {
 						break;
 					}
 				};
+
 				// find max
 				for (i = cache.length -1; i >= 0; i--) {
 					if (cache[i][item.id] != null) {
@@ -282,7 +285,8 @@ crosscompare.render = function() {
 					}
 				};
 
-				if (!first) {
+				// if not in first run
+				if (index != 0) {
 					min = Math.min(min, globalMin);
 					max = Math.max(max, globalMax);
 				}
@@ -291,83 +295,68 @@ crosscompare.render = function() {
 				globalMax = max;
 			}
 
-			// if no chart rendered or chart rendered is not the one to be rendered
-			if (first) {
-
-				var options = {
-					bindto: crosscompare.anchor,
-					size: { height: crosscompare.height },
-					padding: crosscompare.padding,
-					data: { json: cache, keys: { x: 'key', value: [item.id] }, types: { value: [item.id] } },
-					zoom: { enabled: true },
-					color: { pattern: d3.scale.category10().range() }
-				};
-
-				if (crosscompare.legends.length == 0) 
-					options.legend = { show: false };
-
-				if (crosscompare.width != 'auto')
-					options.size.width = crosscompare.width;
-
-				if (isDate || isNumber) {
-
-					options.axis = { x: {
-						tick: { fit: false },
-						min: Number(globalMin),
-						max: Number(globalMax)
-					} };
-
-					if (isDate) { // this style otherwise overwriting upper
-						options.axis.x.type = 'timeseries';
-						options.axis.x.tick.format = crosscompare.dateFormat;
-					}
-				} else { // Category -> overwrites previous axis settings above
-					options.axis = { x: { type: 'category' } };
-				}
-
-				if (type != 'line')
-					options.data.type = type;
-
-				if (type == 'bar')
-					// Todo in future: responsive, im moment einfach nur guter mittelwert
-					options.bar = { width: { ratio: crosscompare.barRatio } };
-
-				options.grid = {
-					x: { show: crosscompare.xGrid },
-					y: { show: crosscompare.yGrid }
-				}
-
-				if (yLabel != '')
-					options.axis.y = { label: yLabel };					
-
-				if (xLabel != '')
-					options.axis.x.label = xLabel; // other format than y axis, otherwise overwrite of x
-
-				// make available later (see below)
-				crosscompare.chart.rendered = c3.generate(options);
-
-				first = false;
-
-			} else {
-
-				var options = {
-					json: cache,
-					keys: { x: 'key', value: [item.id] }
-				};
-
-				// if line, no change required, otherwise
-				if (type != 'line')
-					options.type = type;
-
-				if (isDate || isNumber)
-					// Update chart range
-					crosscompare.chart.rendered.axis.range({ min: {x: globalMin}, max: {x: globalMax} });
-
-				// load additional data
-				crosscompare.chart.rendered.load(options);
-
-			}
+			// combine all caches
+			$.extend(true, testo, cache);
 		});
+
+		if (order != 'default') {
+			if (order == 'asc')
+				sort(orderBy, true);
+			else
+				sort(orderBy, false);
+		}
+
+		var options = {
+			bindto: crosscompare.anchor,
+			size: { height: crosscompare.height },
+			padding: crosscompare.padding,
+			data: { json: testo, keys: { x: 'key', value: typeso } }, // CHANGE ALL TO TYPESO
+			zoom: { enabled: true },
+			color: { pattern: d3.scale.category10().range() }
+		};
+
+		if (crosscompare.legends.length == 0) 
+			options.legend = { show: false };
+
+		if (crosscompare.width != 'auto')
+			options.size.width = crosscompare.width;
+
+		if (isDate || isNumber) {
+
+			options.axis = { x: {
+				tick: { fit: false },
+				min: Number(globalMin),
+				max: Number(globalMax)
+			} };
+
+			if (isDate) { // this style otherwise overwriting upper
+				options.axis.x.type = 'timeseries';
+				options.axis.x.tick.format = crosscompare.dateFormat;
+			}
+		} else { // Category -> overwrites previous axis settings above
+			options.axis = { x: { type: 'category' } };
+		}
+
+		if (type != 'line')
+			options.data.type = type;
+
+		if (type == 'bar')
+			// Todo in future: responsive, im moment einfach nur guter mittelwert
+			options.bar = { width: { ratio: crosscompare.barRatio } };
+
+		options.grid = {
+			x: { show: crosscompare.xGrid },
+			y: { show: crosscompare.yGrid }
+		}
+
+		if (yLabel != '')
+			options.axis.y = { label: yLabel };					
+
+		if (xLabel != '')
+			options.axis.x.label = xLabel; // other format than y axis, otherwise overwrite of x
+
+		// make available later (see below)
+		crosscompare.chart.rendered = c3.generate(options);
 
 	} else $(crosscompare.anchor + '-info').text('Nothing cached.');
 };

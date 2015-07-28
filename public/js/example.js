@@ -405,7 +405,7 @@ d3.csv('/data/example.csv', function(data) {
 	.addLegend(movementsTimeChart)
 	.addLegend(airportsChart, 'Airports')
 	.addLegend(delayChart, 'Delay')
-	.add(movementsChart, { type: 'area-spline', yLabel: 'Flights per Hour' })
+	.add(movementsChart, { type: 'area', yLabel: 'Flights per Hour' })
 	.add(airportsChart, { type: 'bar', order: 'desc',
 		yLabel: 'Flights', xLabel: 'Connected Airports' })
 	.add(weekdayChart, { type: 'bar', value: 'avgDelay',
