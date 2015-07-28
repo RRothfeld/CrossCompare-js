@@ -1,5 +1,5 @@
-/* provide empty box */
+/* Provide empty box */
 #crosscompare { min-height: 205px; }
 
-/* reduce separation between box and button */
+/* Reduce separation between box and button */
 .box { margin-bottom: 10px; }

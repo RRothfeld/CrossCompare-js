@@ -42,10 +42,10 @@ a.btn-block { padding-top: 15px; }
 /* Ensure titlebar button width */
 .btn-box-tool { min-width: 25px; }
 
-/* to avoid deformed div showing initially */
+/* Avoid deformed div showing initially */
 #maxCrossCompare { display: none; width: 80%; }
 
-/* design CC slide in info */
+/* Design CC slide in info */
 #crosscompareInfo {
 	color: #FFF;
 	background-color: rgba(0, 0, 0, 0.5);
@@ -63,5 +63,5 @@ a.btn-block { padding-top: 15px; }
 	padding: 10px;
 }
 
-/* darken background */
+/* Darken background */
 .content-wrapper { background-color: #ecf0f5; }

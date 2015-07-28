@@ -202,7 +202,7 @@ block content
 
 		// Crosscompare
 		.row: .container
-			h3 3. Setting up Crosscompare
+			h3 4. Setting up Crosscompare
 			p Below the 
 				code div
 				| -containers, add four links which will be used to control the behaviour of crosscompare. One link to activate crosscompare's 
@@ -220,7 +220,7 @@ block content
 				|     &lt;a href='#' id='row-chart-cross'&gt;Cache Row Chart&lt;/a&gt;&lt;/br&gt;
 				|     &lt;a href='#' id='bar-chart-cross'&gt;Cache Bar Chart&lt;/a&gt;&lt;/br&gt;
 				| 
-				|     &lt;h2 id='crosscompare-info'&gt;&lt;/h2&gt;
+				|     &lt;h2 id='crosscompare-info'&gt;-&lt;/h2&gt;
 
 			p Finally, define the charts that should be comparable via crosscompare. Add the following within our page specific 
 				code script
@@ -230,9 +230,9 @@ block content
 			pre
 				comment   // Register the dc.js charts with crosscompare
 				br
-				|  crosscompare
-				|  .add(keyChart, { type: 'bar', order: 'desc' })
-				|  .add(valueChart);
+				|   crosscompare
+				|   .add(keyChart, { type: 'bar', order: 'desc' })
+				|   .add(valueChart);
 			p 
 			strong That's it! 
 			| Open the HTML file in a browser and start comparing!
@@ -243,7 +243,7 @@ block scripts
 	script(src='js/plugins/crossfilter.min.js', type='text/javascript')
 	script(src='js/plugins/dc.min.js', type='text/javascript')
 	script(src='js/plugins/c3.min.js', type='text/javascript')
+	script(src='js/crosscompare.js', type='text/javascript')
 	
 	// Page specific logic
-	script(src='js/crosscompare.js', type='text/javascript')
 	script(src='js/tutorial.js', type='text/javascript')

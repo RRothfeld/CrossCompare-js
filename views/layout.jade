@@ -2,7 +2,7 @@ doctype html
 html
 	head
 		meta(charset='UTF-8')
-		title CrossCompare.js · Easy, graphical Crossfilter comparison
+		title CrossCompare.js · Quick chart comparison
 		meta(content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no', name='viewport')
 
 		// Favicon
@@ -38,42 +38,41 @@ html
 			script(src='js/plugins/html5shiv.min.js', type='text/javascript')
 			script(src='js/plugins/respond.min.js', type='text/javascript')
 
-	body.layout-top-nav
-		.wrapper
-			header.main-header
-				nav.navbar.navbar-static-top
-					.navbar-header
-						a.navbar-brand(href='/')
-							b CrossCompare
-							| .js
-						button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#navbar-collapse', aria-controls='#navbar-collapse')
-							i.fa.fa-bars
-					// Navbar Left Menu
-					nav.navbar-collapse.pull-left.collapse#navbar-collapse
-						ul.nav.navbar-nav
-							li
-								a(href='/example') Example
-							li
-								a(href='/tutorial') Tutorial
-							li
-								a(href='/docs') API Reference
-							li
-								a(href='#footer') Contact
-
-			.content-wrapper
-				block content
+	// Page body
+	body.layout-top-nav: .wrapper
+		header.main-header
+			nav.navbar.navbar-static-top
+				// Logo
+				.navbar-header
+					a.navbar-brand(href='/')
+						b CrossCompare
+						| .js
+					button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#navbar-collapse', aria-controls='#navbar-collapse')
+						i.fa.fa-bars
+				// Navbar
+				nav.navbar-collapse.pull-left.collapse#navbar-collapse
+					ul.nav.navbar-nav
+						li
+							a(href='/example') Example
+						li
+							a(href='/tutorial') Tutorial
+						li
+							a(href='/docs') API Reference
+						li
+							a(href='#footer') Contact
+			// Page content
+			.content-wrapper: block content
 
 		// Footer
-		footer.main-footer#footer
-			.container
-				| Fork, clone, or help at  
-				a(href='https://github.com/RRothfeld/CrossCompare-js') CrossCompare-js
-				| . Under   
-				a(href='https://github.com/RRothfeld/CrossCompare-js/blob/c3-compare/LICENSE', target="_blank") MIT License
+		footer.main-footer#footer: .container
+			| Fork, clone, or help at  
+			a(href='https://github.com/RRothfeld/CrossCompare-js', target='_blank') CrossCompare-js
+			| . Under   
+			a(href='https://github.com/RRothfeld/CrossCompare-js/blob/master/LICENSE', target='_blank') MIT License
+			| .
+			.pull-right.hidden-xs Reach me via 
+				a(href='http://twitter.com/RRothfeld', target='_blank') @RRothfeld
 				| .
-				.pull-right.hidden-xs Reach me via 
-					a(href='http://twitter.com/RRothfeld') @RRothfeld
-					| .
 
 		// Scripts
 		script(src='js/plugins/jquery-2.1.4.min.js', type='text/javascript')

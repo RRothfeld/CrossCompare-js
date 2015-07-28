@@ -1,16 +1,19 @@
 extends layout
 
 block links
+	// Plugin specific styles
+	link(href='css/plugins/c3.min.css', rel='stylesheet', type='text/css')
+
+	// Page specific styles
 	link(href='css/index.css', rel='stylesheet', type='text/css')
+	link(href='css/docs.css', rel='stylesheet', type='text/css')
 
 block content
 	// Content Header (Page header)
-	.header-img
-		.container
-			h1 
-				strong CrossCompare.js
-			hr.header-line
-			h3 Easy comparison charting using crossfilter, dc.js, and c3.js
+	.header-img: .container
+		h1: strong CrossCompare.js
+		hr.header-line
+		h3 JavaScript library for quick dc.js chart comparison
 
 	// Main content
 	section.content
@@ -18,38 +21,72 @@ block content
 		.container.first
 			.col-md-1.col-sm-1.hidden-xs
 			.col-md-6.col-sm-6.col-xs-12.text-right
-				h2 marketable air traffic dashboard
-				p test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test 
+				h2 Quick chart comparison
+				p CrossCompare is a JavaScript library for quickly comparing charts built using 
+					a(href='https://dc-js.github.io/dc.js/') dc.js
+					| . Bundled with 
+					a(href='http://square.github.io/crossfilter/') crossfilter
+					| , dc.js provides fantastic in-browser dimenional filtering and charting. CrossCompare now adds the ability to quickly compare different filter states in a separate chart.
+				a.btn.btn-primary(href='download/crosscompare.zip') Download v1.0
 			.col-md-4.col-sm-4.hidden-xs
-				img(src="").placeholder.img-responsive
+				#first.img.img-responsive
 			.col-md-1.col-sm-1.hidden-xs
 
 		// Seperator
-		.row
-			hr.body-line
+		.row: hr.body-line
 
 		// Versatile
 		.container
 			.col-md-1.col-sm-1.hidden-xs
 			.col-md-4.col-sm-4.hidden-xs
-				img(src="").placeholder.img-responsive
+				#second.img.img-responsive
 			.col-md-6.col-sm-6.col-xs-12
-				h2 Versatile
-				p test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test 
+				h2 Advancing dashboarding
+				p CrossCompare started as a Master of Science project for Software Development at the 
+					a(href='http://www.gla.ac.uk/schools/computing/', target='_blank') University of Glasgow
+					| . This project is meant to evaluate the marketablility of open-source, web-based dashboard tools and seeks to advance its status quo.
+				a.btn.btn-default(href='download/Rothfeld2015.pdf', target='_blank') View paper
 			.col-md-1.col-sm-1.hidden-xs
 
 		// Seperator
-		.row
-			hr.body-line
+		.row: hr.body-line
 
 		// Open-source
 		.container.last
 			.col-md-1.col-sm-1.hidden-xs
 			.col-md-6.col-sm-6.col-xs-12.text-right
-				h2 Open-source
-				p test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test 
+				h2 Open-source 
+					i.fa.fa-heart
+				p You can find all code for CrossCompare and this whole website on Github - for you to utilise, explore, enhance, or give feedback. Special thank's to the authors of 
+					a(href='https://jquery.com/', target='_blank') jQuery
+					| , 
+					a(href='http://d3js.org/', target='_blank') d3.js
+					| , 
+					a(href='http://square.github.io/crossfilter/', target='_blank') crossfilter
+					| , 
+					a(href='https://dc-js.github.io/dc.js/', target='_blank') dc.js
+					| , 
+					a(href='http://c3js.org/', target='_blank') c3.js
+					| , 
+					a(href='https://almsaeedstudio.com/AdminLTE', target='_blank') AdminLTE
+					| , 
+					a(href='http://getbootstrap.com/', target='_blank') bootstrap
+					| ,  
+					a(href='https://github.com/cferdinandi/smooth-scroll', target='_blank') smoothscroll
+					| , and 
+					a(href='http://dev.vast.com/jquery-popup-overlay/', target='_blank') popup overlay
+					| !
+				a.btn.btn-default(href='https://github.com/RRothfeld/CrossCompare-js', target='_blank') 
+					i.fa.fa-github
+					|  View repository
 			.col-md-4.col-sm-4.hidden-xs
-				img(src="").placeholder.img-responsive
+				#third.img.img-responsive
 			.col-md-1.col-sm-1.hidden-xs
 
 block scripts
+	// Page specific plugins
+	script(src='js/plugins/d3.min.js', type='text/javascript')
+	script(src='js/plugins/c3.min.js', type='text/javascript')
+
+	// Page specific logic
+	script(src='js/index.js', type='text/javascript')

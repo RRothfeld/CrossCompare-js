@@ -36,12 +36,11 @@ var key = ndx.dimension(function(d) { return d.key; }),
 var keyGroup = key.group(),
 		valueGroup = value.group();
 
-//--------------------------------DC----------------------------------------------------
-
 // Define charts properties
 var keyChart = dc.rowChart('#row-chart'),
 		valueChart = dc.barChart('#bar-chart');
 
+// Define charts
 keyChart
 .dimension(key)
 .group(keyGroup);
@@ -62,8 +61,7 @@ valueChart.margins({top: 5, right: 35, bottom: 25, left: 15})
 // Update all charts
 dc.renderAll();
 
-//-------------------------------CC-----------------------------------------------
-
+// Setup crosscompare
 crosscompare
 .add(keyChart, { type: 'bar', order: 'desc' })
 .add(valueChart);
