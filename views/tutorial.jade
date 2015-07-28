@@ -11,69 +11,231 @@ block links
 
 block content
 	// Main content
-	section.content
-		.container
-			h1 Tutorial
-			p This tutorial will explain each step required to make basic use of crosscompare. Further information on options and available functions can be found in the 
-				a(href='/docs') API reference
-				| . + DC + C3 + D3 + Crossfilter
+	section.content: .container
+		// Page Heading
+		h1 Tutorial
+		p This tutorial will explain each step required to make basic use of crosscompare. Further information on options and available functions can be found in the 
+			a(href='/docs') API reference
+			| . A more in-depth use case can be found as the 
+			a(href='/example') air traffic delay example
+			| .
 
-			// Section
-			h2 Preview
-			p This will be the outcome of this tutorial. Try it out! Filters can be applied via dragging or selection within these charts. Then press 
-				kbd Add to Cache
-				|  below the respective chart. Change some filter and press the same button again. Repeat if you like. Press 
-				kbd Render
-				|  if you want to see the comparison. You can then continue adding and re-render the comparison.
+		// Section Heading
+		h2 Preview
+		p This will be the outcome of this tutorial. Try it out! Filters can be applied via dragging or selection within these charts. Then press 
+			kbd Add to Cache
+			|  below the respective chart. Change some filter and press the same button again. Repeat if you like. Press 
+			kbd Render
+			|  if you want to see the comparison. You can then continue adding and re-render the comparison.
+		p 
+			i.fa.fa-exclamation-circle
+			| Please be aware that the cache will be reset whenever you try to cache data from different charts.
+		p
+			i.fa.fa-lightbulb-o
+			| You will get the best results by filtering one chart, but caching the other.
+
+		// Preview
+		.row
+			.col-md-4.col-xs-12#width
+				.col-xs-12
+					.box.box-solid
+						.box-header.with-border
+							h3.box-title#crosscompare-info Cache either chart...
+						.box-body
+							#crosscompare
+				.col-xs-12.text-center
+					.col-xs-6
+						a.btn.btn-primary(href='javascript:crosscompare.render();') Render
+						hr.visible-xs
+					.col-xs-6
+						a.btn.btn-primary(href='javascript:crosscompare.reset();') Reset
+						hr.visible-xs
+
+			.col-md-4.col-xs-12
+				.col-xs-12
+					.box.box-solid
+						.box-header.with-border
+							h3.box-title Row Chart
+						.box-body
+							#row-chart
+				.col-xs-12.text-center
+					a.btn.btn-primary#row-chart-cross Add to Cache
+					hr.visible-xs
+
+			.col-md-4.col-xs-12
+				.col-xs-12
+					.box.box-solid
+						.box-header.with-border
+							h3.box-title Bar Chart
+						.box-body
+							#bar-chart
+				.col-xs-12.text-center
+					a.btn.btn-primary#bar-chart-cross Add to Cache
+					hr.visible-xs
+
+		// Section Heading
+		h2 Instructions
+		p For your convenience you can download all necessary files and the end result bundled here: 
+			a(href='download/tutorial.zip') download tutorial bundle
+			| .
+
+		// Framework
+		.row: .container
+			h3 1. Establishing the framework
+			p Use an existing or create a new HTML page and include the .js-files of 
+				a(href='https://dc-js.github.io/dc.js/') dc.js
+				| ,  
+				a(href='http://square.github.io/crossfilter/') crossfilter
+				| , 
+				a(href='http://c3js.org/') c3.js
+				| ,  
+				a(href='http://d3js.org/') d3.js
+				| , and 
+				a(href='https://jquery.com/') jQuery
+				| ; by downloading and extracting them into the same folder, where the HTML file is stored. crosscompare.js itself must also be included and can be downloaded 
+				a(href='/') here
+				| . Also include dc.js' and c3.js' own .css-files. Within the 
+				code body
+				| , create three 
+				code div
+				| -containers (two containers for the dc-charts, one container for the comparison chart). Additionally, give each of the 
+				code div
+				| -containers a unique id (e.g. 
+				hi '#crosscompare'
+				|  for the comparison chart, and 
+				hi '#row-chart'
+				|  and 
+				hi '#bar-chart'
+				|  for the dc-charts). For clarity, let each container be preceded by a heading. Now, the page could look something like this:
+			pre
+				| &lt;!DOCTYPE html&gt;
+				| &lt;html&gt;
+				|   &lt;link href="dc.css" rel="stylesheet" type="text/css"&gt;
+				|   &lt;link href="c3.css" rel="stylesheet" type="text/css"&gt;
+				|   &lt;body&gt;
+				| 
+				|     &lt;h1&gt;Comparison Chart&lt;/h1&gt;
+				|     &lt;div id="crosscompare"&gt;&lt;/div&gt;
+				| 
+				|     &lt;h1&gt;Row Chart&lt;/h1&gt;
+				|     &lt;div id="row-chart"&gt;Row Chart&lt;/div&gt;
+				| 
+				|     &lt;h1&gt;Bar Chart&lt;/h1&gt;
+				|     &lt;div id="bar-chart"&gt;Bar Chart&lt;/div&gt;
+				| 
+				|     &lt;script src="jquery-2.1.4.min.js" type="text/javascript"&gt;&lt;/script&gt;
+				|     &lt;script src="d3.js" type="text/javascript"&gt;&lt;/script&gt;
+				|     &lt;script src="crossfilter.js" type="text/javascript"&gt;&lt;/script&gt;
+				|     &lt;script src="dc.js" type="text/javascript"&gt;&lt;/script&gt;
+				|     &lt;script src="c3.js" type="text/javascript"&gt;&lt;/script&gt;
+				|     &lt;script src="crosscompare.js" type="text/javascript"&gt;&lt;/script&gt;
+				|   &lt;/body&gt;
+				| &lt;/html&gt;
+
+		// Crossfilter
+		.row: .container
+			h3 2. Setting up Crossfilter
+			p Create a new 
+				code script
+				|  section below the included .js-files. This is where the page-specific logic will be placed. Create a crossfilter instance and pass it some sample data (excerpt shown below, download full sample 
+				a(href='data/tutorial.txt') here
+				| ). From the sample data, create two dimensions and two groups (for the samlpe data's keys and values repectively).
+			pre
+				| &lt;script type="text/javascript"&gt;
+				br
+				comment   // Set up crossfilter
+				br
+				|   var ndx = crossfilter([
+				|     {key: 'C', value: '6'},	{key: 'B', value: '5'},
+				|     {key: 'B', value: '0'},	{key: 'C', value: '3'},
+				br
+				comment     // ... more sample data via link above
+				br
+				|     {key: 'B', value: '7'},	{key: 'C', value: '7'},
+				|     {key: 'A', value: '7'},	{key: 'A', value: '7'}
+				|   ]);
+				| 
+				br
+				comment   // Define dimensions
+				br
+				|   var key = ndx.dimension(function(d) { return d.key; }),
+				|       value = ndx.dimension(function(d) { return d.value; });
+				| 
+				br
+				comment   // Define groups
+				br
+				|   var keyGroup = key.group(),
+				|       valueGroup = value.group();
+				| &lt;/script&gt;
+
+		// DC
+		.row: .container
+			h3 3. Setting up dc.js
+			p Create, define, and render dc.js charts via adding the following within the page specific 
+				code script
+				|  section below the code for crossfilter.
+			pre
+				comment   // Create dc.js charts
+				br
+				|   var keyChart = dc.rowChart('#row-chart'),
+				|       valueChart = dc.barChart('#bar-chart');
+				| 
+				br
+				comment   // Define each chart's dimension and group
+				br
+				|   keyChart
+				|   .dimension(key)
+				|   .group(keyGroup);
+				|   
+				|   valueChart
+				|   .dimension(value)
+				|   .group(valueGroup)
+				br
+				comment   // A bar chart additionally requires x-axis settings
+				br
+				|   .x(d3.scale.linear().domain([0, 10]));
+				|   
+				br
+				comment   // Render and display charts
+				br  
+				|   dc.renderAll();
+
+		// Crosscompare
+		.row: .container
+			h3 3. Setting up Crosscompare
+			p Below the 
+				code div
+				| -containers, add four links which will be used to control the behaviour of crosscompare. One link to activate crosscompare's 
+				code .render()
+				|  function, one to 
+				code .reset()
+				|  crosscompare, and one link for each dc.js chart to cache them (i.e. take a snapshot of their current data and filters). For the latter, crosscompare listens to the dc.js chart's anchors with 
+				hi '-cross'
+				|  appended (by default). Additonally, to be displayed information messages from crosscompare, add another heading below the links with the id 
+				hi 'crosscompare-info'
+				|  (by default).
+			pre
+				|     &lt;a href='javascript:crosscompare.render();'&gt;Render&lt;/a&gt;&lt;/br&gt;
+				|     &lt;a href='javascript:crosscompare.reset();'&gt;Reset&lt;/a&gt;&lt;/br&gt;
+				|     &lt;a href='#' id='row-chart-cross'&gt;Cache Row Chart&lt;/a&gt;&lt;/br&gt;
+				|     &lt;a href='#' id='bar-chart-cross'&gt;Cache Bar Chart&lt;/a&gt;&lt;/br&gt;
+				| 
+				|     &lt;h2 id='crosscompare-info'&gt;&lt;/h2&gt;
+
+			p Finally, define the charts that should be comparable via crosscompare. Add the following within our page specific 
+				code script
+				|  section below the code for dc.js. When compared, the keyChart should be represented using a bar chart and should be sorted in descending order. These settings are being provided in the 
+				code .add() 
+				|  function, together with the according chart. The valueChart should be represented using a line chart (which is the default), so no additional options have to be provided.
+			pre
+				comment   // Register the dc.js charts with crosscompare
+				br
+				|  crosscompare
+				|  .add(keyChart, { type: 'bar', order: 'desc' })
+				|  .add(valueChart);
 			p 
-				i.fa.fa-exclamation-circle
-				| Please be aware that the cache will be reset whenever you try to cache data from different charts.
-			p
-				i.fa.fa-lightbulb-o
-				| You will get the best results by filtering one chart, but caching the other.
-
-			// Preview
-			.row
-				.col-md-4.col-xs-12#width
-					.col-xs-12
-						.box.box-solid
-							.box-header.with-border
-								h3.box-title#crosscompare-info Cache either chart...
-							.box-body
-								#crosscompare
-					.col-xs-12.text-center
-						.col-xs-6
-							a.btn.btn-primary(href='javascript:crosscompare.render();') Render
-							hr.visible-xs
-						.col-xs-6
-							a.btn.btn-primary(href='javascript:crosscompare.reset();') Reset
-							hr.visible-xs
-
-				.col-md-4.col-xs-12
-					.col-xs-12
-						.box.box-solid
-							.box-header.with-border
-								h3.box-title Row Chart
-							.box-body
-								#row-chart
-					.col-xs-12.text-center
-						a.btn.btn-primary#row-chart-cross Add to Cache
-						hr.visible-xs
-
-				.col-md-4.col-xs-12
-					.col-xs-12
-						.box.box-solid
-							.box-header.with-border
-								h3.box-title Bar Chart
-							.box-body
-								#bar-chart
-					.col-xs-12.text-center
-						a.btn.btn-primary#bar-chart-cross Add to Cache
-						hr.visible-xs
-
-			// Section
-			h2 Instructions
-			p include scripts und stylesheets
+			strong That's it! 
+			| Open the HTML file in a browser and start comparing!
 
 block scripts
 	// Page specific plugins

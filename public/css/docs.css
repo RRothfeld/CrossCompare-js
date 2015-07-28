@@ -1,5 +1,11 @@
+/* Justify text blocks */
+p { text-align: justify; }
+
 /* Make comments look more like comments */
 pre comment { color: gray; }
+
+/* Highlight design */
+hi { color: Teal;}
 
 /* restrict content width */
 .container { max-width: 900px; }

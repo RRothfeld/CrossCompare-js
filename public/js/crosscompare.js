@@ -1,5 +1,8 @@
 
-
+/*!
+ *  Font Awesome 4.3.0 by @davegandy - http://fontawesome.io - @fontawesome
+ *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)
+ */
 
 
 var crosscompare = {
@@ -7,7 +10,6 @@ var crosscompare = {
 	height: 200,
 	width: 'auto',
 	padding: { top: 20, right: 5, bottom: 10, left: 25 },
-	barRatio: 0.5,
 	anchor: '#crosscompare',
 	dateFormat: '%d/%m/%Y',
 	overwrite: false,
@@ -29,7 +31,7 @@ crosscompare.setHeight = function(height) {
 };
 
 crosscompare.setWidth = function(width) {
-	if (width >= 0)
+	if (width >= 0 || width == 'auto')
 		this.width = width;
 	return this;
 };
@@ -40,12 +42,6 @@ crosscompare.setPadding = function(top, right, bottom, left) {
 		this.padding = { top: top, right: right, bottom: bottom, left: left};
 	return this;
 }
-
-crosscompare.setBarRatio = function(ratio) {
-	if (ratio >= 0)
-		this.barRatio = ratio;
-	return this;
-};
 
 crosscompare.setAnchor = function(anchor) {
 	if (typeof anchor !== 'undefined' && anchor.length > 0)
@@ -91,6 +87,7 @@ crosscompare.add = function(chart, options) {
 	var allOptions = {
 		'chart': chart,
 		'type': 'line',
+		'ratio': 0.5,
 		'value': 'default',
 		'anchor': chart.anchor() + '-cross',
 		'order': 'default',
@@ -164,7 +161,7 @@ crosscompare.cache = function(anchor) {
 						else
 							legend += filters[0][0] + ' - ' + filters[0][1];
 					} else
-						legend += filters;
+						legend += filters + ' ';
 				}
 			}
 		});
@@ -236,6 +233,14 @@ crosscompare.clear = function () {
 
 crosscompare.render = function() {
 
+	// http://stackoverflow.com/questions/881510/sorting-json-by-values
+	function sort(array, key, asc) {
+		array = array.sort(function(a, b) {
+			if (asc) return (a[key] > b[key]) ? 1 : ((a[key] < b[key]) ? -1 : 0);
+			else return (b[key] > a[key]) ? 1 : ((b[key] < a[key]) ? -1 : 0);
+		});
+	}
+
 	if (this.queue.length > 0) { // if queued data exists
 
 		// retrieve chart type
@@ -253,13 +258,6 @@ crosscompare.render = function() {
 				isNumber = !isNaN(parseFloat(n)) && isFinite(n);
 
 		var testo = [], typeso = [];
-
-		function sort(key, asc) {
-			testo = testo.sort(function(a, b) {
-				if (asc) return (a[key] > b[key]) ? 1 : ((a[key] < b[key]) ? -1 : 0);
-				else return (b[key] > a[key]) ? 1 : ((b[key] < a[key]) ? -1 : 0);
-			});
-		}
 
 		$.each(crosscompare.queue, function(index, item) {
 
@@ -301,9 +299,9 @@ crosscompare.render = function() {
 
 		if (order != 'default') {
 			if (order == 'asc')
-				sort(orderBy, true);
+				sort(testo, orderBy, true);
 			else
-				sort(orderBy, false);
+				sort(testo, orderBy, false);
 		}
 
 		var options = {
@@ -341,8 +339,7 @@ crosscompare.render = function() {
 			options.data.type = type;
 
 		if (type == 'bar')
-			// Todo in future: responsive, im moment einfach nur guter mittelwert
-			options.bar = { width: { ratio: crosscompare.barRatio } };
+			options.bar = { width: { ratio: this.charts[anchor].ratio } };
 
 		options.grid = {
 			x: { show: crosscompare.xGrid },

@@ -5,314 +5,344 @@ block links
 
 block content
 	// Main content
-	section.content
-		.container
-			h1 API Reference
-			p All important functions and modifiers, for you to use crosscompare.js, are listed below. Functions required for usage are listed under 
-				a(href='#essentials') Essentials
-				| , while mandatory options and settings can be found further down, under 
-				a(href='#options') Options
+	section.content: .container
+		// Page Heading
+		h1 API Reference
+		p 
+			| All important functions and modifiers, for you to use crosscompare.js, are listed below. Functions required for usage are listed under 
+			a(href='#essentials') Essentials
+			| , while mandatory options and settings can be found further down, under 
+			a(href='#options') Options
+			| . Function parameters enclosed in square brackets are optional and can be provided to modify certain behaviour.
+		p 
+			strong Function chaining. 
+			| Most functions allow them being chained together (i.e. they return the crosscompare instance) and, thus, can be written in the following style (line breaks are optional):
+		pre crosscompare.setHeight(200)
+			| .setWidth(300)
+			| .add(chart1)
+			| .add(chart2);
+		p 
+			strong Further APIs. 
+			| Crosscompare is based upon the JavaScript libraries 
+			a(href='https://dc-js.github.io/dc.js/') dc.js
+			|  and 
+			a(href='http://square.github.io/crossfilter/') crossfilter
+			| , which together form the powerful basis for visually filtering and presenting data. Crosscompare uses the 
+			a(href='http://c3js.org/') c3.js
+			|  library for its charts, which - just as dc.js - is built using 
+			a(href='http://d3js.org/') d3.js
+			| . Multiple of those libraries, as well as crosscompare itself, further rely on 
+			a(href='https://jquery.com/') jQuery
+			| . Options, values, and functionality of crosscompare is mostly similar to the underlying libraries. It can, thus, be helpful to look at the respectve APIs for further detail.
+
+		// Section Heading
+		h2#essentials Essentials
+
+		// Function .add()
+		.row: .container
+			h3#add
+				a(href='#add') # 
+				| crosscompare
+				.breakpoint .
+				strong add
+				| (
+				i chart, [options]
+				| )
+			p Via the 
+				code .add()
+				|  function is used to register a dc.js chart with crosscompare for later use. Currently, crosscompare has been defined to work with the following dc.js charts: 
+				code rowChart, pieChart, barChart, lineChart
+				| . More dc-chart types may be working, as crosscompare mainly relies on the charts' 
+				code .group()
+				|  and 
+				code .filter()
+				|  functions, but those have not been tested.
+				p Optionally, certain style settings for rendering a comparison of the provided chart can be defined in form of a JavaScript/JSON object. The following settings can be defined: 
+				ul
+					li
+						code anchor:
+						|  Defines the id of the link/button on which to cache this chart. Default is the dc-chart's anchor with 
+						hi '-cross'
+						|  appended (e.g. if a dc-chart's anchor is 
+						hi '#my-chart'
+						| , crosscompare will by default react upon a click on an element with id 
+						hi '#my-chart-cross'
+						| ). Via the anchor option, one can provide an alternate id for caching the chart.
+					li
+						code type:
+						|  Defines what kind of c3.js chart should be produced to show that chart's comparison. The default chart type is 
+						hi 'line'
+						| . Currently, the following c3-chart types are supported:
+						hi 'line', 'line-spline', 'area', 'bar'
+						| .
+					li
+						code ratio:
+						|  Only applicable if chart type has been set to 
+						hi 'bar'
+						| . Defines the relative width of the single bars within the crosscompare bar chart. Default value is 
+						hi 0.5
+						| . Alternatives can range between 
+						hi 0 - 1
+						| .
+					li 
+						code value:
+						|  Only applicable if the dc-chart's crossfilter group has multiple values (i.e. custom reduce functions). In case there are multiple values to be found, this option must be used to define the 
+						hi 'name'
+						|  of the key whose values shall be used.
+					li 
+						code order:
+						|  Defines if and what ordering should be applied to cached data. Default is 
+						hi 'default'
+						| and does not alter the order. Alternatively, 
+						hi 'asc'
+						|  or 
+						hi 'desc'
+						|  can be used.
+					li 
+						code xLabel, yLabel:
+						|  Defines a label to be displayed at the respective axis. Default is no label.
+			pre
+				comment // Add three dc-charts (which where defined previously)
+				br
+				| crosscompare.add(myChart)
+				| .add(otherChart, {type: 'bar', ratio: 0.2, order: 'asc', yLavel: 'y-axis'}) 
+				| .add(anotherChart, {anchor: '#link', value: 'sum'});
+
+		// Function .render()
+		.row: .container
+			h3#render
+				a(href='#render') # 
+				| crosscompare
+				.breakpoint .
+				strong render
+				| ()
+			p This function is 
+				strong not chainable
+				| . Upon this function, cached data is being rendered into one comparison graph, displayed within the HTML element with id 
+				hi '#crosscompare'
+				|  (if no other anchor defined via 
+				code .setAnchor()
+				| ).
+			pre
+				comment &lt;!-- Using a link to render crosscompare --&gt;
+				br
+				| &lt;a href='javascript:crosscompare.render();'&gt;Render&lt;/a&gt;
+
+		// Function .reset()
+		.row: .container
+			h3#reset
+				a(href='#reset') # 
+				| crosscompare
+				.breakpoint .
+				strong reset
+				| ()
+			p This function is 
+				strong not chainable
+				| . Upon this function, cached data is being cleared, crosscompare info text is being cleared and the comparison graph is being removed. To only clear crosscompare's cache, but not remove the current comparison graph, use 
+				code .clear()
 				| .
-			p Function parameters enclosed in square brackets are optional and can be provided to modify certain behaviour. Most functions allow for 
-				strong function chaining 
-				| (i.e. they return the crosscompare instance) and, thus, can be written in the following style:
-			pre crosscompare.setHeight(200)
-				| .setWidth(300)
-				| .add(chart1)
-				| .add(chart2);
-			p DC + C3 + D3 + Crossfilter APIs
+			pre
+				comment &lt;!-- Using a link to reset crosscompare --&gt;
+				br
+				| &lt;a href='javascript:crosscompare.reset();'&gt;Reset&lt;/a&gt;
 
-			// Section
-			h2#essentials Essentials
+		// Section Heading
+		h2#options Options
 
-			// add
-			.row
-				.container
-					h3#add
-						a(href='#add') # 
-						| crosscompare
-						.breakpoint .
-						strong add
-						| (
-						i chart, [options]
-						| )
-					p type, value, anchor, order, yLabel, xLabel
-						code code
-						| asdasd.
-					//- 'type': 'line','bar' 'area' 'area-spline'
-					//- 'value': 'default',
-					//- 'anchor': chart.anchor() + '-cross',
-					//- 'order': 'default',
-					//- 'yLabel': '',
-					//- 'xLabel': ''
-					pre paymentsByTotal.filter([100, 200]); 
-						comment //comment
-						br
-						| paymentsByTotal.filter(120);
-					p text text or by pressing 
-						kbd ESC
-						|  asdasd.
+		// Function .addLegend()
+		.row: .container
+			h3#addLegend
+				a(href='#addLegend') # 
+				| crosscompare
+				.breakpoint .
+				strong addLegend
+				| (
+				i legend, [title]
+				| )
+			p Whenever a dc-chart is cached for later comparison, that snapshot of the crossfilter data is being named to destinguish that cache from others. Without any defined legends, crosscompare will not show a legend on the comparison chart. To show and define a legend, this function can be used to pass an id of a HTML selection element or a dc-chart. The legend within the comparison chart will then be labeled according to the values of the selection(s) and/or filters of the chart(s). Additionaly, a title can be provided which will be shown prepended to the legend element.
+			pre
+				comment // Adding a HTML selection element and a graph to crosscompare
+				br
+				| crosscompare.addLegend('#my-selection')
+				| .addLegend(myChart, 'Age');
+			p Assuming the selection 
+				hi '#my-selection'
+				|  had the value 
+				hi 'Men'
+				|  at the time of caching, and the graph was filtered to ages 
+				hi 18
+				|  to 
+				hi 65
+				| , then 
+				hi Men Age:18-65
+				|  would be shown as the label for that cache. The order of adding the labels to crosscompare, defines the order in which they will be printed within the comparison chart.
 
-			// render
-			.row
-				.container
-					h3#render
-						a(href='#render') # 
-						| crosscompare
-						.breakpoint .
-						strong render
-						| ()
-					p Not chainable!
-						code code
-						| asdasd.
-					pre paymentsByTotal.filter([100, 200]); 
-						comment //comment
-						br
-						| paymentsByTotal.filter(120);
-					p text text or by pressing 
-						kbd ESC
-						|  asdasd.
+		// Function .setHeight()
+		.row: .container
+			h3#setHeight
+				a(href='#setHeight') # 
+				| crosscompare
+				.breakpoint .
+				strong setHeight
+				| (
+				i integer
+				| )
+			p Defines the height of the comparison chart. Default height is 
+				hi 200px
+				| . Any positive integer can be defined as height. Regardless of default or alternate value, a height must always be defined.
+			pre
+				comment // Set height of comparison chart to 300px
+				br
+				| crosscompare.setHeight(300);
 
-			// reset
-			.row
-				.container
-						h3#reset
-							a(href='#reset') # 
-							| crosscompare
-							.breakpoint .
-							strong reset
-							| ()
-						p Not chainable!
-							code code
-							| asdasd.
-						pre paymentsByTotal.filter([100, 200]); 
-							comment //comment
-							br
-							| paymentsByTotal.filter(120);
-						p text text or by pressing 
-							kbd ESC
-							|  asdasd.										
+		// Function .setWidth()
+		.row: .container
+			h3#setWidth
+				a(href='#setWidth') # 
+				| crosscompare
+				.breakpoint .
+				strong setWidth
+				| (
+				i integer
+				| )
+			p Defines the width of the comparison chart. Default width is 
+				hi 'auto'
+				| , which automatically scales the comparison chart to the width of the superior HTML element. Any positive integer can be defined as width.
+			pre
+				comment // Set width of comparison chart to 600px
+				br
+				| crosscompare.setWidth(600);
+				br
+				comment // Reset width to be automated
+				br
+				| crosscompare.setWidth('auto');
 
-			// Section
-			h2#options Options
+		// Function .setPadding()
+		.row: .container
+			h3#setPadding
+				a(href='#setPadding') # 
+				| crosscompare
+				.breakpoint .
+				strong setPadding
+				| (
+				i top, right, bottom, left
+				| )
+			p Defines the padding of the comparison chart. Default padding for top, right, bottom, left is 
+				hi 20px, 5px, 10px, 25px
+				| , as these values do not waste too much space, nor cut of any axes or labels. Any positive integers can be defined as the paddings. Values for all sides must be provided, even if only one side is being changed.
+			pre
+				comment // Change top padding to 30px
+				br
+				| crosscompare.setPadding(30, 5, 10, 25);
 
-			// addLegend
-			.row
-				.container
-						h3#addLegend
-							a(href='#addLegend') # 
-							| crosscompare
-							.breakpoint .
-							strong addLegend
-							| (
-							i legend, title
-							| )
-						p text text text
-							code code
-							| asdasd.
-						pre paymentsByTotal.filter([100, 200]); 
-							comment //comment
-							br
-							| paymentsByTotal.filter(120);
-						p text text or by pressing 
-							kbd ESC
-							|  asdasd.
+		// Function .setAnchor()
+		.row: .container
+			h3#setAnchor
+				a(href='#setAnchor') # 
+				| crosscompare
+				.breakpoint .
+				strong setAnchor
+				| (
+				i string
+				| )
+			p Defines the HTML anchor of the element in which the comparison chart will be rendered. Default anchor is 
+				hi '#crosscompare'
+				| . Any other HTML id can be provided as a string.
+			pre
+				comment // Change anchor to #my-anchor
+				br
+				| crosscompare.setAnchor('#my-anchor');
 
-			// setHeight
-			.row
-				.container
-						h3#setHeight
-							a(href='#setHeight') # 
-							| crosscompare
-							.breakpoint .
-							strong setHeight
-							| (
-							i integer
-							| )
-						p text text text
-							code code
-							| asdasd.
-						pre paymentsByTotal.filter([100, 200]); 
-							comment //comment
-							br
-							| paymentsByTotal.filter(120);
-						p text text or by pressing 
-							kbd ESC
-							|  asdasd.
+		// Function .setDateFormat()
+		.row: .container
+			h3#setDateFormat
+				a(href='#setDateFormat') # 
+				| crosscompare
+				.breakpoint .
+				strong setDateFormat
+				| (
+				i string
+				| )
+			p Defines the output format of presented dates. The parameter is a string describing the date format with using d3.js' date expressions (e.g. 
+				hi '%H:%M'
+				|  for just the hours and minutes). Default date format is 
+				hi '%d/%m/%Y'
+				| .
+			pre
+				comment // Change the date format to American style
+				br
+				| crosscompare.setDateFormat('%m/%d/%Y');
 
-			// setWidth
-			.row
-				.container
-						h3#setWidth
-							a(href='#setWidth') # 
-							| crosscompare
-							.breakpoint .
-							strong setWidth
-							| (
-							i integer
-							| )
-						p text text text
-							code code
-							| asdasd.
-						pre paymentsByTotal.filter([100, 200]); 
-							comment //comment
-							br
-							| paymentsByTotal.filter(120);
-						p text text or by pressing 
-							kbd ESC
-							|  asdasd.
+		// Function .setOverwrite()
+		.row: .container
+			h3#setOverwrite
+				a(href='#setOverwrite') # 
+				| crosscompare
+				.breakpoint .
+				strong setOverwrite
+				| (
+				i boolean
+				| )
+			p Defines crosscompare's behaviour when two cached states have the same filters applied to them. Default value is 
+				hi false
+				| , so that crosscompare will not overwrite the existing cached state, but enumerate the new state and display both. This behaviour can be disabled, so that a state with the same filters as an existing one will overwrite (i.e. update) the original one.
+			pre
+				comment // Enable overwriting/updating cached states (given same filters apply)
+				br
+				| crosscompare.setOverwrite(true);
 
-			// setPadding
-			.row
-				.container
-						h3#setPadding
-							a(href='#setPadding') # 
-							| crosscompare
-							.breakpoint .
-							strong setPadding
-							| (
-							i top, right, bottom, left
-							| )
-						p text text text
-							code code
-							| asdasd.
-						pre paymentsByTotal.filter([100, 200]); 
-							comment //comment
-							br
-							| paymentsByTotal.filter(120);
-						p text text or by pressing 
-							kbd ESC
-							|  asdasd.
+		// Function .setGrid()
+		.row: .container
+			h3#setGrid
+				a(href='#setGrid') # 
+				| crosscompare
+				.breakpoint .
+				strong setGrid
+				| (
+				i boolean, boolean
+				| )
+			p Defines whether grid lines will be shown within the comparison chart. First parameter defines behaviour for x-axis lines, second parameter for y-axis lines. By default, both values are set to 
+				hi false
+				| , and no grid lines are shown. Values for both axis must be provided, even if only one is being changed.
+			pre
+				comment // Enable y-axis grid lines
+				br
+				| crosscompare.setGrid(false, true);
 
-			// setAnchor
-			.row
-				.container
-						h3#setAnchor
-							a(href='#setAnchor') # 
-							| crosscompare
-							.breakpoint .
-							strong setAnchor
-							| (
-							i string
-							| )
-						p text text text
-							code code
-							| asdasd.
-						pre paymentsByTotal.filter([100, 200]); 
-							comment //comment
-							br
-							| paymentsByTotal.filter(120);
-						p text text or by pressing 
-							kbd ESC
-							|  asdasd.
+		// Function .setFlash()
+		.row: .container
+			h3#setFlash
+				a(href='#setFlash') # 
+				| crosscompare
+				.breakpoint .
+				strong setFlash
+				| (
+				i boolean
+				| )
+			p Defines whether the chart which is being cached is being animated to shortly flash white - indicating that a snapshot of the chart's data has been made. Default is 
+				hi true
+				| .
+			pre
+				comment // Disabling the flashing of dc-charts upon caching
+				br
+				| crosscompare.setFlash(false);
 
-			// setDateFormat
-			.row
-				.container
-						h3#setDateFormat
-							a(href='#setDateFormat') # 
-							| crosscompare
-							.breakpoint .
-							strong setDateFormat
-							| (
-							i string
-							| )
-						p text text text
-							code code
-							| asdasd.
-						pre paymentsByTotal.filter([100, 200]); 
-							comment //comment
-							br
-							| paymentsByTotal.filter(120);
-					.col-xs-12
-						p text text or by pressing 
-							kbd ESC
-							|  asdasd.
-
-			// setOverwrite
-			.row
-				.container
-						h3#setOverwrite
-							a(href='#setOverwrite') # 
-							| crosscompare
-							.breakpoint .
-							strong setOverwrite
-							| (
-							i boolean
-							| )
-						p text text text
-							code code
-							| asdasd.
-						pre paymentsByTotal.filter([100, 200]); 
-							comment //comment
-							br
-							| paymentsByTotal.filter(120);
-						p text text or by pressing 
-							kbd ESC
-							|  asdasd.
-
-			// setGrid
-			.row
-				.container
-						h3#setGrid
-							a(href='#setGrid') # 
-							| crosscompare
-							.breakpoint .
-							strong setGrid
-							| (
-							i boolean, boolean
-							| )
-						p text text text
-							code code
-							| asdasd.
-						pre paymentsByTotal.filter([100, 200]); 
-							comment //comment
-							br
-							| paymentsByTotal.filter(120);
-						p text text or by pressing 
-							kbd ESC
-							|  asdasd.
-
-			// setFlash
-			.row
-				.container
-						h3#setFlash
-							a(href='#setFlash') # 
-							| crosscompare
-							.breakpoint .
-							strong setFlash
-							| (
-							i boolean
-							| )
-						p text text text
-							code code
-							| asdasd.
-						pre paymentsByTotal.filter([100, 200]); 
-							comment //comment
-							br
-							| paymentsByTotal.filter(120);
-						p text text or by pressing 
-							kbd ESC
-							|  asdasd.
-
-			// clear
-			.row
-				.container
-						h3#clear
-							a(href='#clear') # 
-							| crosscompare
-							.breakpoint .
-							strong clear
-							| ()
-						p Not chainable!
-							code code
-							| asdasd.
-						pre paymentsByTotal.filter([100, 200]); 
-							comment //comment
-							br
-							| paymentsByTotal.filter(120);
-						p text text or by pressing 
-							kbd ESC
-							|  asdasd.
+		// Function .clear()
+		.row: .container
+			h3#clear
+				a(href='#clear') # 
+				| crosscompare
+				.breakpoint .
+				strong clear
+				| ()
+			p This function is 
+				strong not chainable
+				| . Upon this function, cached data is being cleared and crosscompare info text is being cleared. The comparison graph is not being removed. To clear crosscompare's cache, as well as the chart, use 
+				code .reset()
+				| .
+			pre
+				comment &lt;!-- Using a link to clear crosscompare --&gt;
+				br
+				| &lt;a href='javascript:crosscompare.clear();'&gt;Clear&lt;/a&gt;
 
 block scripts

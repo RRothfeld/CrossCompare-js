@@ -1,5 +1,8 @@
 // INFO
-
+/*!
+ *  Font Awesome 4.3.0 by @davegandy - http://fontawesome.io - @fontawesome
+ *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)
+ */
 
 
 
@@ -398,7 +401,6 @@ d3.csv('/data/example.csv', function(data) {
 	// CrossCompare specific logic
 	crosscompare
 	.setHeight(500)
-	.setBarRatio(0.2)
 	.setDateFormat('%d/%m %Hh')
 	.addLegend('#airportSelect')
 	.addLegend('#airlineSelect')
@@ -410,9 +412,9 @@ d3.csv('/data/example.csv', function(data) {
 		yLabel: 'Flights', xLabel: 'Connected Airports' })
 	.add(weekdayChart, { type: 'bar', value: 'avgDelay',
 		yLabel: 'Average Delay', xLabel: 'Day of Week' })
-	.add(todChart, { type: 'bar', yLabel: 'Flights', xLabel: 'Time of Day (hour)' })
-	.add(delayChart, { type: 'bar', yLabel: 'Flights', xLabel: 'Delay (min)' })
-	.add(distanceChart, { type: 'bar', yLabel: 'Flights', xLabel: 'Distance (miles)' });
+	.add(delayChart, { type: 'bar', ratio: 0.2, yLabel: 'Flights', xLabel: 'Delay (min)' })
+	.add(todChart, { type: 'bar', ratio: 0.4, yLabel: 'Flights', xLabel: 'Time of Day (hour)' })
+	.add(distanceChart, { type: 'bar', ratio: 0.4, yLabel: 'Flights', xLabel: 'Distance (miles)' });
 
 	$('.maxCrossCompare_open').on('click', function() { 
 		var width = $(window).width() * 0.78;
