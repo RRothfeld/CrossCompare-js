@@ -1,13 +1,3 @@
-// INFO
-/*!
- *  Font Awesome 4.3.0 by @davegandy - http://fontawesome.io - @fontawesome
- *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)
- */
-
-
-
-// DC VERSION 2.1.0-dev
-//--------------------------------General / DC---------------------------------------
 // Define charts
 var totalAverageDelay = dc.numberDisplay('#delay'),
 		flightsTable = dc.dataTable('#flightsTable'),
@@ -32,7 +22,6 @@ var dateInFormat = d3.time.format('%d-%m-%Y %H:%M'),
 //--------------------------------Crossfilter-----------------------------------------
 
 // Load data from csv file
-//d3.csv('/data/flightsDec08.csv', function(data) {
 d3.csv('/data/example.csv', function(data) {
 
 	// Parse dates and times from .csv
