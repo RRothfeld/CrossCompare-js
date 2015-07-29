@@ -22,7 +22,7 @@ var dateInFormat = d3.time.format('%d-%m-%Y %H:%M'),
 //--------------------------------Crossfilter-----------------------------------------
 
 // Load data from csv file
-d3.csv('/data/example.csv', function(data) {
+d3.csv('data/example.csv', function(data) {
 
 	// Parse dates and times from .csv
 	data.forEach(function (d) {
