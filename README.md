@@ -1,8 +1,6 @@
 # CrossCompare.js
 Master of Science Project, University of Glasgow
 
-----
-
 # Installation node
 npm 
 

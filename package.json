@@ -1,5 +1,5 @@
 {
-	"name": "CrossCompare",
+	"name": "CrossCompare-js",
 	"scripts": {
 		"start": "node app.js"
 	},
@@ -8,7 +8,7 @@
 		"url": "https://github.com/RRothfeld/CrossCompare-js.git"
 	},
 	"license": "MIT",
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"dependencies": {
 		"body-parser": "~1.4.2",
 		"chai": "^3.2.0",

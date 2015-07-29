@@ -5,7 +5,7 @@ p { text-align: justify; }
 pre comment { color: gray; }
 
 /* Highlight design */
-hi { color: Teal;}
+hi { color: MediumSeaGreen;}
 
 /* restrict content width */
 .container { max-width: 900px; }
@@ -24,3 +24,6 @@ p { padding-left: 3px; padding-right: 3px; }
 
 /* Separate font awesome icons from text */
 i.fa { padding-right: 5px; }
+
+/* Underline links when hovering to increase the difference with highlights */
+a:hover { text-decoration: underline; }
