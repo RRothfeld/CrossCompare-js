@@ -20,7 +20,18 @@ block content
 	#maxCrossCompare
 		.box.box-solid
 			.box-header.with-border
-				h3.box-title CrossCompare
+				h3.box-title CrossCompare 
+					small Show as: 
+				|  
+				a.btn.btn-box-tool(href='javascript:crosscompare.chart.rendered.transform(\'line\');')
+					i.fa.fa-line-chart
+					|  Line
+				a.btn.btn-box-tool(href='javascript:crosscompare.chart.rendered.transform(\'area\');')
+					i.fa.fa-area-chart
+					|  Area
+				a.btn.btn-box-tool(href='javascript:crosscompare.chart.rendered.transform(\'bar\');')
+					i.fa.fa-bar-chart
+					|  Bar
 				.box-tools.pull-right
 					button.btn.btn-box-tool.maxCrossCompare_close.openCross
 						i.fa.fa-minus
