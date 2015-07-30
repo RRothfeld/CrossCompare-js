@@ -412,7 +412,7 @@ d3.csv('data/example.csv', function(data) {
 
 	$('#maxCrossCompare').popup({ transition: '0.2s all 0.1s' });
 
-	$('.resetCrossCompare').on('click', function() { crosscompare.reset(); });
+	$('.resetCrossCompare').on('click', function() { crosscompare.clear(); });
 
 });
 //-------------------------------Overlay-----------------------------------------------
