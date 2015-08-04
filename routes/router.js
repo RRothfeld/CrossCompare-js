@@ -1,5 +1,6 @@
-// MongoDB collections
-// var Flights = mongoConnection.model('', {}, 'flights');
+/* Uncomment this section to use mongoDB */
+// // MongoDB collections
+// var collection = mongoConnection.model('', {}, '<insert collection name>');
 
 module.exports = function(app) {
 	// GET home page
@@ -22,17 +23,17 @@ module.exports = function(app) {
 		res.render('docs');
 	});
 
-	// API Flights (call to DB for data)
-	// app.get('/api/flights', function(req, res) {
-	// 	Flights.find({}, {
+	/* Uncomment this section to use mongoDB */
+	// // API call to mongoDB
+	// app.get('<URI>', function(req, res) {
+	// 	collection.find({}, {
 	// 		'_id': 0,
-	// 		'Date': 1,
-	// 		'UniqueCarrier': 1,
-	// 		'ArrTime': 1,
-	// 		'DepTime': 1
-	// 	}, function(err, subjectDetails) {
-	// 		if (err) res.send(err);
-	// 		res.json(subjectDetails);
+	// 		'<insert column name>': 1
+	// 	},
+	// 	function(err, data) {
+	// 		if (err)
+	// 			res.send(err);
+	// 		res.json(data);
 	// 	});
 	// });
 }
