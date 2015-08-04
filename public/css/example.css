@@ -32,8 +32,9 @@ a.btn-block { padding-top: 15px; }
 
 /* Design of tooltip box */
 .info {
-	max-width: 500px;
-	min-width: 300px;
+	text-align: justify;
+	max-width: 350px;
+	min-width: 200px;
 	margin-bottom: 10px;
 	background-color: #F5F5F5;
 	box-shadow: 0 0 10px rgba(0,0,0,0.3);

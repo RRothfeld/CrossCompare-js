@@ -1,5 +1,5 @@
 var chai = require('chai'),
-		cc = require('../public/js/crosscompare');
+		cc = require('../crosscompare');
 
 var pos = function() { return Math.floor(Math.random() * 999) + 1; };
 var neg = function() { return -pos(); };

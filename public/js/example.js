@@ -1,3 +1,13 @@
+//--------------------------------GA-----------------------------------------
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-65972611-1', 'auto');
+ga('send', 'pageview');
+
+//--------------------------------overall-----------------------------------------
 // Define charts
 var totalAverageDelay = dc.numberDisplay('#delay'),
 		flightsTable = dc.dataTable('#flightsTable'),
@@ -418,17 +428,34 @@ d3.csv('data/example.csv', function(data) {
 //-------------------------------Overlay-----------------------------------------------
 var infoOptions = {
 	type: 'tooltip',
-	vertical: 'top',
-	horizontal: 'left',
-	offsetleft: 75,
+	vertical: 'bottom',
+	horizontal: 'right',
+	offsetleft: -35,
 	transition: '0.3s all 0.1s',
-	closeelement: '.info_close'
+	closeelement: '.info_close',
+	tooltipanchor: $('.infoMovementsChart_open')
 };
+$('#infoMovementsChart').popup(infoOptions);
 
-$('#infoMovementsChart').popup(infoOptions, { tooltipanchor: $('.infoMovementsChart_open') });
-$('#infoflightDelay').popup(infoOptions, {	tooltipanchor: $('.infoflightDelay_open') });
-$('#infoairportsChart').popup(infoOptions, {	tooltipanchor: $('.infoairportsChart_open') });
-$('#infoWeekdayChart').popup(infoOptions, {	tooltipanchor: $('.infoWeekdayChart_open') });
-$('#infoTodChart').popup(infoOptions, { tooltipanchor: $('.infoMovementsChart_open') });
-$('#infoDelayChart').popup(infoOptions, { tooltipanchor: $('.infoMovementsChart_open') });
-$('#infoDistanceChart').popup(infoOptions, { tooltipanchor: $('.infoMovementsChart_open') });
+infoOptions.horizontal = 'left';
+infoOptions.offsetleft = 25;
+infoOptions.tooltipanchor = $('.infoflightDelay_open');
+$('#infoflightDelay').popup(infoOptions);
+
+infoOptions.vertical = 'top';
+infoOptions.tooltipanchor = $('.infoDelayChart_open');
+$('#infoDelayChart').popup(infoOptions);
+
+infoOptions.tooltipanchor = $('.infoTodChart_open');
+$('#infoTodChart').popup(infoOptions);
+
+infoOptions.tooltipanchor = $('.infoDistanceChart_open');
+$('#infoDistanceChart').popup(infoOptions);
+
+infoOptions.horizontal = 'right';
+infoOptions.offsetleft = -25;
+infoOptions.tooltipanchor = $('.infoairportsChart_open');
+$('#infoairportsChart').popup(infoOptions);
+
+infoOptions.tooltipanchor = $('.infoWeekdayChart_open');
+$('#infoWeekdayChart').popup(infoOptions);
