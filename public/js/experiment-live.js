@@ -9,11 +9,6 @@ function log(item) {
 	$.post('/log', { 'crosscompare': crossActive, 'element': element });
 };
 
-// var width = $('#survey').width() - 5,
-// 		height = $(document).height();
-
-// $('#survey').append('<iframe src=\"https://docs.google.com/forms/d/1oBOroyBYlEqDDQiv61uX29n7gpikNvsPTuvEteku13g/viewform?embedded=true\" width=\"'+width+'\" height=\"'+height+'\" frameborder=\"0\" marginheight=\"0\" marginwidth=\"0\">Loading...</iframe>');
-
 function loop() {
 	if ($(document).find('iframe').length > 0) {
 		$(document).find('iframe').on('load', function () {
