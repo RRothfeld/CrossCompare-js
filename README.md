@@ -5,10 +5,10 @@ CrossCompare started as a Master of Science project for Software Development at 
 
 Please feel free to utilise, explore, enhance, or give feedback. Special thank's to the authors of [jQuery](https://jquery.com/), [d3.js](http://d3js.org/), [crossfilter](http://square.github.io/crossfilter/), [dc.js](https://dc-js.github.io/dc.js/), [c3.js](http://c3js.org/), [AdminLTE](https://almsaeedstudio.com/AdminLTE), [bootstrap](http://getbootstrap.com/), [smoothscroll](https://github.com/cferdinandi/smooth-scroll), and [popup overlay](http://dev.vast.com/jquery-popup-overlay/)!
 
-# Usage
+# CrossCompare Usage
 [Download](http://rrothfeld.github.io/CrossCompare-js/download/crosscompare.zip) the crosscompare zip-file and extract it into your web page folder. Include the JavaScript-file within your webpage. Set up and customize CrossCompare for your usage according to the [API](http://rrothfeld.github.io/CrossCompare-js/docs.html) or the [tutorial](http://rrothfeld.github.io/CrossCompare-js/tutorial.html) - a great starting place for a new CrossCompare application.
 
-# Installation
+# Installation (replica web site)
 This repository holds all code for the web site shown under: http://rrothfeld.github.io/CrossCompare-js/. 
 
  1. Have [Node.js](https://nodejs.org/) and [git](https://git-scm.com/) installed
@@ -16,11 +16,11 @@ This repository holds all code for the web site shown under: http://rrothfeld.gi
  3. Cd into the created folder: `cd CrossCompare-js`
  4. Install node modules: `npm install`
  5. Run the application: `npm start`
- 6. Open http://localhost:3000/ in your web browser
+ 6. Open [http://localhost:3000/](http://localhost:3000/) in your web browser
 
 A possible error upon executing `npm start` may be the result of the default port `3000` being occupied by another service. If so, simply change line 11 in app.js to another port number and run `npm start` again.
 
-# Testing
+# CrossCompare Testing
 Unit testing of CrossCompare's functions is done using [mocha](http://mochajs.org/) with the help of [chai assertion library](http://chaijs.com/).
 
 To run the testing code, simply run execute  `./node_modules/.bin/mocha` from within the CrossCompare-js folder.
