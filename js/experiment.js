@@ -6,3 +6,7 @@ ga('create', 'UA-65972611-1', 'auto');
 
 // Record page view
 ga('send', 'pageview');
+
+$('.maxCrossCompare_open').on('click', function() {
+  ga('send', 'event', 'button', 'click', 'open crosscompare');
+});
