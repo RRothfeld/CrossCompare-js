@@ -1,0 +1,32 @@
+extends layout
+
+block links
+	// Page specific styles
+	link(href='css/index.css', rel='stylesheet', type='text/css')
+	link(href='css/docs.css', rel='stylesheet', type='text/css')
+
+block content
+	// Content Header (Page header)
+	.header-img: .container
+		h1: strong CrossCompare.js
+		hr.header-line
+		h3 JavaScript library for quick dc.js chart comparison
+
+	// Main content
+	section.content
+		// Interactive
+		.container.first
+			h2 Quick chart comparison
+			p CrossCompare is a JavaScript library for quickly comparing charts built using 
+				a(href='https://dc-js.github.io/dc.js/') dc.js
+				| . Bundled with 
+				a(href='http://square.github.io/crossfilter/') crossfilter
+				| , dc.js provides fantastic in-browser dimenional filtering and charting. CrossCompare now adds the ability to quickly compare different filter states in a separate chart.
+			a.btn.btn-primary(href='/experiment-live') Start Survey
+
+		// Seperator
+		.row: hr.body-line
+
+block scripts
+	// Page specific logic
+	script(src='js/experiment.js', type='text/javascript')

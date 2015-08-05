@@ -2,6 +2,9 @@
 // // MongoDB collections
 // var collection = mongoConnection.model('', {}, '<insert collection name>');
 
+/* Experiment section */
+var fs = require('fs');
+
 module.exports = function(app) {
 	// GET home page
 	app.get('/', function(req, res) {
@@ -36,4 +39,23 @@ module.exports = function(app) {
 	// 		res.json(data);
 	// 	});
 	// });
+
+	/* Experiment section */
+	// GET experiment page
+	app.get('/experiment', function(req, res) {
+		res.render('experiment');
+	});
+
+	// GET experiment A page (with CrossCompare)
+	app.get('/experiment-live', function(req, res) {
+		res.render('experiment-live');
+	});
+
+	// Log all POST requests
+	app.post('/log', function(req, res) {
+		var file = 'experiments/' + req._remoteAddress + '.txt';
+		var line = req._remoteAddress + ','	+ req._startTime + ',' + JSON.stringify(req.body) + '\n';
+		fs.appendFile(file, line, function (err) {});
+		res.end();
+	});
 }
