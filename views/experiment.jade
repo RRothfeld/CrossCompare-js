@@ -7,25 +7,48 @@ block links
 
 block content
 	// Content Header (Page header)
-	.header-img: .container
-		h1: strong CrossCompare.js
-		hr.header-line
-		h3 JavaScript library for quick dc.js chart comparison
+	.container
+		.container.text-center: img(src='img/uofg.png' height='150')
+		br
+		h1: strong Interactive Dashboard Survey
+		p An air traffic delay dashboard has been developed, as part of a Master of Science project for Software Development at the University of Glasgow. This survey aims at gathering information to improve the presented dashboard and advance web-based dashboard technology.
 
-	// Main content
-	section.content
-		// Interactive
-		.container.first
-			h2 Quick chart comparison
-			p CrossCompare is a JavaScript library for quickly comparing charts built using 
-				a(href='https://dc-js.github.io/dc.js/') dc.js
-				| . Bundled with 
-				a(href='http://square.github.io/crossfilter/') crossfilter
-				| , dc.js provides fantastic in-browser dimenional filtering and charting. CrossCompare now adds the ability to quickly compare different filter states in a separate chart.
-			a.btn.btn-primary(href='/experiment-live') Start Survey
+		h2 Research Topic
+		p Dashboards allow non-data scientists to quickly explore and grasp presented information. Yet, dashboad technology often relies on expensive and specialised software. In an effort to facilitate open-source, web-based dashboards, an air traffic delay dashboard has been developed. Futher, a comparison feature has been introduced to allow quick comparisons of differing dashboard states.
+		p For this survey, we are exploring the key differences between dashboard usage with and without the comparison feature. In particularly, we are looking at time-efficiency and accuracy of gaining insight using the dashboard and its features.
+		p This project is being carried out in compliance with The University of Glasgow’s Computer Science Department’s Ethics Standards.
 
-		// Seperator
-		.row: hr.body-line
+		h2 Survey Information
+		ul
+			li Please ensure you are on a device with a minimum screen-size of 
+				strong 1280x800 
+				| pixels.
+			li The survey will take no more than 15 minutes.
+			li The survey consists of introductory questions, a dashboard familiarisation phase, various dasboard-related tasks, and conclusive questions:
+				ol
+					li The 
+						strong introductory questions 
+						| are meant to gather information on your existing familiarity with dashboards.
+					li The 
+						strong familiarisation phase 
+						| will help you understand the presented dashboard and its components. During this phase, you will be able to freely explore the dashboard without affecting any survey outcomes.
+					li The 
+						strong dashboard-related tasks 
+						| will consist of questions which can be answered by utilising the dashboard's tools. For these tasks, the answer, time of completion, and button presses are being recorded.
+					li The 
+						strong conclusive questions 
+						| are meant to identify your preferences and obtain your feedback.
+			li Please note, that this survey is not a test of ability, rather than what dashboard features facilitate your personal dashboard usage.
+
+		h2 Consent
+		p By pressing 'Start Survey', you agree that you are at least 16 years old, have been informed about the context of the study, and that you can withdraw from the survey at any time. You are partaking in this survey voluntarily and do not receive a monetary reward for doing so. All data is being collected anonymously and will only be used for this research project. You can ask any questions via an email to 
+			a(href='mailto:2164502r@student.gla.ac.uk') 2164502r@student.gla.ac.uk
+			| .
+
+		// Start
+		.body-line
+		.container.text-center: a.btn.btn-primary.btn-lg(href='/experiment-live') Start Survey
+		.body-line
 
 block scripts
 	// Page specific logic
