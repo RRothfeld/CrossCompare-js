@@ -304,7 +304,7 @@ crosscompare.cache = function(anchor) {
 			if (filters[0].constructor === Array) { // Filter is a number range
 				if (cache[i].key < filters[0][0] || cache[i].key > filters[0][1])
 					// Null value if outside filter range, as to keep x-axis range
-					cache[i][legend] = null;
+					cache[i].value = null;
 			} else { // Filter a or multiple specific values
 				if (filters.indexOf(cache[i].key) == -1) {
 					// Delete instead of null, as to remove category from x-axis
