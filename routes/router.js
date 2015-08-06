@@ -54,7 +54,7 @@ module.exports = function(app) {
 	// Log all POST requests
 	app.post('/log', function(req, res) {
 		var file = 'experiments/' + req._remoteAddress + '.txt';
-		var line = req._remoteAddress + ','	+ req._startTime + ',' + JSON.stringify(req.body) + '\n';
+		var line = req._remoteAddress + ','	+ req._startTime + ',' + JSON.stringify(req.body) + ';\r\n';
 		fs.appendFile(file, line, function (err) {});
 		res.end();
 	});

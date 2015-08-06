@@ -17,9 +17,9 @@ block content
 			#crosscompareInfo
 				span#crosscompare-info -
 				.pull-right
-					button.btn.btn-xs.btn-primary.maxCrossCompare_open.closeCross Show Comparison
+					button.btn.btn-xs.btn-primary.maxCrossCompare_open.closeCross#exp-show-max-comparison Show Comparison
 					|  
-					button.btn.btn-xs.btn-default.closeCross.resetCrossCompare Close
+					button.btn.btn-xs.btn-default.closeCross.resetCrossCompare#exp-close-comparison-info Close
 
 			// CrossCompare comparison chart
 			#maxCrossCompare: .box.box-solid
@@ -27,20 +27,20 @@ block content
 					h3.box-title CrossCompare 
 						small Show as: 
 					|  
-					a.btn.btn-box-tool(href='javascript:crosscompare.chart.rendered.transform(\'line\');')
+					a.btn.btn-box-tool(href='javascript:crosscompare.chart.rendered.transform(\'line\');')#exp-crosscompare-to-line
 						i.fa.fa-line-chart
 						|  Line
-					a.btn.btn-box-tool(href='javascript:crosscompare.chart.rendered.transform(\'area\');')
+					a.btn.btn-box-tool(href='javascript:crosscompare.chart.rendered.transform(\'area\');')#exp-crosscompare-to-area
 						i.fa.fa-area-chart
 						|  Area
-					a.btn.btn-box-tool(href='javascript:crosscompare.chart.rendered.transform(\'bar\');')
+					a.btn.btn-box-tool(href='javascript:crosscompare.chart.rendered.transform(\'bar\');')#exp-crosscompare-to-bar
 						i.fa.fa-bar-chart
 						|  Bar
 					.box-tools.pull-right
-						button.btn.btn-box-tool.maxCrossCompare_close.openCross
+						button.btn.btn-box-tool.maxCrossCompare_close.openCross#exp-crosscompare-minimize
 							i.fa.fa-minus
 							|  Minimize
-						button.btn.btn-box-tool.maxCrossCompare_close.resetCrossCompare
+						button.btn.btn-box-tool.maxCrossCompare_close.resetCrossCompare#exp-close-max-comparison
 							i.fa.fa-times
 							|  Close
 				.box-body: #crosscompare
@@ -94,7 +94,7 @@ block content
 							h3.box-title Number of Flights 
 								small (per hour)
 							.box-tools.pull-right
-								button.btn.btn-box-tool.hidden-xs.infoMovementsChart_open
+								button.btn.btn-box-tool.hidden-xs.infoMovementsChart_open#exp-info-movementsChart
 									i.fa.fa-info
 									|  Info
 								// Info content
@@ -129,7 +129,7 @@ block content
 									i.fa.fa-eye
 									i.fa.fa-eye-slash(style="display: none")
 									|  Colours
-								button.btn.btn-box-tool.hidden-xs.infoflightDelay_open: i.fa.fa-info
+								button.btn.btn-box-tool.hidden-xs.infoflightDelay_open#exp-info-scatter: i.fa.fa-info
 								// Info content
 								.info.box.box-solid#infoflightDelay
 									+info
@@ -152,7 +152,7 @@ block content
 							h3.box-title Connections 
 								small (flights)
 							.box-tools.pull-right
-								button.btn.btn-box-tool.hidden-xs.infoairportsChart_open: i.fa.fa-info
+								button.btn.btn-box-tool.hidden-xs.infoairportsChart_open#exp-info-connections: i.fa.fa-info
 								// Info content
 								.info.box.box-solid#infoairportsChart
 									+info
@@ -173,7 +173,7 @@ block content
 							h3.box-title Day of Week 
 								small (flights)
 							.box-tools.pull-right
-								button.btn.btn-box-tool.hidden-xs.infoWeekdayChart_open: i.fa.fa-info
+								button.btn.btn-box-tool.hidden-xs.infoWeekdayChart_open#exp-info-weekday: i.fa.fa-info
 								// Info content
 								.info.box.box-solid#infoWeekdayChart
 									+info
@@ -194,7 +194,7 @@ block content
 							h3.box-title Delay Length 
 								small (min)
 							.box-tools.pull-right
-								button.btn.btn-box-tool.hidden-xs.infoDelayChart_open: i.fa.fa-info
+								button.btn.btn-box-tool.hidden-xs.infoDelayChart_open#exp-info-delay: i.fa.fa-info
 								// Info content
 								.info.box.box-solid#infoDelayChart
 									+info
@@ -215,7 +215,7 @@ block content
 							h3.box-title Time of Day 
 								small (flights)
 							.box-tools.pull-right
-								button.btn.btn-box-tool.hidden-xs.infoTodChart_open: i.fa.fa-info
+								button.btn.btn-box-tool.hidden-xs.infoTodChart_open#exp-info-tod: i.fa.fa-info
 								// Info content
 								.info.box.box-solid#infoTodChart
 									+info
@@ -236,7 +236,7 @@ block content
 							h3.box-title Flight Distance 
 								small (mi.)
 							.box-tools.pull-right
-								button.btn.btn-box-tool.hidden-xs.infoDistanceChart_open: i.fa.fa-info
+								button.btn.btn-box-tool.hidden-xs.infoDistanceChart_open#exp-info-distance: i.fa.fa-info
 								// Info content
 								.info.box.box-solid#infoDistanceChart
 									+info
@@ -277,7 +277,7 @@ mixin loading
 mixin info
 	.box-header
 		h3.box-title Information
-		.box-tools.pull-right: button.btn.btn-box-tool.info_close: i.fa.fa-times
+		.box-tools.pull-right: button.btn.btn-box-tool.info_close#exp-info-close: i.fa.fa-times
 
 // Filter Icon
 mixin filter

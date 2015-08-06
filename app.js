@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 	
 // Configuration
-var port = process.env.PORT || 80;
+var port = process.env.PORT || 3000;
 
 /* Uncomment database section to use mongoDB */
 // // Connect to our mongoDB database(s)

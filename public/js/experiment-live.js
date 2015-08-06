@@ -62,5 +62,5 @@ function loop() {
 setTimeout(function(){ loop(); }, 2000);
 
 // Log all button clicks and reset-all-link
-$('button').on('click', function() { log(this.outerHTML); });
+$('.btn').on('click', function() { log($(this).attr('id')); });
 $('#resetAll').click(function() { log('resetAll-button'); });
