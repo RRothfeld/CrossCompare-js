@@ -22,8 +22,6 @@ var totalAverageDelay = dc.numberDisplay('#delay'),
 		delayChart = dc.barChart('#delayChart'),
 		distanceChart = dc.barChart('#distanceChart');
 
-var airport, airline; // <-------------------------------------------------------
-
 // Define color range (red to blue) - via http://colorbrewer2.org/
 var colorRange = ['rgb(165,0,38)','rgb(215,48,39)','rgb(244,109,67)',
 	'rgb(253,174,97)','rgb(254,224,139)','rgb(217,239,139)','rgb(166,217,106)',
@@ -80,9 +78,9 @@ d3.csv('data/example.csv', function(data) {
 	};
 
 	// Define crossfilter dimensions
-	airport = flights.dimension(function(d) { return d.Airport; }), // <-------------------------------------------------------
-	airline = flights.dimension(function(d) { return d.Airline; }); // <-------------------------------------------------------
-	var scndAirport = flights.dimension(function(d) { return d.Airport2; }),
+	var airport = flights.dimension(function(d) { return d.Airport; }),
+			airline = flights.dimension(function(d) { return d.Airline; }),
+			scndAirport = flights.dimension(function(d) { return d.Airport2; }),
 			date = flights.dimension(function(d) { return d.DateTime; }),
 			hour = flights.dimension(function(d) { return d.DateTime.getHours(); }),
 			// Create combined dimension of time of day and delay
