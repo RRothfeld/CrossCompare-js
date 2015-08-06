@@ -1,3 +1,4 @@
+/* Overlay to hide dashboard when not needed */
 #overlay {
 	z-index: 2;
 	background: white;
@@ -10,6 +11,7 @@
 	text-align: center;
 }
 
+/* Design for Surveymonkey sidebar */
 .sidebar-nav-fixed { 
 	margin-left: 5px;
 	position: fixed;
