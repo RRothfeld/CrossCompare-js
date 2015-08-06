@@ -41,8 +41,13 @@ function loop() {
 				}
 
 				// Reset all filters
+				$('#airportSelect').val('ALL');
+				airport.filterAll();
+				$('#airlineSelect').val('ALL');
+				airline.filterAll();
 				dc.filterAll();
 				dc.redrawAll();
+
 				
 				// Reset CrossCompare
 				crosscompare.clear();
