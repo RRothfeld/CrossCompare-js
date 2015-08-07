@@ -46,15 +46,10 @@ module.exports = function(app) {
 		res.render('experiment');
 	});
 
-	// GET experiment A page (with CrossCompare)
-	app.get('/experiment-live', function(req, res) {
-		res.render('experiment-live');
-	});
-
 	// Log all POST requests
 	app.post('/log', function(req, res) {
-		var file = 'experiments/' + req._remoteAddress + '.txt';
-		var line = req._remoteAddress + ','	+ req._startTime + ',' + JSON.stringify(req.body) + ';\r\n';
+		var file = 'experiments.txt';
+		var line = req._startTime + ',' + JSON.stringify(req.body) + ';\r\n';
 		fs.appendFile(file, line, function (err) {});
 		res.end();
 	});

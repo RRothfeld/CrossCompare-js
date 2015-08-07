@@ -1,58 +1,330 @@
 extends layout
 
 block links
+	// Plugin specific styles
+	link(href='css/plugins/dc.css', rel='stylesheet', type='text/css')
+	link(href='css/plugins/c3.min.css', rel='stylesheet', type='text/css')
+
 	// Page specific styles
-	link(href='css/index.css', rel='stylesheet', type='text/css')
-	link(href='css/docs.css', rel='stylesheet', type='text/css')
+	link(href='css/example.css', rel='stylesheet', type='text/css')
+	link(href='css/experiment.css', rel='stylesheet', type='text/css')
 
 block content
-	// Content Header (Page header)
-	.container
-		.container.text-center: img(src='img/uofg.png' height='150')
-		br
-		h1: strong Interactive Dashboard Survey
-		p An air traffic delay dashboard has been developed, as part of a Master of Science project for Software Development at the University of Glasgow. This survey aims at gathering information to improve the presented dashboard and advance web-based dashboard technology.
 
-		h2 Research Topic
-		p Dashboards allow non-data scientists to quickly explore and grasp presented information. Yet, dashboad technology often relies on expensive and specialised software. In an effort to facilitate open-source, web-based dashboards, an air traffic delay dashboard has been developed. Futher, a comparison feature has been introduced to allow quick comparisons of differing dashboard states.
-		p For this survey, we are exploring the key differences between dashboard usage with and without the comparison feature. In particularly, we are looking at time-efficiency and accuracy of gaining insight using the dashboard and its features.
-		p This project is being carried out in compliance with The University of Glasgow’s Computer Science Department’s Ethics Standards.
+	// Experiment Continue Button
+	button.btn.btn-success#exp-cont(href='#') Continue
 
-		h2 Survey Information
-		ul
-			li Please ensure you are on a device with a minimum screen-size of 
-				strong 1280x800 
-				| pixels.
-			li Please ensure you are on a device with 
-				strong good internet connection 
-				| (&gt;1 Mbps).
-			li The survey will take no more than 15 minutes.
-			li The survey consists of introductory questions, a dashboard familiarisation phase, various dasboard-related tasks, and conclusive questions:
-				ol
-					li The 
-						strong introductory questions 
-						| are meant to gather information on your existing familiarity with dashboards.
-					li The 
-						strong familiarisation phase 
-						| will help you understand the presented dashboard and its components. During this phase, you will be able to freely explore the dashboard without affecting any survey outcomes.
-					li The 
-						strong dashboard-related tasks 
-						| will consist of questions which can be answered by utilising the dashboard's tools. For these tasks, the answer, time of completion, and button presses are being recorded.
-					li The 
-						strong conclusive questions 
-						| are meant to identify your preferences and obtain your feedback.
-			li Please note, that this survey is not a test of ability, rather than what dashboard features facilitate your personal dashboard usage.
+	// Experiment overlays
+	#exp-intro
+		.container
+			.col-xs-3
+			.col-xs-6: .box.box-success
+				.box-body.text-center
+					h2 Enter questionnaire number:
+					h2
+						// REMOVE VALUE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+						input.form-control(type='text', placeholder='e.g. EX1-A0-D0-T1-B1-C1', value='EX12-T1-E1-B1-A0-F0')#exp-code
+					button.btn.btn-lg.btn-success.exp.exp-intro_close Continue
 
-		h2 Consent
-		p By pressing 'Start Survey', you agree that you are at least 16 years old, have been informed about the context of the study, and that you can withdraw from the survey at any time. You are partaking in this survey voluntarily and do not receive a monetary reward for doing so. All data is being collected anonymously and will only be used for this research project. You can ask any questions via an email to 
-			a(href='mailto:2164502r@student.gla.ac.uk') 2164502r@student.gla.ac.uk
-			| .
+	#exp-training-baseline
+		.container
+			.col-xs-3
+			.col-xs-6: .box.box-success
+				.box-body.text-center
+					h4 Baseline Training
+					.text-center
+						button.btn.btn-lg.btn-success.exp.exp-training-baseline_close.exp-start Start Training
 
-		// Start
-		.body-line
-		.container.text-center: a.btn.btn-primary.btn-lg(href='/experiment-live') Start Survey
-		.body-line
+	#exp-training-compare
+		.container
+			.col-xs-3
+			.col-xs-6: .box.box-success
+				.box-body.text-center
+					h4 Compare Training
+					.text-center
+						button.btn.btn-lg.btn-success.exp.exp-training-compare_close.exp-start Start Training
+
+	#exp-task
+		.container
+			.col-xs-3
+			.col-xs-6: .box.box-success
+				.box-body.text-center
+					h2 Please continue with the questionnaire.
+					.text-center
+						button.btn.btn-lg.btn-success.exp.exp-task_close.exp-start Start Next Task
+
+	#exp-end
+		.container
+			.col-xs-3
+			.col-xs-6: .box.box-success
+				.box-body.text-center
+					h2 You have completed all tasks.
+					h2 Please continue with the questionnaire.
+					br
+
+	// CrossCompare status text and control
+	#crosscompareInfo
+		span#crosscompare-info -
+		.pull-right
+			button.btn.btn-xs.btn-primary.maxCrossCompare_open.closeCross Show Comparison
+			|  
+			button.btn.btn-xs.btn-default.closeCross.resetCrossCompare Close
+
+	// CrossCompare comparison chart
+	#maxCrossCompare: .box.box-solid
+		.box-header.with-border
+			h3.box-title CrossCompare 
+				small Show as: 
+			|  
+			a.btn.btn-box-tool(href='javascript:crosscompare.chart.rendered.transform(\'line\');')
+				i.fa.fa-line-chart
+				|  Line
+			a.btn.btn-box-tool(href='javascript:crosscompare.chart.rendered.transform(\'area\');')
+				i.fa.fa-area-chart
+				|  Area
+			a.btn.btn-box-tool(href='javascript:crosscompare.chart.rendered.transform(\'bar\');')
+				i.fa.fa-bar-chart
+				|  Bar
+			.box-tools.pull-right
+				button.btn.btn-box-tool.maxCrossCompare_close.openCross
+					i.fa.fa-minus
+					|  Minimize
+				button.btn.btn-box-tool.maxCrossCompare_close.resetCrossCompare
+					i.fa.fa-times
+					|  Close
+		.box-body: #crosscompare
+
+	// Main content
+	section.content
+		// Airport and Compare (Header)
+		.row
+			// Airport Select
+			.col-md-3.col-sm-3.col-xs-12: .box.box-primary: .box-body.selection
+				.col-xs-3.text-center Airport 
+				strong: select.form-control.col-xs-9#airportSelect
+					option(value='ALL') show all
+					option(value='ATL') Atlanta (ATL)
+					option(value='ORD') Chicago (ORD)
+					option(value='JFK') New York (JFK)
+
+			// Airline Select
+			.col-md-3.col-sm-3.col-xs-12: .box.box-default: .box-body.selection
+				.col-xs-3.text-center Airline 
+				strong: select.form-control.col-xs-9#airlineSelect
+					option(value='ALL') show all
+					option(value='AA') American (AA)
+					option(value='B6') Jetblue (B6)
+					option(value='DL') Delta (DL)
+
+			// Total Flights
+			.col-md-2.col-sm-2.col-xs-12: .box.box-info
+				.box-body.selection: #flights 
+				+loading
+
+			// Average Delay
+			.col-md-2.col-sm-2.col-xs-12: .box.box-info
+				.box-body.selection
+					| Mean Delay: 
+					strong#delay 
+					small  (min)
+				+loading
+
+			// Reset All Button
+			.col-md-2.col-sm-2.hidden-xs: .col-xs-8.pull-right#resetButton
+				.box.box-solid: #resetAll
+
+		// Movement, date, and KPIs
+		.row
+			// Movements by Date
+			.col-md-6.col-sm-6.col-xs-12#width-half: .box.box-solid
+				.box-header.with-border
+					h3.box-title Number of Flights 
+						small (per hour)
+					.box-tools.pull-right
+						button.btn.btn-box-tool.hidden-xs.infoMovementsChart_open
+							i.fa.fa-info
+							|  Info
+						// Info content
+						.info.box.box-solid#infoMovementsChart
+							+info
+							.box-body
+								p Illustration of the total number of flights per hour over the selected period of time.
+								p 
+									strong Interactions
+									br
+									| Upper chart: Scroll to zoom in and out.
+									br
+									| Lower chart: Click and drag to select a time period.
+						button.btn.btn-box-tool.openCross#movementsChart-cross
+							+cross
+							|  Cache
+						button.btn.btn-box-tool.disabled#resetmovementsTimeChart
+							+filter
+							|  Reset
+				.box-body.loading-height-tall
+					.no-y-axis-line#movementsChart
+					.no-y-axis#movementsTimeChart: .reset
+				+loading
+
+			// Delay Airline Scatter Plot
+			.col-md-6.col-sm-6.col-xs-12: .box.box-solid
+				.box-header.with-border
+					h3.box-title Delay by Time of Day 
+						small (min)
+					.box-tools.pull-right
+						button.btn.btn-box-tool#colourflightDelay
+							i.fa.fa-eye
+							i.fa.fa-eye-slash(style="display: none")
+							|  Colours
+						button.btn.btn-box-tool.hidden-xs.infoflightDelay_open: i.fa.fa-info
+						// Info content
+						.info.box.box-solid#infoflightDelay
+							+info
+							.box-body
+								p Illustration of flights by their time of day (x-axis) and their arrival/departure delay in minutes (y-axis). The colours indicate the severity of delay. The shown delay is capped to be between -60 and +180 minutes.
+								p 
+									strong Interaction
+									br
+									| Click and drag to select a time-of-day- and delay-range.
+						button.btn.btn-box-tool.disabled#resetflightDelay: +filter
+				.box-body.loading-height-tall
+					.no-y-axis-line#flightDelay: .reset
+				+loading
+
+		// Time of Day, Delay, and Distance
+		.row
+			// Top Airports
+			.col-md-3.col-sm-3.col-xs-12#width-quarter: .box.box-solid
+				.box-header.with-border
+					h3.box-title Connections 
+						small (in- and outbound flights)
+					.box-tools.pull-right
+						button.btn.btn-box-tool.hidden-xs.infoairportsChart_open: i.fa.fa-info
+						// Info content
+						.info.box.box-solid#infoairportsChart
+							+info
+							.box-body
+								p Illustration of the total number of in- and outbound flights from/to connected airports. Only the top 9 airports are shown, all others are summarized as 'Others'.
+								p 
+									strong Interaction
+									br
+									| Select one or more rows by clicking on the row.
+						button.btn.btn-box-tool.openCross#airportsChart-cross: +cross
+						button.btn.btn-box-tool.disabled#resetairportsChart: +filter
+				.box-body.loading-height-tall: #airportsChart: .reset
+				+loading
+
+			// Day of Week
+			.col-md-3.col-sm-3.col-xs-12: .box.box-solid
+				.box-header.with-border
+					h3.box-title Day of Week 
+						small (flights)
+					.box-tools.pull-right
+						button.btn.btn-box-tool.hidden-xs.infoWeekdayChart_open: i.fa.fa-info
+						// Info content
+						.info.box.box-solid#infoWeekdayChart
+							+info
+							.box-body
+								p Illustration of the total number of flights per day of week.
+								p 
+									strong Interaction
+									br
+									| Select one or more rows by clicking on the row.
+						button.btn.btn-box-tool.openCross#weekdayChart-cross: +cross
+						button.btn.btn-box-tool.disabled#resetweekdayChart: +filter
+				.box-body.loading-height-tall: #weekdayChart: .reset
+				+loading
+
+			// Delay
+			.col-md-6.col-sm-6.col-xs-12: .box.box-solid
+				.box-header.with-border
+					h3.box-title Delay Length 
+						small (min)
+					.box-tools.pull-right
+						button.btn.btn-box-tool.hidden-xs.infoDelayChart_open: i.fa.fa-info
+						// Info content
+						.info.box.box-solid#infoDelayChart
+							+info
+							.box-body
+								p Illustration of the total number of flights per minutes of delay. The shown delay is capped to be between -60 and +180 minutes.
+								p 
+									strong Interaction
+									br
+									| Click and drag to select a delay-range.
+						button.btn.btn-box-tool.openCross#delayChart-cross: +cross
+						button.btn.btn-box-tool.disabled#resetdelayChart: +filter
+				.box-body.loading-height-short: .no-y-axis#delayChart: .reset
+				+loading
+
+			// Time of Day
+			.col-md-3.col-sm-3.col-xs-12: .box.box-solid
+				.box-header.with-border
+					h3.box-title Time of Day 
+						small (flights)
+					.box-tools.pull-right
+						button.btn.btn-box-tool.hidden-xs.infoTodChart_open: i.fa.fa-info
+						// Info content
+						.info.box.box-solid#infoTodChart
+							+info
+							.box-body
+								p Illustration of the total number of flights by time of day.
+								p 
+									strong Interaction
+									br
+									| Click and drag to select a time-of-day-range.
+						button.btn.btn-box-tool.openCross#todChart-cross: +cross
+						button.btn.btn-box-tool.disabled#resettodChart: +filter
+				.box-body.loading-height-short: .no-y-axis#todChart: .reset
+				+loading
+
+			// Distance
+			.col-md-3.col-sm-3.col-xs-12: .box.box-solid
+				.box-header.with-border
+					h3.box-title Flight Distance 
+						small (mi.)
+					.box-tools.pull-right
+						button.btn.btn-box-tool.hidden-xs.infoDistanceChart_open: i.fa.fa-info
+						// Info content
+						.info.box.box-solid#infoDistanceChart
+							+info
+							.box-body
+								p Illustration of the total number of flights by flight distance in miles.
+								p 
+									strong Interaction
+									br
+									| Click and drag to select a distance-range.
+						button.btn.btn-box-tool.openCross#distanceChart-cross: +cross
+						button.btn.btn-box-tool.disabled#resetdistanceChart: +filter
+				.box-body.loading-height-short: .no-y-axis#distanceChart: .reset
+				+loading
 
 block scripts
+	// Page specific plugins
+	script(src='js/plugins/d3.min.js', type='text/javascript')
+	script(src='js/plugins/crossfilter.min.js', type='text/javascript')
+	script(src='js/plugins/dc.min.js', type='text/javascript')
+	script(src='js/plugins/c3.min.js', type='text/javascript')
+	script(src='js/plugins/jquery.popupoverlay.min.js', type='text/javascript')
+	script(src='js/plugins/crosscompare.min.js', type='text/javascript')
+	
 	// Page specific logic
+	script(src='js/example.exp.js', type='text/javascript')
 	script(src='js/experiment.js', type='text/javascript')
+
+// Loading overlay and icon
+mixin loading
+	.overlay.loading: i.fa.fa-refresh.fa-spin
+
+// Information tooltip
+mixin info
+	.box-header
+		h3.box-title Information
+		.box-tools.pull-right: button.btn.btn-box-tool.info_close: i.fa.fa-times
+
+// Filter Icon
+mixin filter
+	i.fa.fa-chain-broken
+
+// CrossCompare Icon
+mixin cross
+	i.fa.fa-bookmark

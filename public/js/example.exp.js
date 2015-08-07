@@ -1,13 +1,3 @@
-/**
- * CrossCompare.js Example - Air Traffic Delay Dashboard
- * 
- * Github - https://github.com/RRothfeld/CrossCompare-js
- * MIT License - https://github.com/RRothfeld/CrossCompare-js/blob/master/LICENSE
- *
- * @author RRothfeld
- */
-
-
 /* Part 0 - Global settings and variables */
 
 // Define DC.js charts
@@ -21,6 +11,8 @@ var totalAverageDelay = dc.numberDisplay('#delay'),
 		todChart = dc.barChart('#todChart'),
 		delayChart = dc.barChart('#delayChart'),
 		distanceChart = dc.barChart('#distanceChart');
+
+var airport, airline;
 
 // Define color range (red to blue) - via http://colorbrewer2.org/
 var colorRange = ['rgb(165,0,38)','rgb(215,48,39)','rgb(244,109,67)',
@@ -78,9 +70,9 @@ d3.csv('data/example.csv', function(data) {
 	};
 
 	// Define crossfilter dimensions
-	var airport = flights.dimension(function(d) { return d.Airport; }),
-			airline = flights.dimension(function(d) { return d.Airline; }),
-			scndAirport = flights.dimension(function(d) { return d.Airport2; }),
+	airport = flights.dimension(function(d) { return d.Airport; }),
+	airline = flights.dimension(function(d) { return d.Airline; });
+	var scndAirport = flights.dimension(function(d) { return d.Airport2; }),
 			date = flights.dimension(function(d) { return d.DateTime; }),
 			hour = flights.dimension(function(d) { return d.DateTime.getHours(); }),
 			// Create combined dimension of time of day and delay
