@@ -97,7 +97,7 @@ d3.csv('data/example.csv', function(data) {
 				return limit(d.Distance, 0, DISTANCE_MAX)
 			});
 
-	// Define crossfilter groups
+		// Define crossfilter groups
 	byDate = date.group(d3.time.day),
 	byDateHour = date.group(d3.time.hour),
 	byHour = hour.group(),
@@ -106,23 +106,7 @@ d3.csv('data/example.csv', function(data) {
 	byDelay = delay.group(function(d) { return cluster(d, 5); }),
 	byDistance = distance.group(function(d) { return cluster(d, 100); }),
 	// Define own reduce functions as to calculate averages
-	byWeekday = weekday.group().reduce(
-		function(p, v) { // If element added
-			++p.n;
-			p.sumDelay += Number(v.Delay);
-			p.avgDelay = p.n ? p.sumDelay / p.n : 0;
-			return p;
-		},
-		function(p, v) { // If element removed
-			--p.n;
-			p.sumDelay -= Number(v.Delay);
-			p.avgDelay = p.n ? p.sumDelay / p.n : 0;
-			return p;
-		},
-		function() { // If element created
-			return { n: 0, sumDelay: 0, avgDelay: 0 };
-		}
-	),
+	byWeekday = weekday.group(),
 	averageDelay = flights.groupAll().reduce(
 		function(p, v) { // If element added
 			++p.n;
@@ -235,7 +219,6 @@ d3.csv('data/example.csv', function(data) {
 	.group(byWeekday)
 	.colors(d3.scale.category10().range()[0]) // Uniform color
 	// Select value to be illustrated, as group contains multiple values
-	.valueAccessor(function(d) { return d.value.avgDelay; })
 	.elasticX(true)
  // Hide number in front of weekday name (number required for correct ordering)
 	.label(function (d) { return d.key.split(' ')[1]; })
@@ -287,8 +270,7 @@ d3.csv('data/example.csv', function(data) {
 
 	weekdayChart.title(function(p) {
 		return p.key.split(' ')[1] + '\n'
-		+ 'Mean Delay: ' + precisionFormat(p.value.avgDelay) + ' minutes\n'
-		+ 'Number of Flights: ' + numberFormat(p.value.n);
+		+ 'Number of Flights: ' + numberFormat(p.value);
 	});
 
 	// Add reset button handlers to all reset-able charts
@@ -516,8 +498,8 @@ d3.csv('data/example.csv', function(data) {
 		yLabel: 'Flights', xLabel: 'Connected Airports' })
 	// Make 'Day of Week' row chart comparable, as bar chart with specified value
 	// to be illustrated and with labeled axes
-	.add(weekdayChart, { type: 'bar', value: 'avgDelay',
-		yLabel: 'Average Delay', xLabel: 'Day of Week' })
+	.add(weekdayChart, { type: 'bar',
+		yLabel: 'Flights', xLabel: 'Day of Week' })
 	// Make 'Delay Length' bar chart comparable, as bar chart with specified bar
 	// width ratio and with labeled axes
 	.add(delayChart, { type: 'area', yLabel: 'Flights',

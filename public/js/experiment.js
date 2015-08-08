@@ -1,7 +1,7 @@
 // Global variables
 var code = '',
 		tasks = [],
-		current = 0,
+		current = -1, // -1 = Training, 0 = Comp. Training, 1+ = Tasks
 		clicks = 0,
 		options = { 
 			opacity: 0.9,
@@ -9,29 +9,93 @@ var code = '',
 			escape: false,
 			onopen: function() {
 				$('.exp').prop('disabled', true);
-				setTimeout(function(){ $('.exp').prop('disabled', false); }, 10000);
+				setTimeout(function(){ $('.exp').prop('disabled', false); }, 5000);
 			}
 		};
 
+function highlight(element, header, button) {
+	$(element).closest('.box').addClass('highlight');
+	if (header)
+		$(element).closest('.box').find('.box-header').addClass('highlight-top');
+	else
+		$(element).closest('.box').find('.box-body').addClass('highlight-top');
+	if (button)
+		$(button).addClass('highlight-btn');
+};
+
 // Ordering logic
 function next() {
-	console.log(tasks[current]);
-	// Sample code: EX1-A0-D0-T1-B1-C1
+	// Sample code: EX1-A0-B0-C1-D1
 	
+	// Remove all previous highlights
+	$('.box').removeClass('highlight');
+	$('.box-header').removeClass('highlight-top');
+	$('.box-body').removeClass('highlight-top');
+	$('.btn').removeClass('highlight-btn');
+
 	if (current >= tasks.length) // End
 		$('#exp-end').popup('show');
 	else {
 		// Which overlay
-		if (tasks[current].substring(0,1) == 'T') // Show comparison training
+		if (current == -1) { // Show training
+			$('#exp-training-baseline').popup('show');
+			highlight('#flights', false);
+			highlight('#delayChart', true);
+		} else if (current == 0) { // Show comparison training
 			$('#exp-training-compare').popup('show');
-		else // Show task
+			highlight('#airlineSelect', false);
+			highlight('#movementsChart', true, '#movementsChart-cross');
+		} else { // Show task
 			$('#exp-task').popup('show');
+			switch(tasks[current]) {
+				case 'A0':
+					highlight('#airlineSelect', false);
+					highlight('#movementsChart', true);
+					break;
+				case 'A1':
+					highlight('#airlineSelect', false);
+					highlight('#movementsChart', true, '#movementsChart-cross');
+					break;
+				case 'B0':
+					highlight('#airportSelect', false);
+					highlight('#airportsChart', true);
+					highlight('#delayChart', true);
+					highlight('#todChart', true);
+					break;
+				case 'B1':
+					highlight('#airportSelect', false);
+					highlight('#airportsChart', true, '#airportsChart-cross');
+					highlight('#delayChart', true);
+					highlight('#todChart', true);
+					break;
+				case 'C0':
+					highlight('#weekdayChart', true);
+					break;
+				case 'C1':
+					highlight('#weekdayChart', true, '#weekdayChart-cross');
+					break;
+				case 'D0':
+					highlight('#airportSelect', false);
+					highlight('#airlineSelect', false);
+					highlight('#delayChart', true);
+					highlight('#todChart', true);
+					break;
+				case 'D1':
+					highlight('#airportSelect', false);
+					highlight('#airlineSelect', false);
+					highlight('#delayChart', true);
+					highlight('#todChart', true, '#todChart-cross');
+					break;
+			}
+		}
 
-		// WIth or without crosscompare
-		if (tasks[current].substring(1) == '0')
-			$('.openCross').hide();
-		else
-			$('.openCross').show();
+		// With or without crosscompare
+		if (current >= 0) {
+			if (tasks[current].substring(1) == '0')
+				$('.openCross').hide();
+			else
+				$('.openCross').show();
+		}
 	}
 };
 
@@ -94,6 +158,6 @@ $(document).ready(function() {
 	$('.exp-intro_close').click(function() {
 		code = $('#exp-code').val();
 		tasks = code.split('-');
-		setTimeout(function(){ $('#exp-training-baseline').popup('show'); }, 10);
+		setTimeout(function(){ next(); }, 10);
 	});
 });

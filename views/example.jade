@@ -64,12 +64,12 @@ block content
 					option(value='DL') Delta (DL)
 
 			// Total Flights
-			.col-md-2.col-sm-2.col-xs-12: .box.box-info
+			.col-md-2.col-sm-2.col-xs-12: .box.box-solid
 				.box-body.selection: #flights 
 				+loading
 
 			// Average Delay
-			.col-md-2.col-sm-2.col-xs-12: .box.box-info
+			.col-md-2.col-sm-2.col-xs-12: .box.box-solid
 				.box-body.selection
 					| Mean Delay: 
 					strong#delay 
@@ -99,7 +99,7 @@ block content
 								p 
 									strong Interactions
 									br
-									| Upper chart: Scroll to zoom in and out.
+									| Upper chart: Scroll to zoom in and out. Hover for more information.
 									br
 									| Lower chart: Click and drag to select a time period.
 						button.btn.btn-box-tool.openCross#movementsChart-cross
@@ -117,7 +117,7 @@ block content
 			.col-md-6.col-sm-6.col-xs-12: .box.box-solid
 				.box-header.with-border
 					h3.box-title Delay by Time of Day 
-						small (min)
+						small (min. delay by hour)
 					.box-tools.pull-right
 						button.btn.btn-box-tool#colourflightDelay
 							i.fa.fa-eye
@@ -144,7 +144,7 @@ block content
 			.col-md-3.col-sm-3.col-xs-12#width-quarter: .box.box-solid
 				.box-header.with-border
 					h3.box-title Connections 
-						small (in- and outbound flights)
+						small (flights)
 					.box-tools.pull-right
 						button.btn.btn-box-tool.hidden-xs.infoairportsChart_open: i.fa.fa-info
 						// Info content
@@ -155,7 +155,7 @@ block content
 								p 
 									strong Interaction
 									br
-									| Select one or more rows by clicking on the row.
+									| Select one or more rows by clicking on the row. Hover for more information.
 						button.btn.btn-box-tool.openCross#airportsChart-cross: +cross
 						button.btn.btn-box-tool.disabled#resetairportsChart: +filter
 				.box-body.loading-height-tall: #airportsChart: .reset
@@ -176,7 +176,7 @@ block content
 								p 
 									strong Interaction
 									br
-									| Select one or more rows by clicking on the row.
+									| Select one or more rows by clicking on the row. Hover for more information.
 						button.btn.btn-box-tool.openCross#weekdayChart-cross: +cross
 						button.btn.btn-box-tool.disabled#resetweekdayChart: +filter
 				.box-body.loading-height-tall: #weekdayChart: .reset
@@ -207,7 +207,7 @@ block content
 			.col-md-3.col-sm-3.col-xs-12: .box.box-solid
 				.box-header.with-border
 					h3.box-title Time of Day 
-						small (flights)
+						small (flights per hour)
 					.box-tools.pull-right
 						button.btn.btn-box-tool.hidden-xs.infoTodChart_open: i.fa.fa-info
 						// Info content
