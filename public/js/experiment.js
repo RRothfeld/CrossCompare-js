@@ -1,18 +1,24 @@
 // Global variables
-var code = '',
-		tasks = [],
-		current = -1, // -1 = Training, 0 = Comp. Training, 1+ = Tasks
-		clicks = 0,
-		options = { 
-			opacity: 0.9,
-			blur: false,
-			escape: false,
-			onopen: function() {
+var code = '', // Questionnaire code
+		tasks = [], // Array of tasks to be done
+		current = -1, // Track current progress (-1 - 0: Training, >1: Tasks)
+		clicks = 0, // Tracker for number of mouse clicks
+		options = { // Overlay options
+			opacity: 0.9, // Darken background
+			blur: false, // Disable closing overlay via clicking outside the overlay-info
+			escape: false, // Disable closing overlay via ESC
+			onopen: function() { // Disable Next button for 5 seconds (force participant to read question)
 				$('.exp').prop('disabled', true);
 				setTimeout(function(){ $('.exp').prop('disabled', false); }, 5000);
 			}
 		};
 
+/**
+ * Highlights the defined elements (as they will be required for the upcoming task).
+ * @param  {Object} element  The HTML element to be highlighted.
+ * @param  {boolean} header  Whether the HTML element has a text header.
+ * @param  {Object} button   Caching button to highlight (optional).
+ */
 function highlight(element, header, button) {
 	$(element).closest('.box').addClass('highlight');
 	if (header)
@@ -23,17 +29,15 @@ function highlight(element, header, button) {
 		$(button).addClass('highlight-btn');
 };
 
-// Ordering logic
+/** Trigger continue with the next part of the questionnaire */
 function next() {
-	// Sample code: EX1-A0-B0-C1-D1
-	
 	// Remove all previous highlights
 	$('.box').removeClass('highlight');
 	$('.box-header').removeClass('highlight-top');
 	$('.box-body').removeClass('highlight-top');
 	$('.btn').removeClass('highlight-btn');
 
-	if (current >= tasks.length) // End
+	if (current >= tasks.length) // End questionnaire
 		$('#exp-end').popup('show');
 	else {
 		// Which overlay
@@ -99,7 +103,10 @@ function next() {
 	}
 };
 
-// Send log request to server
+/**
+ * Sends log request to server.
+ * @param  {boolean} start Whether the log request marks the start or end of a task.
+ */
 function log(start) {
 	var message = { 'code': code, 'task': tasks[current], 'clicks': clicks }
 
@@ -130,6 +137,7 @@ $(document).ready(function() {
 	$('#exp-cont').click(function() { 
 		log(false);
 
+		// Advance counter and trigger next page
 		current++;
 		next();
 
@@ -149,15 +157,18 @@ $(document).ready(function() {
 	$('#exp-task').popup(options);
 	$('#exp-end').popup(options);
 
-	// Overall
+	// Hide navigation (not required in experiment set up)
 	$('.navbar-header').hide();
 	$('.navbar-nav').hide();
 
-	// Intro
+	// Automatically show intro overlay
 	$('#exp-intro').popup('show');
 	$('.exp-intro_close').click(function() {
+		// Save entered questionnaire code
 		code = $('#exp-code').val();
 		tasks = code.split('-');
+
+		// Trigger next page (with delay; overlay bug if direct)
 		setTimeout(function(){ next(); }, 10);
 	});
 });
