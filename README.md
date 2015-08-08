@@ -25,5 +25,5 @@ Unit testing of CrossCompare's functions is done using [mocha](http://mochajs.or
 
 To run the testing code, simply run execute  `./node_modules/.bin/mocha` from within the CrossCompare-js folder.
 
-# CrossCompare Experiment Set-up
+# Experiment Set-up
 The experiment access is not shown on the main page, yet can be accessed via opening [http://localhost:3000/experiment](http://localhost:3000/experiment) in your web browser when the CrossCompare-js Node.js server is running (see 'Installation').
