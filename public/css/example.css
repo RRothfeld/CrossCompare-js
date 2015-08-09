@@ -17,8 +17,8 @@ a.btn-block { padding-top: 15px; }
 .dc-table-head { padding: 5px; background-color: #F5F5F5; }
 
 /* Give boxes a height before content is loaded */
-.loading-height-tall { min-height: 315px; }
-.loading-height-short { min-height: 90px; }
+.loading-height-tall { min-height: 275px; }
+.loading-height-short { min-height: 107px; }
 
 /* Hide y-axis and tick labels on all charts with the specified class */
 .no-y-axis svg g g.axis.y { display: none; }

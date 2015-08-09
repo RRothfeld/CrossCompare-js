@@ -37,8 +37,8 @@ var dateInFormat = d3.time.format('%d-%m-%Y %H:%M'),
 var DELAY_MIN = -60, // Minimum delay to be illustrated
 		DELAY_MAX = 179, // Maximum delay to be illustrated
 		DISTANCE_MAX = 2499, // Maximum delay to be illustrated
-		CHART_L = 300, // Height of a large chart
-		CHART_S = 107; // Height of a small chart
+		CHART_L = 250, // Height of a large chart
+		CHART_S = 80; // Height of a small chart
 
 
 /* Part 1 - Crossfilter */
@@ -151,8 +151,8 @@ d3.csv('data/example.csv', function(data) {
 	dc.dataCount('#flights')
 	.dimension(flights)
 	.group(all)
-	.html({ some:'Total Flights: <strong>%filter-count</strong><small>/%total-count</small>',
-		all:'Total Flights: <strong>%filter-count</strong><small> (all)</small>' });
+	.html({ some:'Flights: <strong>%filter-count</strong><small>/%total-count</small>',
+		all:'Flights: <strong>%filter-count</strong><small> (all)</small>' });
 
 	// Total average delay (non-graph data representation)
 	totalAverageDelay
@@ -171,7 +171,6 @@ d3.csv('data/example.csv', function(data) {
 	.margins({top: 5, right: 30, bottom: 20, left: 25})
 	.dimension(date)
 	.group(byDateHour)
-	.mouseZoomable(true) // Enable zooming in and out
 	.elasticY(true)
 	.x(d3.time.scale().domain([minDate, maxDate])) // Show data within date range
 	.renderHorizontalGridLines(true)
