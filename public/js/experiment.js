@@ -160,6 +160,12 @@ $(document).ready(function() {
 	// Hide navigation (not required in experiment set up)
 	$('.navbar-header').hide();
 	$('.navbar-nav').hide();
+	//Hide footer, disable scrolling
+	$('footer').hide();
+	$('html, body').css({
+    'overflow': 'hidden',
+    'height': '100%'
+});
 
 	// Automatically show intro overlay
 	$('#exp-intro').popup('show');
