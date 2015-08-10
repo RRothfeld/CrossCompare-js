@@ -74,17 +74,22 @@ function next() {
 					break;
 				case 'C0':
 					highlight('#weekdayChart', true);
+					highlight('#flights', false);
 					break;
 				case 'C1':
 					highlight('#weekdayChart', true, '#weekdayChart-cross');
+					highlight('#flights', false);
 					break;
 				case 'D0':
+					highlight('#flights', false);
 					highlight('#airportSelect', false);
 					highlight('#airlineSelect', false);
 					highlight('#delayChart', true);
 					highlight('#todChart', true);
+
 					break;
 				case 'D1':
+					highlight('#flights', false);
 					highlight('#airportSelect', false);
 					highlight('#airlineSelect', false);
 					highlight('#delayChart', true);
