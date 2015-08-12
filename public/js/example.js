@@ -492,10 +492,10 @@ d3.csv('data/example.csv', function(data) {
 	crosscompare
 	.setHeight(500) // Set comparison chart height
 	.setDateFormat('%d/%m %H:%M') // Set date output and input format
-	.addLegend('#airportSelect') // Add airport selection as legend entry
-	.addLegend('#airlineSelect') // Add airline selection as legend entry
-	.addLegend(movementsTimeChart) // Add time frame as legend entry
-	.addLegend(airportsChart, 'Airports') // Add connections as labeled entry
+	.addLegend('#airportSelect', 'Airport') // Add airport selection as legend entry
+	.addLegend('#airlineSelect', 'Airline') // Add airline selection as legend entry
+	.addLegend(movementsTimeChart, 'Timespan') // Add time frame as legend entry
+	.addLegend(airportsChart, 'Connections') // Add connections as labeled entry
 	.addLegend(delayChart, 'Delay') // Add delay as labeled entry
 	// Make 'Number of Flights' area chart comparable, with y-axis label
 	.add(movementsChart, { type: 'area', yLabel: 'Flights per Hour' })

@@ -9,7 +9,7 @@ var code = '', // Questionnaire code
 			escape: false, // Disable closing overlay via ESC
 			onopen: function() { // Disable Next button for 5 seconds (force participant to read question)
 				$('.exp').prop('disabled', true);
-				setTimeout(function(){ $('.exp').prop('disabled', false); }, 5000);
+				setTimeout(function(){ $('.exp').prop('disabled', false); }, 1000);
 			}
 		};
 
@@ -109,57 +109,37 @@ function next() {
 		 */
 		
 		if (current == -1) { // Show training
+			current++; // Only one training
 			$('#exp-training-baseline').popup('show');
-			highlight('#flights', false);
-			highlight('#delayChart', true);
-		} else if (current == 0) { // Show comparison training
-			$('#exp-training-compare').popup('show');
 			highlight('#airlineSelect', false);
-			highlight('#movementsChart', true, '#movementsChart-cross');
+			highlight('#delayChart', true, '#delayChart-cross');
 		} else { // Show task
 			$('#exp-task').popup('show');
 			switch(tasks[current]) {
 				case 'A0':
-					highlight('#airlineSelect', false);
+					highlight('#delayChart', true);
 					highlight('#movementsChart', true);
 					break;
 				case 'A1':
-					highlight('#airlineSelect', false);
+					highlight('#delayChart', true);
 					highlight('#movementsChart', true, '#movementsChart-cross');
 					break;
 				case 'B0':
 					highlight('#airportSelect', false);
-					highlight('#airportsChart', true);
-					highlight('#delayChart', true);
-					highlight('#todChart', true);
+					highlight('#weekdayChart', true);
 					break;
 				case 'B1':
 					highlight('#airportSelect', false);
-					highlight('#airportsChart', true, '#airportsChart-cross');
-					highlight('#delayChart', true);
-					highlight('#todChart', true);
+					highlight('#weekdayChart', true, '#weekdayChart-cross');
 					break;
 				case 'C0':
-					highlight('#weekdayChart', true);
-					highlight('#flights', false);
+					highlight('#airlineSelect', false);
+					highlight('#airportSelect', false);
+					highlight('#todChart', true);
 					break;
 				case 'C1':
-					highlight('#weekdayChart', true, '#weekdayChart-cross');
-					highlight('#flights', false);
-					break;
-				case 'D0':
-					highlight('#flights', false);
-					highlight('#airportSelect', false);
 					highlight('#airlineSelect', false);
-					highlight('#delayChart', true);
-					highlight('#todChart', true);
-
-					break;
-				case 'D1':
-					highlight('#flights', false);
 					highlight('#airportSelect', false);
-					highlight('#airlineSelect', false);
-					highlight('#delayChart', true);
 					highlight('#todChart', true, '#todChart-cross');
 					break;
 			}
@@ -220,6 +200,10 @@ $(document).ready(function() {
 		airline.filterAll();
 		dc.filterAll();
 		dc.redrawAll();
+
+		// Reset CrossCompare
+		crosscompare.reset();
+		$('#crosscompareInfo').slideUp('fast');
 	});
 
 	// Initialize survey overlays

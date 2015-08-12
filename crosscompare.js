@@ -253,7 +253,7 @@ crosscompare.cache = function(anchor) {
 					// If filters is array, read out filtered range and add to legend
 					if (filters[0].constructor === Array) {
 						if (filters[0][0] instanceof Date)
-							legend += format(filters[0][0]) + ' - ' + format(filters[0][1]);
+							legend += format(filters[0][0]) + ' - ' + format(filters[0][1]) + ' ';
 						else
 							legend += filters[0][0] + ' - ' + filters[0][1];
 					} else
@@ -450,7 +450,7 @@ crosscompare.render = function() {
 			size: { height: crosscompare.height },
 			padding: crosscompare.padding,
 			data: { json: totalCache, keys: { x: 'key', value: columns } },
-			zoom: { enabled: true }, // Enable using mouse-wheel to zoom in
+			zoom: { enabled: true, rescale: true }, // Enable using mouse-wheel to zoom in
 			color: { pattern: d3.scale.category10().range() } // D3.js colors
 		};
 

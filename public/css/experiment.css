@@ -12,4 +12,4 @@
 /* Design Highlighted Components */
 .highlight { border: solid 2px red; }
 .highlight-top { border-top: solid 2px red; }
-.highlight-btn { background-color: #FFD8D8; }
+.highlight-btn { background-color: red; color: white; }
