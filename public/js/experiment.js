@@ -40,7 +40,74 @@ function next() {
 	if (current >= tasks.length) // End questionnaire
 		$('#exp-end').popup('show');
 	else {
-		// Which overlay
+
+		/* 
+		 * Logic for pilot study 
+		 * Uncomment to enable (and comment out comparison study logic)
+		 */
+		
+		// if (current == -1) { // Show training
+		// 	$('#exp-training-baseline').popup('show');
+		// 	highlight('#flights', false);
+		// 	highlight('#delayChart', true);
+		// } else if (current == 0) { // Show comparison training
+		// 	$('#exp-training-compare').popup('show');
+		// 	highlight('#airlineSelect', false);
+		// 	highlight('#movementsChart', true, '#movementsChart-cross');
+		// } else { // Show task
+		// 	$('#exp-task').popup('show');
+		// 	switch(tasks[current]) {
+		// 		case 'A0':
+		// 			highlight('#airlineSelect', false);
+		// 			highlight('#movementsChart', true);
+		// 			break;
+		// 		case 'A1':
+		// 			highlight('#airlineSelect', false);
+		// 			highlight('#movementsChart', true, '#movementsChart-cross');
+		// 			break;
+		// 		case 'B0':
+		// 			highlight('#airportSelect', false);
+		// 			highlight('#airportsChart', true);
+		// 			highlight('#delayChart', true);
+		// 			highlight('#todChart', true);
+		// 			break;
+		// 		case 'B1':
+		// 			highlight('#airportSelect', false);
+		// 			highlight('#airportsChart', true, '#airportsChart-cross');
+		// 			highlight('#delayChart', true);
+		// 			highlight('#todChart', true);
+		// 			break;
+		// 		case 'C0':
+		// 			highlight('#weekdayChart', true);
+		// 			highlight('#flights', false);
+		// 			break;
+		// 		case 'C1':
+		// 			highlight('#weekdayChart', true, '#weekdayChart-cross');
+		// 			highlight('#flights', false);
+		// 			break;
+		// 		case 'D0':
+		// 			highlight('#flights', false);
+		// 			highlight('#airportSelect', false);
+		// 			highlight('#airlineSelect', false);
+		// 			highlight('#delayChart', true);
+		// 			highlight('#todChart', true);
+
+		// 			break;
+		// 		case 'D1':
+		// 			highlight('#flights', false);
+		// 			highlight('#airportSelect', false);
+		// 			highlight('#airlineSelect', false);
+		// 			highlight('#delayChart', true);
+		// 			highlight('#todChart', true, '#todChart-cross');
+		// 			break;
+		// 	}
+		// }
+
+		/* 
+		 * Logic for comparison study 
+		 * Uncomment to enable (and comment out pilot study logic)
+		 */
+		
 		if (current == -1) { // Show training
 			$('#exp-training-baseline').popup('show');
 			highlight('#flights', false);
