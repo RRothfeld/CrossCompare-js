@@ -373,6 +373,9 @@ crosscompare.render = function() {
 	// Test if caches have been queued
 	if (this.queue.length > 0) {
 
+		// Update CrossCompare status text in HTML page
+		$(crosscompare.anchor + '-info').text('Comparison rendered.');
+
 		// Retrieve chart information and settings
 		var anchor = this.queue[0].anchor,
 				type = this.charts[anchor].type,
