@@ -8,7 +8,7 @@
  */
 
 
-/* Part 0 - Global settings and variables */
+/* Part 1 - Global settings and variables */
 
 // Define DC.js charts
 var totalAverageDelay = dc.numberDisplay('#delay'),
@@ -41,7 +41,7 @@ var DELAY_MIN = -60, // Minimum delay to be illustrated
 		CHART_S = 80; // Height of a small chart
 
 
-/* Part 1 - Crossfilter */
+/* Part 2 - Crossfilter */
 
 // Load static data from csv file (alternatively, an API, defined in router.js,
 // call for mongoDB could be made here)
@@ -132,7 +132,7 @@ d3.csv('data/example.csv', function(data) {
 	);
 
 
-	/* Part 2a - DC.js Charting */
+	/* Part 3a - DC.js Charting */
 
 	// Define minimum and maximum date range present in data
 	var minDate = d3.time.day(date.bottom(1)[0].DateTime),
@@ -420,7 +420,7 @@ d3.csv('data/example.csv', function(data) {
 	};
 
 
-	/* Part 2b - DC.js jQuery event handling */
+	/* Part 3b - DC.js jQuery event handling */
 
 	// Render charts upon page load
 	$(document).ready(renderCharts());
@@ -486,7 +486,7 @@ d3.csv('data/example.csv', function(data) {
 	});
 
 
-	/* Part 3a - CrossCompare settings */
+	/* Part 4a - CrossCompare settings */
 
 	// Define CrossCompare settings and add comparable charts
 	crosscompare
@@ -521,7 +521,7 @@ d3.csv('data/example.csv', function(data) {
 		xLabel: 'Distance (miles)' });
 
 
-	/* Part 3b - CrossCompare jQuery event handling */
+	/* Part 4b - CrossCompare jQuery event handling */
 
 	// Show CrossCompare status text upon caching
 	$('.openCross').on('click', function() {
@@ -549,7 +549,7 @@ d3.csv('data/example.csv', function(data) {
 });
 
 
-/* Part 4 - Information tool-tips */
+/* Part 5 - Information tool-tips */
 
 // Define tool-tip settings and activate 'Number of FLights' tool-tip
 var infoOptions = {
