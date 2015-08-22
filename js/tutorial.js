@@ -63,5 +63,6 @@ dc.renderAll();
 
 // Setup crosscompare
 crosscompare
+.addLegend(valueChart)
 .add(keyChart, { type: 'bar', order: 'desc' })
 .add(valueChart);
