@@ -231,8 +231,9 @@ block content
 				comment   // Register the dc.js charts with crosscompare
 				br
 				|   crosscompare
-				|		.addLegend(valueChart) 
-					comment // optional
+				|   .addLegend(valueChart) 
+				comment // optional
+				br
 				|   .add(keyChart, { type: 'bar', order: 'desc' })
 				|   .add(valueChart);
 			p 
