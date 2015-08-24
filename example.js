@@ -36,12 +36,12 @@ var dateInFormat = d3.time.format('%d-%m-%Y %H:%M'),
 // Define constants
 var DELAY_MIN = -60, // Minimum delay to be illustrated
 		DELAY_MAX = 179, // Maximum delay to be illustrated
-		DISTANCE_MAX = 2499, // Maximum delay to be illustrated
+		DISTANCE_MAX = 2499, // Maximum distance to be illustrated
 		CHART_L = 250, // Height of a large chart
 		CHART_S = 80; // Height of a small chart
 
 
-/* Part 2 - Crossfilter */
+/* Part 2 - Crossfilter Setup */
 
 // Load static data from csv file (alternatively, an API, defined in router.js,
 // call for mongoDB could be made here)
